@@ -2,25 +2,6 @@
 
 #define gcc_pure __attribute__((pure))
 
-static gcc_pure bool isBorder(Dude* dude) {
-    // window borders are essentially walls, but whatever
-    assert (dude->direction == right ||
-            dude->direction == up    ||
-            dude->direction == left  ||
-            dude->direction == down);
-    switch (dude->direction) {
-        case right:
-            return (dude->x+1 > WINDOW_HEIGHT - (dude->size/2+1));
-        case up:
-            return (dude->y-1 < dude->size / 2+1);
-        case left:
-            return (dude->x-1 < dude->size / 2+1);
-        case down:
-            return (dude->y+1 > WINDOW_HEIGHT - (dude->size/2+1));
-    }
-    return false; // should never happen
-}
-
 static gcc_pure bool isOffTrack(Dude* dude) {
     // returns true if dude can proceed in this direction
     switch (dude->direction) {
@@ -65,18 +46,13 @@ static gcc_pure bool isWall(Dude* dude, Maze* maze) {
             break;
     }
 
-    if (maze->tiles_blocked[x/CORRIDOR_SIZE][y/CORRIDOR_SIZE]) {
+    if (maze->tiles[x/CORRIDOR_SIZE][y/CORRIDOR_SIZE]) {
         return true;
     }
     return false;
 }
 
 bool can_proceed(Dude* dude, Maze* maze) {
-    if (isBorder(dude)) {
-        fprintf(stderr, "can't move through border at %u %u\n", dude->x, dude->y);
-        return false;
-    }
-
     if (isOffTrack(dude)) {
         fprintf(stderr, "not on track at %u %u\n", dude->x, dude->y);
         return false;

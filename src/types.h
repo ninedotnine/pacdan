@@ -22,9 +22,11 @@ typedef struct {
     Point end;
 } Wall;
 
+typedef enum { vacant, food, blocked } Tile;
+
 typedef struct {
     int16_t wall_count; // 255 walls ought to suffice
     Wall walls[WALL_LIMIT];
-    bool tiles_blocked[WINDOW_HEIGHT/CORRIDOR_SIZE][WINDOW_HEIGHT/CORRIDOR_SIZE]; // FIXME use a bitfield instead.
+    Tile tiles[WINDOW_HEIGHT/CORRIDOR_SIZE + 1][WINDOW_HEIGHT/CORRIDOR_SIZE + 1]; // FIXME use a bitfield instead.
 } Maze;
 
