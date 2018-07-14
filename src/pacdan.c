@@ -40,12 +40,8 @@ Pacman pacman = {
 
 /* don't initialize a Wall except by calling build_wall */
 typedef struct {
-//     uint32_t x1; // coordinates of one end
-//     uint32_t y1;
     Point start;
     Point end;
-//     uint32_t x2; // coordinates of the other end
-//     uint32_t y2;
 } Wall;
 
 /* call build_maze to make the maze */
@@ -168,10 +164,11 @@ void build_wall(uint32_t x, uint32_t y, uint32_t length, Direction dir) {
     assert (length + x < WINDOW_HEIGHT || length + y < WINDOW_HEIGHT);
 
     Wall wall = {
+        // one of these will be changed
         .start.x = x,
         .start.y = y,
-        .end.x = x, // one of these
-        .end.y = y, // will be changed
+        .end.x = x,
+        .end.y = y,
     };
 
     switch (dir) {
