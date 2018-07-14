@@ -1,15 +1,5 @@
 // #include "types.h"
 
-void print_tiles_blocked(Maze* maze) {
-    puts("printin tiles blocd");
-    for (int x = 0; x < TILES_HEIGHT; x++) {
-        for (int y = 0; y < TILES_HEIGHT; y++) {
-            printf("%d", maze->tiles[x][y]);
-        }
-        putchar('\n');
-    }
-}
-
 static void build_wall(uint32_t x, uint32_t y, uint32_t length, Direction dir, Maze* maze) {
     assert (maze->wall_count < WALL_LIMIT);
     assert (dir == right || dir == up || dir == left || dir == down);
