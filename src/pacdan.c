@@ -81,6 +81,18 @@ void draw_game(Display* dpy, Window win, Maze* maze, Dude* dude) {
     draw_dude(dpy, win, dude);
 }
 
+Dude starting_dude(uint32_t x, uint32_t y, Direction dir, Maze* maze) {
+    Dude dude = {
+        .x = x * CORRIDOR_SIZE,
+        .y = y * CORRIDOR_SIZE,
+        .size = 48,
+        .direction = dir
+    };
+
+    maze->tiles[dude.x/CORRIDOR_SIZE][dude.y/CORRIDOR_SIZE] = vacant;
+    return dude;
+}
+
 int main(void) {
     errno = 0;
 
@@ -88,15 +100,7 @@ int main(void) {
     build_maze(&maze);
 
     /* starting position */
-    Dude dude = {
-        .x = CORRIDOR_SIZE,
-        .y = CORRIDOR_SIZE,
-        .size = 48,
-        .direction = right
-    };
-
-    maze.tiles[dude.x/CORRIDOR_SIZE][dude.y/CORRIDOR_SIZE] = vacant; // FIXME this is a hack
-
+    Dude dude = starting_dude(1, 1, right, &maze);
 
     Display * display = XOpenDisplay(NULL);
     if (display == NULL) {
