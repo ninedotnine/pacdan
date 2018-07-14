@@ -15,7 +15,7 @@ static void draw_or_erase_dude(Display* dpy, Window win, Dude* dude, bool erase)
 
     assert (dude->size > 0);
     const uint32_t halfsize = dude->size / 2;
-    const uint16_t mouth_line_length = 20;
+    const uint8_t mouth_line_length = 20;
     const uint32_t startCircle = (dude->direction * 90 * 64) + 2500;
     const uint32_t endCircle = 360 * 64 - 5000;
     XDrawPoint(dpy, win, gc, dude->x, dude->y);
