@@ -2,55 +2,55 @@
 
 #define gcc_pure __attribute__((pure))
 
-static gcc_pure bool isBorder(Pacman* pacman) {
+static gcc_pure bool isBorder(Dude* dude) {
     // window borders are essentially walls, but whatever
-    assert (pacman->direction == right ||
-            pacman->direction == up    ||
-            pacman->direction == left  ||
-            pacman->direction == down);
-    switch (pacman->direction) {
+    assert (dude->direction == right ||
+            dude->direction == up    ||
+            dude->direction == left  ||
+            dude->direction == down);
+    switch (dude->direction) {
         case right:
-            return (pacman->x+1 > WINDOW_HEIGHT - (pacman->size/2+1));
+            return (dude->x+1 > WINDOW_HEIGHT - (dude->size/2+1));
         case up:
-            return (pacman->y-1 < pacman->size / 2+1);
+            return (dude->y-1 < dude->size / 2+1);
         case left:
-            return (pacman->x-1 < pacman->size / 2+1);
+            return (dude->x-1 < dude->size / 2+1);
         case down:
-            return (pacman->y+1 > WINDOW_HEIGHT - (pacman->size/2+1));
+            return (dude->y+1 > WINDOW_HEIGHT - (dude->size/2+1));
     }
     return false; // should never happen
 }
 
-static gcc_pure bool isOffTrack(Pacman* pacman) {
-    // returns true if pacman can proceed in this direction
-    switch (pacman->direction) {
+static gcc_pure bool isOffTrack(Dude* dude) {
+    // returns true if dude can proceed in this direction
+    switch (dude->direction) {
         case up:
         case down:
-            return pacman->x % CORRIDOR_SIZE != 0;
+            return dude->x % CORRIDOR_SIZE != 0;
         case left:
         case right:
-            return pacman->y % CORRIDOR_SIZE != 0;
+            return dude->y % CORRIDOR_SIZE != 0;
     }
     abort();
     return true; // should never happen
 }
 
-static gcc_pure bool isWall(Pacman* pacman, Maze* maze) {
-    // returns true if pacman is wak-blocked
-    assert (pacman->x > 0);
-    assert (pacman->y > 0);
-    assert (pacman->x < WINDOW_HEIGHT);
-    assert (pacman->y < WINDOW_HEIGHT);
-    assert (pacman->x % CORRIDOR_SIZE == 0 || pacman->y % CORRIDOR_SIZE == 0);
-    if (pacman->x % CORRIDOR_SIZE != 0 || pacman->y % CORRIDOR_SIZE != 0) {
+static gcc_pure bool isWall(Dude* dude, Maze* maze) {
+    // returns true if dude is wak-blocked
+    assert (dude->x > 0);
+    assert (dude->y > 0);
+    assert (dude->x < WINDOW_HEIGHT);
+    assert (dude->y < WINDOW_HEIGHT);
+    assert (dude->x % CORRIDOR_SIZE == 0 || dude->y % CORRIDOR_SIZE == 0);
+    if (dude->x % CORRIDOR_SIZE != 0 || dude->y % CORRIDOR_SIZE != 0) {
         return false; // walls are only relevant at turning points
     }
-    assert (pacman->x % CORRIDOR_SIZE == 0);
-    assert (pacman->y % CORRIDOR_SIZE == 0);
+    assert (dude->x % CORRIDOR_SIZE == 0);
+    assert (dude->y % CORRIDOR_SIZE == 0);
 
-    uint32_t x = pacman->x;
-    uint32_t y = pacman->y;
-    switch (pacman->direction) {
+    uint32_t x = dude->x;
+    uint32_t y = dude->y;
+    switch (dude->direction) {
         case right:
             x += CORRIDOR_SIZE;
             break;
@@ -71,19 +71,19 @@ static gcc_pure bool isWall(Pacman* pacman, Maze* maze) {
     return false;
 }
 
-bool can_proceed(Pacman* pacman, Maze* maze) {
-    if (isBorder(pacman)) {
-        fprintf(stderr, "can't move through border at %u %u\n", pacman->x, pacman->y);
+bool can_proceed(Dude* dude, Maze* maze) {
+    if (isBorder(dude)) {
+        fprintf(stderr, "can't move through border at %u %u\n", dude->x, dude->y);
         return false;
     }
 
-    if (isOffTrack(pacman)) {
-        fprintf(stderr, "not on track at %u %u\n", pacman->x, pacman->y);
+    if (isOffTrack(dude)) {
+        fprintf(stderr, "not on track at %u %u\n", dude->x, dude->y);
         return false;
     }
 
-    if (isWall(pacman, maze)) {
-        fprintf(stderr, "running into a wall at %u %u\n", pacman->x, pacman->y);
+    if (isWall(dude, maze)) {
+        fprintf(stderr, "running into a wall at %u %u\n", dude->x, dude->y);
         return false;
     }
     return true;

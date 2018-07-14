@@ -18,7 +18,7 @@ Display * display;
 Window window;
 
 /* starting position */
-Pacman pacman = {
+Dude dude = {
     .x = CORRIDOR_SIZE,
     .y = CORRIDOR_SIZE,
     .size = 48,
@@ -27,36 +27,36 @@ Pacman pacman = {
 
 Maze maze;
 
-void move_pacman(Direction dir) {
-    erase_pacman(display, window, &pacman);
+void move_dude(Direction dir) {
+    erase_dude(display, window, &dude);
 
     assert (dir == right || dir == up || dir == left || dir == down);
-    pacman.direction = dir;
+    dude.direction = dir;
 
-    if (! can_proceed(&pacman, &maze)) {
-        draw_pacman(display, window, &pacman); // pacman doesn't move
+    if (! can_proceed(&dude, &maze)) {
+        draw_dude(display, window, &dude); // dude doesn't move
         return;
     }
 
     switch (dir) {
         case right:
-            assert (pacman.x < WINDOW_HEIGHT);
-            pacman.x += CORRIDOR_SIZE / 5;
+            assert (dude.x < WINDOW_HEIGHT);
+            dude.x += CORRIDOR_SIZE / 5;
             break;
         case up:
-            assert (pacman.y > 0);
-            pacman.y -= CORRIDOR_SIZE / 5;
+            assert (dude.y > 0);
+            dude.y -= CORRIDOR_SIZE / 5;
             break;
         case left:
-            assert (pacman.x > 0);
-            pacman.x -= CORRIDOR_SIZE / 5;
+            assert (dude.x > 0);
+            dude.x -= CORRIDOR_SIZE / 5;
             break;
         case down:
-            assert (pacman.y < WINDOW_HEIGHT);
-            pacman.y += CORRIDOR_SIZE / 5;
+            assert (dude.y < WINDOW_HEIGHT);
+            dude.y += CORRIDOR_SIZE / 5;
             break;
     }
-    draw_pacman(display, window, &pacman);
+    draw_dude(display, window, &dude);
 }
 
 void handle_keypress(XEvent event) {
@@ -69,16 +69,16 @@ void handle_keypress(XEvent event) {
             display = NULL;
             exit(0);
         case XK_Right:
-            move_pacman(right);
+            move_dude(right);
             break;
         case XK_Up:
-            move_pacman(up);
+            move_dude(up);
             break;
         case XK_Left:
-            move_pacman(left);
+            move_dude(left);
             break;
         case XK_Down:
-            move_pacman(down);
+            move_dude(down);
             break;
         default:
             fputs("some other key was pressed, who cares.\n", stderr);
@@ -87,7 +87,7 @@ void handle_keypress(XEvent event) {
 
 void draw_game(Display* display, Window win, Maze* maze) {
     draw_maze(display, win, maze);
-    draw_pacman(display, window, &pacman);
+    draw_dude(display, window, &dude);
 }
 
 int main(void) {
