@@ -143,24 +143,6 @@ void handle_keypress(XEvent event) {
     }
 }
 
-void draw_grid(void) {
-    static XGCValues gcv;
-    gcv.background = BlackPixel(display, DefaultScreen(display));
-    gcv.foreground = WhitePixel(display, DefaultScreen(display));
-    const GC gc = XCreateGC(display, DefaultRootWindow(display), GCForeground | GCBackground, &gcv);
-
-    XWindowAttributes win_attrs;
-    int status = XGetWindowAttributes(display, window, &win_attrs);
-    assert (status != 0); // docs say this should not be 0
-
-    for (uint8_t i = 0; i < 20; i++) {
-        XDrawLine(display, window, gc, i*CORRIDOR_SIZE, 0, i*CORRIDOR_SIZE, win_attrs.height);
-    }
-    for (uint8_t i = 0; i < 20; i++) {
-        XDrawLine(display, window, gc, 0, i*CORRIDOR_SIZE, win_attrs.width, i*CORRIDOR_SIZE);
-    }
-}
-
 void draw_game(Display* display, Window win, Maze* maze) {
     draw_maze(display, win, maze);
     draw_pacman();
