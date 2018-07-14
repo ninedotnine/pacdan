@@ -17,15 +17,13 @@
 Display * display;
 Window window;
 
-Maze maze;
-
-void move_dude(Dude* dude, Direction dir) {
+void move_dude(Dude* dude, Direction dir, Maze* maze) {
     erase_dude(display, window, dude);
 
     assert (dir == right || dir == up || dir == left || dir == down);
     dude->direction = dir;
 
-    if (can_proceed(dude, &maze)) {
+    if (can_proceed(dude, maze)) {
         switch (dir) {
             case right:
                 assert (dude->x < WINDOW_HEIGHT);
@@ -48,7 +46,7 @@ void move_dude(Dude* dude, Direction dir) {
     draw_dude(display, window, dude);
 }
 
-void handle_keypress(XEvent event, Dude* dude) {
+void handle_keypress(XEvent event, Dude* dude, Maze* maze) {
     KeySym keysym = XLookupKeysym(&event.xkey, 0);
     switch (keysym) {
         case XK_Escape:
@@ -58,16 +56,16 @@ void handle_keypress(XEvent event, Dude* dude) {
             display = NULL;
             exit(0);
         case XK_Right:
-            move_dude(dude, right);
+            move_dude(dude, right, maze);
             break;
         case XK_Up:
-            move_dude(dude, up);
+            move_dude(dude, up, maze);
             break;
         case XK_Left:
-            move_dude(dude, left);
+            move_dude(dude, left, maze);
             break;
         case XK_Down:
-            move_dude(dude, down);
+            move_dude(dude, down, maze);
             break;
         default:
             fputs("some other key was pressed, who cares.\n", stderr);
@@ -82,6 +80,9 @@ void draw_game(Display* display, Window win, Maze* maze, Dude* dude) {
 int main(void) {
     errno = 0;
 
+    Maze maze;
+    build_maze(&maze);
+
     /* starting position */
     Dude dude = {
         .x = CORRIDOR_SIZE,
@@ -89,8 +90,6 @@ int main(void) {
         .size = 48,
         .direction = right
     };
-
-    build_maze(&maze);
 
     display = XOpenDisplay(NULL);
     if (display == NULL) {
@@ -129,7 +128,7 @@ int main(void) {
             draw_game(display, window, &maze, &dude);
             break;
           case KeyPress:
-            handle_keypress(event, &dude);
+            handle_keypress(event, &dude, &maze);
             break;
           case KeyRelease: // FIXME : prevent the player from holding multiple keys
             break;
