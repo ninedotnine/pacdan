@@ -43,26 +43,26 @@ void move_dude(Dude* dude, Direction dir, Maze* maze, Display* dpy, Window win) 
     draw_dude(dpy, win, dude);
 }
 
-void handle_keypress(XEvent event, Dude* dude, Maze* maze, Display* dpy, Window win) {
+void handle_keypress(XEvent event, Dude* dude, Maze* maze, Display** dpy_p, Window win) {
     KeySym keysym = XLookupKeysym(&event.xkey, 0);
     switch (keysym) {
         case XK_Escape:
         case XK_q:
-            XDestroyWindow(dpy, win);
-            XCloseDisplay(dpy);
-            dpy = NULL;
-            exit(0);
+            XDestroyWindow(*dpy_p, win);
+            XCloseDisplay(*dpy_p);
+            *dpy_p = NULL;
+            break;
         case XK_Right:
-            move_dude(dude, right, maze, dpy, win);
+            move_dude(dude, right, maze, *dpy_p, win);
             break;
         case XK_Up:
-            move_dude(dude, up, maze, dpy, win);
+            move_dude(dude, up, maze, *dpy_p, win);
             break;
         case XK_Left:
-            move_dude(dude, left, maze, dpy, win);
+            move_dude(dude, left, maze, *dpy_p, win);
             break;
         case XK_Down:
-            move_dude(dude, down, maze, dpy, win);
+            move_dude(dude, down, maze, *dpy_p, win);
             break;
         default:
             fputs("some other key was pressed, who cares.\n", stderr);
@@ -125,7 +125,7 @@ int main(void) {
             draw_game(display, window, &maze, &dude);
             break;
           case KeyPress:
-            handle_keypress(event, &dude, &maze, display, window);
+            handle_keypress(event, &dude, &maze, &display, window);
             break;
           case KeyRelease: // FIXME : prevent the player from holding multiple keys
             break;
@@ -143,5 +143,6 @@ int main(void) {
             exit(3);
         }
     }
+    puts("score is: NONE HAHA");
     return 0;
 }
