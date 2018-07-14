@@ -26,16 +26,16 @@ Pacman pacman = {
 /* call build_maze to make the maze */
 Maze maze;
 
+// void build_wall(uint32_t x, uint32_t y, uint32_t length, Direction dir) {
 void build_wall(uint32_t x, uint32_t y, uint32_t length, Direction dir) {
     assert (maze.wall_count < WALL_LIMIT);
     assert (dir == right || dir == up || dir == left || dir == down);
+    assert (length > 0);
 
     x = x * CORRIDOR_SIZE;
     y = y * CORRIDOR_SIZE;
     length = length * CORRIDOR_SIZE;
 
-    assert (length > 0);
-    assert (length % CORRIDOR_SIZE == 0);
     assert (length + x < WINDOW_HEIGHT || length + y < WINDOW_HEIGHT);
 
     Wall wall = {
