@@ -53,25 +53,6 @@ typedef struct {
 
 Maze maze;
 
-Point get_new_coords(void) {
-    Point point = { pacman.x, pacman.y };
-    switch (pacman.direction) {
-        case right:
-            point.x++;
-            break;
-        case up:
-            point.y--;
-            break;
-        case left:
-            point.x--;
-            break;
-        case down:
-            point.y++;
-            break;
-    }
-    return point;
-}
-
 bool isOffTrack(void) {
     // returns true if pacman can proceed in this direction
     switch (pacman.direction) {
@@ -84,16 +65,6 @@ bool isOffTrack(void) {
     }
     abort();
     return true; // should never happen
-}
-
-bool isBorder(Point p) {
-    // window borders are essentially walls, but whatever
-    if ((p.x < pacman.size / 2+1) || (p.x > WINDOW_HEIGHT - (pacman.size/2+1))) {
-        return true;
-    } else if ((p.y < pacman.size / 2+1) || (p.y > WINDOW_HEIGHT - (pacman.size/2+1))) {
-        return true;
-    }
-    return false;
 }
 
 bool isWall(void) {
@@ -132,20 +103,45 @@ bool isWall(void) {
     return false;
 }
 
+bool isBorder(void) {
+    // window borders are essentially walls, but whatever
+    Point p = { pacman.x, pacman.y };
+    switch (pacman.direction) {
+        case right:
+            p.x++;
+            break;
+        case up:
+            p.y--;
+            break;
+        case left:
+            p.x--;
+            break;
+        case down:
+            p.y++;
+            break;
+    }
+
+    if ((p.x < pacman.size / 2+1) || (p.x > WINDOW_HEIGHT - (pacman.size/2+1))) {
+        return true;
+    } else if ((p.y < pacman.size / 2+1) || (p.y > WINDOW_HEIGHT - (pacman.size/2+1))) {
+        return true;
+    }
+    return false;
+}
+
 bool can_proceed(void) {
-    Point point = get_new_coords();
-    if (isBorder(point)) {
-        fprintf(stderr, "can't move through border at %u %u\n", point.x, point.y);
+    if (isBorder()) {
+        fprintf(stderr, "can't move through border at %u %u\n", pacman.x, pacman.y);
         return false;
     }
 
     if (isOffTrack()) {
-        fprintf(stderr, "not on track at %u %u\n", point.x, point.y);
+        fprintf(stderr, "not on track at %u %u\n", pacman.x, pacman.y);
         return false;
     }
 
     if (isWall()) {
-        fprintf(stderr, "running into a wall at %u %u\n", point.x, point.y);
+        fprintf(stderr, "running into a wall at %u %u\n", pacman.x, pacman.y);
         return false;
     }
     return true;
