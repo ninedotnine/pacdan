@@ -58,6 +58,9 @@ Maze maze;
 Point get_new_coords(void) {
     Point point = { pacman.x, pacman.y };
     switch (pacman.direction) {
+        case right:
+            point.x++;
+            break;
         case up:
             point.y--;
             break;
@@ -66,9 +69,6 @@ Point get_new_coords(void) {
             break;
         case down:
             point.y++;
-            break;
-        case right:
-            point.x++;
             break;
     }
     return point;
@@ -114,6 +114,9 @@ bool isWall(void) {
     uint32_t x = pacman.x;
     uint32_t y = pacman.y;
     switch (pacman.direction) {
+        case right:
+            x += CORRIDOR_SIZE;
+            break;
         case up:
             y -= CORRIDOR_SIZE;
             break;
@@ -122,9 +125,6 @@ bool isWall(void) {
             break;
         case left:
             x -= CORRIDOR_SIZE;
-            break;
-        case right:
-            x += CORRIDOR_SIZE;
             break;
     }
 
@@ -171,6 +171,9 @@ void build_wall(uint32_t x, uint32_t y, uint32_t length, Direction dir) {
     assert (length > 0);
     assert (length % CORRIDOR_SIZE == 0);
     assert (length + x < WINDOW_HEIGHT || length + y < WINDOW_HEIGHT);
+    if (dir == right) {
+        assert (x + length < WINDOW_HEIGHT);
+    }
     if (dir == up) {
         assert (y - length > 0);
     }
@@ -179,9 +182,6 @@ void build_wall(uint32_t x, uint32_t y, uint32_t length, Direction dir) {
     }
     if (dir == down) {
         assert (y + length < WINDOW_HEIGHT);
-    }
-    if (dir == right) {
-        assert (x + length < WINDOW_HEIGHT);
     }
 
     Wall wall = {
@@ -192,6 +192,9 @@ void build_wall(uint32_t x, uint32_t y, uint32_t length, Direction dir) {
     };
 
     switch (dir) {
+        case right:
+            wall.x2 = x+length;
+            break;
         case up:
             wall.y1 = y-length;
             break;
@@ -200,9 +203,6 @@ void build_wall(uint32_t x, uint32_t y, uint32_t length, Direction dir) {
             break;
         case down:
             wall.y2 = y+length;
-            break;
-        case right:
-            wall.x2 = x+length;
             break;
     }
 
@@ -345,6 +345,12 @@ void draw_or_erase_pacman(bool erase) {
         startCircle, endCircle);
 
     switch (pacman.direction) {
+        case right:
+            XDrawLine(display, window, gc,
+                      pacman.x, pacman.y, pacman.x + mouth_line_length, pacman.y + 15);
+            XDrawLine(display, window, gc,
+                      pacman.x, pacman.y, pacman.x + mouth_line_length, pacman.y - 15);
+            break;
         case up:
             XDrawLine(display, window, gc,
                       pacman.x, pacman.y, pacman.x + 15, pacman.y - mouth_line_length);
@@ -362,12 +368,6 @@ void draw_or_erase_pacman(bool erase) {
                       pacman.x, pacman.y, pacman.x + 15, pacman.y + mouth_line_length);
             XDrawLine(display, window, gc,
                       pacman.x, pacman.y, pacman.x - 15, pacman.y + mouth_line_length);
-            break;
-        case right:
-            XDrawLine(display, window, gc,
-                      pacman.x, pacman.y, pacman.x + mouth_line_length, pacman.y + 15);
-            XDrawLine(display, window, gc,
-                      pacman.x, pacman.y, pacman.x + mouth_line_length, pacman.y - 15);
             break;
     }
 }
@@ -391,6 +391,10 @@ void move_pacman(Direction dir) {
     }
 
     switch (dir) {
+        case right:
+            assert (pacman.x < WINDOW_HEIGHT);
+            pacman.x += CORRIDOR_SIZE / 5;
+            break;
         case up:
             assert (pacman.y > 0);
             pacman.y -= CORRIDOR_SIZE / 5;
@@ -402,10 +406,6 @@ void move_pacman(Direction dir) {
         case down:
             assert (pacman.y < WINDOW_HEIGHT);
             pacman.y += CORRIDOR_SIZE / 5;
-            break;
-        case right:
-            assert (pacman.x < WINDOW_HEIGHT);
-            pacman.x += CORRIDOR_SIZE / 5;
             break;
     }
     draw_pacman();
@@ -420,17 +420,17 @@ void handle_keypress(XEvent event) {
             XCloseDisplay(display);
             display = NULL;
             exit(0);
-        case XK_Up:
-            move_pacman(up);
-            break;
         case XK_Right:
             move_pacman(right);
             break;
-        case XK_Down:
-            move_pacman(down);
+        case XK_Up:
+            move_pacman(up);
             break;
         case XK_Left:
             move_pacman(left);
+            break;
+        case XK_Down:
+            move_pacman(down);
             break;
         default:
             fputs("some other key was pressed, who cares.\n", stderr);
