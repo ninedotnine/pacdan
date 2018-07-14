@@ -77,11 +77,8 @@ static void distribute_food(Maze* maze) {
     for (uint16_t x = 0; x < TILES_HEIGHT-1; x++) {
         for (uint16_t y = 0; y < TILES_HEIGHT-1; y++) {
             if (maze->tiles[x][y] == vacant) {;
-//                 printf("vacancy: \t%d\t%d\n", x, y);
-
+                maze->tiles[x][y] = food;
             }
-//         wall = maze->walls[i];
-
         }
     }
 
@@ -175,6 +172,8 @@ void build_maze(Maze* maze) {
     build_wall(26, 16, 4, down, maze);
     build_wall(26, 24, 2, down, maze);
 
+    distribute_food(maze);
+
     assert (WALL_LIMIT == maze->wall_count); // couldn't make any more walls if we wanted to
 }
 
@@ -188,6 +187,13 @@ void draw_maze(Display* dpy, Window win, Maze* maze) {
     for (uint16_t i = 0; i < WALL_LIMIT; i++) {
         wall = maze->walls[i];
         XDrawLine(dpy, win, gc, wall.start.x, wall.start.y, wall.end.x, wall.end.y);
+    }
+    for (int x = 0; x < TILES_HEIGHT; x++) {
+        for (int y = 0; y < TILES_HEIGHT; y++) {
+            if (maze->tiles[x][y] == food) {
+                XDrawPoint(dpy, win, gc, x*CORRIDOR_SIZE, y*CORRIDOR_SIZE);
+            }
+        }
     }
 }
 
