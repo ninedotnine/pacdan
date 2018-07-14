@@ -173,10 +173,6 @@ void draw_wall(const Wall wall) {
     XDrawLine(display, window, gc, wall.x1, wall.y1, wall.x2, wall.y2);
 }
 
-void print_where_i_am(void) {
-    printf("pacman at: \t%d\t%d\n", pacman.x, pacman.y);
-}
-
 void build_wall(uint32_t x, uint32_t y, uint32_t length, Direction dir) {
     assert (maze.wall_count < WALL_LIMIT);
 
@@ -440,7 +436,6 @@ void move_pacman(Direction dir) {
             abort();
     }
     draw_pacman();
-    print_where_i_am();
 }
 
 void handle_keypress(XEvent event) {
