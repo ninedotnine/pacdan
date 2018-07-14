@@ -171,18 +171,6 @@ void build_wall(uint32_t x, uint32_t y, uint32_t length, Direction dir) {
     assert (length > 0);
     assert (length % CORRIDOR_SIZE == 0);
     assert (length + x < WINDOW_HEIGHT || length + y < WINDOW_HEIGHT);
-    if (dir == right) {
-        assert (x + length < WINDOW_HEIGHT);
-    }
-    if (dir == up) {
-        assert (y - length > 0);
-    }
-    if (dir == left) {
-        assert (x - length > 0);
-    }
-    if (dir == down) {
-        assert (y + length < WINDOW_HEIGHT);
-    }
 
     Wall wall = {
         .x1 = x,
@@ -193,15 +181,19 @@ void build_wall(uint32_t x, uint32_t y, uint32_t length, Direction dir) {
 
     switch (dir) {
         case right:
+            assert (x + length < WINDOW_HEIGHT);
             wall.x2 = x+length;
             break;
         case up:
+            assert (y - length > 0);
             wall.y1 = y-length;
             break;
         case left:
+            assert (x - length > 0);
             wall.x1 = x-length;
             break;
         case down:
+            assert (y + length < WINDOW_HEIGHT);
             wall.y2 = y+length;
             break;
     }
