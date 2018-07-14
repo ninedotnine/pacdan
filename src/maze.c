@@ -193,3 +193,15 @@ void draw_maze(Display* dpy, Window win, Maze* maze) {
     }
 }
 
+Dude starting_dude(uint32_t x, uint32_t y, Direction dir, Maze* maze) {
+    /* gives the starting position */
+    Dude dude = {
+        .x = x * CORRIDOR_SIZE,
+        .y = y * CORRIDOR_SIZE,
+        .size = 48,
+        .direction = dir
+    };
+
+    maze->tiles[dude.x/CORRIDOR_SIZE][dude.y/CORRIDOR_SIZE] = vacant;
+    return dude;
+}
