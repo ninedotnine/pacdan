@@ -210,7 +210,7 @@ void build_wall(uint32_t x, uint32_t y, uint32_t length, Direction dir) {
             maze.tiles_blocked[i][wall.y1/CORRIDOR_SIZE] = true;
         }
     } else {
-        fputs("make_wall: this should never have happened, redux.\n", stderr);
+        fputs("build_wall: this should never have happened.\n", stderr);
         abort();
     }
 
