@@ -9,26 +9,11 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
-#define WALL_LIMIT 66
-#define WINDOW_HEIGHT 700 // also window width, because the game is a square
-#define CORRIDOR_SIZE 25
+#include "types.h"
+#include "movements.c"
 
 Display * display;
 Window window;
-
-typedef enum { right, up, left, down } Direction;
-
-typedef struct {
-    uint32_t x;
-    uint32_t y;
-} Point;
-
-typedef struct {
-    uint32_t x; // these are the centre of pacman
-    uint32_t y;
-    uint32_t size; // pacman is a square, this means width and height
-    Direction direction;
-} Pacman;
 
 /* starting position */
 Pacman pacman = {
@@ -38,107 +23,8 @@ Pacman pacman = {
     .direction = right
 };
 
-/* don't initialize a Wall except by calling build_wall */
-typedef struct {
-    Point start;
-    Point end;
-} Wall;
-
 /* call build_maze to make the maze */
-typedef struct {
-    int16_t wall_count; // 255 walls ought to suffice
-    Wall walls[WALL_LIMIT];
-    bool tiles_blocked[WINDOW_HEIGHT/CORRIDOR_SIZE][WINDOW_HEIGHT/CORRIDOR_SIZE]; // FIXME use a bitfield instead.
-} Maze;
-
 Maze maze;
-
-bool isBorder(void) {
-    // window borders are essentially walls, but whatever
-    assert (pacman.direction == right ||
-            pacman.direction == up    ||
-            pacman.direction == left  ||
-            pacman.direction == down);
-    switch (pacman.direction) {
-        case right:
-            return (pacman.x+1 > WINDOW_HEIGHT - (pacman.size/2+1));
-        case up:
-            return (pacman.y-1 < pacman.size / 2+1);
-        case left:
-            return (pacman.x-1 < pacman.size / 2+1);
-        case down:
-            return (pacman.y+1 > WINDOW_HEIGHT - (pacman.size/2+1));
-    }
-    return false; // should never happen
-}
-
-bool isOffTrack(void) {
-    // returns true if pacman can proceed in this direction
-    switch (pacman.direction) {
-        case up:
-        case down:
-            return pacman.x % CORRIDOR_SIZE != 0;
-        case left:
-        case right:
-            return pacman.y % CORRIDOR_SIZE != 0;
-    }
-    abort();
-    return true; // should never happen
-}
-
-bool isWall(void) {
-    // returns true if pacman is wak-blocked
-    assert (pacman.x > 0);
-    assert (pacman.y > 0);
-    assert (pacman.x < WINDOW_HEIGHT);
-    assert (pacman.y < WINDOW_HEIGHT);
-    assert (pacman.x % CORRIDOR_SIZE == 0 || pacman.y % CORRIDOR_SIZE == 0);
-    if (pacman.x % CORRIDOR_SIZE != 0 || pacman.y % CORRIDOR_SIZE != 0) {
-        return false; // walls are only relevant at turning points
-    }
-    assert (pacman.x % CORRIDOR_SIZE == 0);
-    assert (pacman.y % CORRIDOR_SIZE == 0);
-
-    uint32_t x = pacman.x;
-    uint32_t y = pacman.y;
-    switch (pacman.direction) {
-        case right:
-            x += CORRIDOR_SIZE;
-            break;
-        case up:
-            y -= CORRIDOR_SIZE;
-            break;
-        case down:
-            y += CORRIDOR_SIZE;
-            break;
-        case left:
-            x -= CORRIDOR_SIZE;
-            break;
-    }
-
-    if (maze.tiles_blocked[x/CORRIDOR_SIZE][y/CORRIDOR_SIZE]) {
-        return true;
-    }
-    return false;
-}
-
-bool can_proceed(void) {
-    if (isBorder()) {
-        fprintf(stderr, "can't move through border at %u %u\n", pacman.x, pacman.y);
-        return false;
-    }
-
-    if (isOffTrack()) {
-        fprintf(stderr, "not on track at %u %u\n", pacman.x, pacman.y);
-        return false;
-    }
-
-    if (isWall()) {
-        fprintf(stderr, "running into a wall at %u %u\n", pacman.x, pacman.y);
-        return false;
-    }
-    return true;
-}
 
 void build_wall(uint32_t x, uint32_t y, uint32_t length, Direction dir) {
     assert (maze.wall_count < WALL_LIMIT);
@@ -357,14 +243,13 @@ void erase_pacman(void) {
     draw_or_erase_pacman(true);
 }
 
-
 void move_pacman(Direction dir) {
     erase_pacman();
 
     assert (dir == right || dir == up || dir == left || dir == down);
     pacman.direction = dir;
 
-    if (! can_proceed()) {
+    if (! can_proceed(&pacman, &maze)) {
         draw_pacman(); // pacman doesn't move
         return;
     }
