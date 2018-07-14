@@ -492,7 +492,7 @@ int main(void) {
 
     display = XOpenDisplay(NULL);
     if (display == NULL) {
-        puts("no display.");
+        fputs("no display.", stderr);
         exit(2);
     }
 
