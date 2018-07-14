@@ -153,14 +153,6 @@ bool can_proceed(void) {
     return true;
 }
 
-void draw_wall(const Wall wall) {
-    static XGCValues gcv;
-    gcv.background = BlackPixel(display, DefaultScreen(display));
-    gcv.foreground = WhitePixel(display, DefaultScreen(display));
-    const GC gc = XCreateGC(display, DefaultRootWindow(display), GCForeground | GCBackground, &gcv);
-    XDrawLine(display, window, gc, wall.x1, wall.y1, wall.x2, wall.y2);
-}
-
 void build_wall(uint32_t x, uint32_t y, uint32_t length, Direction dir) {
     assert (maze.wall_count < WALL_LIMIT);
 
@@ -308,8 +300,15 @@ void build_maze(void) {
 }
 
 void draw_maze(void) {
+    assert (WALL_LIMIT == maze.wall_count); // don't try to draw the maze until you've populated it
+    XGCValues gcv;
+    gcv.background = BlackPixel(display, DefaultScreen(display));
+    gcv.foreground = WhitePixel(display, DefaultScreen(display));
+    const GC gc = XCreateGC(display, DefaultRootWindow(display), GCForeground | GCBackground, &gcv);
+    Wall wall;
     for (uint16_t i = 0; i < WALL_LIMIT; i++) {
-        draw_wall(maze.walls[i]);
+        wall = maze.walls[i];
+        XDrawLine(display, window, gc, wall.x1, wall.y1, wall.x2, wall.y2);
     }
 }
 
