@@ -16,7 +16,7 @@
 Display * display;
 Window window;
 
-typedef enum { unused, up, left, down, right } Direction;
+typedef enum { right, up, left, down } Direction;
 
 typedef struct {
     uint32_t x;
@@ -70,9 +70,6 @@ Point get_new_coords(void) {
         case right:
             point.x++;
             break;
-        case unused:
-            fputs("get_new_coords: this should never have happened.\n", stderr);
-            abort();
     }
     return point;
 }
@@ -86,8 +83,6 @@ bool isOffTrack(void) {
         case left:
         case right:
             return pacman.y % CORRIDOR_SIZE != 0;
-        case unused:
-            fputs("isOffTrack: this should never have happened.\n", stderr);
     }
     abort();
     return true; // should never happen
@@ -131,9 +126,6 @@ bool isWall(void) {
         case right:
             x += CORRIDOR_SIZE;
             break;
-        case unused:
-            fputs("isWall: this should never have happened.\n", stderr);
-            abort();
     }
 
     if (maze.tiles_blocked[x/CORRIDOR_SIZE][y/CORRIDOR_SIZE]) {
@@ -212,9 +204,6 @@ void build_wall(uint32_t x, uint32_t y, uint32_t length, Direction dir) {
         case right:
             wall.x2 = x+length;
             break;
-        case unused:
-            fputs("make_wall: this should never have happened.\n", stderr);
-            abort();
     }
 
     assert (wall.x1 == wall.x2 || wall.y1 == wall.y2); // no diagonal walls
@@ -380,9 +369,6 @@ void draw_or_erase_pacman(bool erase) {
             XDrawLine(display, window, gc,
                       pacman.x, pacman.y, pacman.x + mouth_line_length, pacman.y - 15);
             break;
-        case unused:
-            fputs("this should never have happened.\n", stderr);
-            abort();
     }
 }
 
@@ -421,9 +407,6 @@ void move_pacman(Direction dir) {
             assert (pacman.x < WINDOW_HEIGHT);
             pacman.x += CORRIDOR_SIZE / 5;
             break;
-        case unused:
-            fputs("this should never have happened.\n", stderr);
-            abort();
     }
     draw_pacman();
 }
