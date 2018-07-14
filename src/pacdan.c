@@ -14,7 +14,7 @@
 #include "maze.c"
 #include "dude.c"
 
-void move_dude(Dude* dude, Direction dir, Maze* maze, Display* dpy, Window win) {
+uint64_t move_dude(Dude* dude, Direction dir, Maze* maze, Display* dpy, Window win) {
     erase_dude(dpy, win, dude);
 
     assert (dir == right || dir == up || dir == left || dir == down);
@@ -40,10 +40,20 @@ void move_dude(Dude* dude, Direction dir, Maze* maze, Display* dpy, Window win) 
                 break;
         }
     }
+
     draw_dude(dpy, win, dude);
+
+    if (dude->x % CORRIDOR_SIZE == 0 && dude->y % CORRIDOR_SIZE == 0) {
+        if (maze->tiles[dude->x/CORRIDOR_SIZE][dude->y/CORRIDOR_SIZE] == food) {
+            puts("ate food");
+            maze->tiles[dude->x/CORRIDOR_SIZE][dude->y/CORRIDOR_SIZE] = vacant;
+            return 1;
+        }
+    }
+    return 0;
 }
 
-void handle_keypress(XEvent event, Dude* dude, Maze* maze, Display** dpy_p, Window win) {
+uint64_t handle_keypress(XEvent event, Dude* dude, Maze* maze, Display** dpy_p, Window win) {
     KeySym keysym = XLookupKeysym(&event.xkey, 0);
     switch (keysym) {
         case XK_Escape:
@@ -53,20 +63,17 @@ void handle_keypress(XEvent event, Dude* dude, Maze* maze, Display** dpy_p, Wind
             *dpy_p = NULL;
             break;
         case XK_Right:
-            move_dude(dude, right, maze, *dpy_p, win);
-            break;
+            return move_dude(dude, right, maze, *dpy_p, win);
         case XK_Up:
-            move_dude(dude, up, maze, *dpy_p, win);
-            break;
+            return move_dude(dude, up, maze, *dpy_p, win);
         case XK_Left:
-            move_dude(dude, left, maze, *dpy_p, win);
-            break;
+            return move_dude(dude, left, maze, *dpy_p, win);
         case XK_Down:
-            move_dude(dude, down, maze, *dpy_p, win);
-            break;
+            return move_dude(dude, down, maze, *dpy_p, win);
         default:
             fputs("some other key was pressed, who cares.\n", stderr);
     }
+    return 0; // no points for you
 }
 
 void draw_game(Display* dpy, Window win, Maze* maze, Dude* dude) {
@@ -111,6 +118,7 @@ int main(void) {
 
     XMapWindow(display, window);
 
+    uint64_t foods_eaten = 0;
     XEvent event;
     while (display != NULL) {
         XNextEvent(display, &event);
@@ -125,7 +133,7 @@ int main(void) {
             draw_game(display, window, &maze, &dude);
             break;
           case KeyPress:
-            handle_keypress(event, &dude, &maze, &display, window);
+            foods_eaten += handle_keypress(event, &dude, &maze, &display, window);
             break;
           case KeyRelease: // FIXME : prevent the player from holding multiple keys
             break;
@@ -143,6 +151,6 @@ int main(void) {
             exit(3);
         }
     }
-    puts("score is: NONE HAHA");
+    printf("final score is: %lu.\n", foods_eaten*100); // make the number look bigger, that's what makes games fun
     return 0;
 }
