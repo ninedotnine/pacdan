@@ -157,6 +157,7 @@ bool can_proceed(void) {
 
 void build_wall(uint32_t x, uint32_t y, uint32_t length, Direction dir) {
     assert (maze.wall_count < WALL_LIMIT);
+    assert (dir == right || dir == up || dir == left || dir == down);
 
     x = x * CORRIDOR_SIZE;
     y = y * CORRIDOR_SIZE;
@@ -207,13 +208,10 @@ void build_wall(uint32_t x, uint32_t y, uint32_t length, Direction dir) {
         for (uint32_t i = wall.start.y/CORRIDOR_SIZE; i-1 < wall.end.y/CORRIDOR_SIZE; i++) {
             maze.tiles_blocked[wall.start.x/CORRIDOR_SIZE][i] = true;
         }
-    } else if (dir == left || dir == right) {
+    } else {
         for (uint32_t i = wall.start.x/CORRIDOR_SIZE; i-1 < wall.end.x/CORRIDOR_SIZE; i++) {
             maze.tiles_blocked[i][wall.end.y/CORRIDOR_SIZE] = true;
         }
-    } else {
-        fputs("build_wall: this should never have happened.\n", stderr);
-        abort();
     }
 
     maze.walls[maze.wall_count] = wall;
