@@ -3,7 +3,7 @@
 #define CORRIDOR_SIZE 25
 #define TILES_HEIGHT WINDOW_HEIGHT/CORRIDOR_SIZE + 1
 
-typedef enum { right, up, left, down } Direction;
+typedef enum { right , up , left , down } Direction;
 
 typedef struct {
     uint32_t x;
@@ -23,7 +23,7 @@ typedef struct {
     Point end;
 } Wall;
 
-typedef enum { vacant, food, blocked, special } Tile;
+typedef enum { vacant , food , blocked , special } Tile;
 
 typedef struct {
     int16_t wall_count; // 255 walls ought to suffice
