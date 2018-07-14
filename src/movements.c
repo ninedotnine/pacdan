@@ -1,6 +1,8 @@
 // #include "types.h"
 
-static bool isBorder(Pacman* pacman) {
+#define gcc_pure __attribute__((pure))
+
+static gcc_pure bool isBorder(Pacman* pacman) {
     // window borders are essentially walls, but whatever
     assert (pacman->direction == right ||
             pacman->direction == up    ||
@@ -19,7 +21,7 @@ static bool isBorder(Pacman* pacman) {
     return false; // should never happen
 }
 
-static bool isOffTrack(Pacman* pacman) {
+static gcc_pure bool isOffTrack(Pacman* pacman) {
     // returns true if pacman can proceed in this direction
     switch (pacman->direction) {
         case up:
@@ -33,7 +35,7 @@ static bool isOffTrack(Pacman* pacman) {
     return true; // should never happen
 }
 
-static bool isWall(Pacman* pacman, Maze* maze) {
+static gcc_pure bool isWall(Pacman* pacman, Maze* maze) {
     // returns true if pacman is wak-blocked
     assert (pacman->x > 0);
     assert (pacman->y > 0);

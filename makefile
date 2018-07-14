@@ -4,7 +4,7 @@ FILES = src/pacdan.c
 OUT_EXE = bin/pacdan
 LIBS = -lX11
 # LIBS = -lpthread -lmath
-DEBUGFLAGS = -fsanitize=enum -fsanitize=undefined -fstack-protector-all
+DEBUGFLAGS = -fsanitize=enum -fsanitize=undefined -fstack-protector-all -Wsuggest-attribute=pure
 # DEBUGFLAGS = -fsanitize=thread -fsanitize=undefined -fstack-protector-all
 # DEBUGFLAGS = -fsanitize=address -fsanitize=undefined -fstack-protector-all
 
