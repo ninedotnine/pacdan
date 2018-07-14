@@ -17,46 +17,38 @@
 Display * display;
 Window window;
 
-/* starting position */
-Dude dude = {
-    .x = CORRIDOR_SIZE,
-    .y = CORRIDOR_SIZE,
-    .size = 48,
-    .direction = right
-};
-
 Maze maze;
 
-void move_dude(Direction dir) {
-    erase_dude(display, window, &dude);
+void move_dude(Dude* dude, Direction dir) {
+    erase_dude(display, window, dude);
 
     assert (dir == right || dir == up || dir == left || dir == down);
-    dude.direction = dir;
+    dude->direction = dir;
 
-    if (can_proceed(&dude, &maze)) {
+    if (can_proceed(dude, &maze)) {
         switch (dir) {
             case right:
-                assert (dude.x < WINDOW_HEIGHT);
-                dude.x += CORRIDOR_SIZE / 5;
+                assert (dude->x < WINDOW_HEIGHT);
+                dude->x += CORRIDOR_SIZE / 5;
                 break;
             case up:
-                assert (dude.y > 0);
-                dude.y -= CORRIDOR_SIZE / 5;
+                assert (dude->y > 0);
+                dude->y -= CORRIDOR_SIZE / 5;
                 break;
             case left:
-                assert (dude.x > 0);
-                dude.x -= CORRIDOR_SIZE / 5;
+                assert (dude->x > 0);
+                dude->x -= CORRIDOR_SIZE / 5;
                 break;
             case down:
-                assert (dude.y < WINDOW_HEIGHT);
-                dude.y += CORRIDOR_SIZE / 5;
+                assert (dude->y < WINDOW_HEIGHT);
+                dude->y += CORRIDOR_SIZE / 5;
                 break;
         }
     }
-    draw_dude(display, window, &dude);
+    draw_dude(display, window, dude);
 }
 
-void handle_keypress(XEvent event) {
+void handle_keypress(XEvent event, Dude* dude) {
     KeySym keysym = XLookupKeysym(&event.xkey, 0);
     switch (keysym) {
         case XK_Escape:
@@ -66,29 +58,37 @@ void handle_keypress(XEvent event) {
             display = NULL;
             exit(0);
         case XK_Right:
-            move_dude(right);
+            move_dude(dude, right);
             break;
         case XK_Up:
-            move_dude(up);
+            move_dude(dude, up);
             break;
         case XK_Left:
-            move_dude(left);
+            move_dude(dude, left);
             break;
         case XK_Down:
-            move_dude(down);
+            move_dude(dude, down);
             break;
         default:
             fputs("some other key was pressed, who cares.\n", stderr);
     }
 }
 
-void draw_game(Display* display, Window win, Maze* maze) {
+void draw_game(Display* display, Window win, Maze* maze, Dude* dude) {
     draw_maze(display, win, maze);
-    draw_dude(display, window, &dude);
+    draw_dude(display, window, dude);
 }
 
 int main(void) {
     errno = 0;
+
+    /* starting position */
+    Dude dude = {
+        .x = CORRIDOR_SIZE,
+        .y = CORRIDOR_SIZE,
+        .size = 48,
+        .direction = right
+    };
 
     build_maze(&maze);
 
@@ -126,10 +126,10 @@ int main(void) {
         switch (event.type) {
           case Expose:
             puts("Expose detected");
-            draw_game(display, window, &maze);
+            draw_game(display, window, &maze, &dude);
             break;
           case KeyPress:
-            handle_keypress(event);
+            handle_keypress(event, &dude);
             break;
           case KeyRelease: // FIXME : prevent the player from holding multiple keys
             break;
