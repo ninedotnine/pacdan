@@ -61,7 +61,6 @@ void erase_dude(Display * dpy, Window win, Dude* dude) {
 
 }
 
-
 uint64_t move_dude(Dude* dude, Direction dir, Maze* maze, Display* dpy, Window win) {
     erase_dude(dpy, win, dude);
 
@@ -99,4 +98,3 @@ uint64_t move_dude(Dude* dude, Direction dir, Maze* maze, Display* dpy, Window w
     }
     return 0;
 }
-

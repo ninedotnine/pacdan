@@ -30,4 +30,3 @@ typedef struct {
     Wall walls[WALL_LIMIT];
     Tile tiles[TILES_HEIGHT][TILES_HEIGHT]; // FIXME use a bitfield instead.
 } Maze;
-
