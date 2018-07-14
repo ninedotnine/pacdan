@@ -53,6 +53,25 @@ typedef struct {
 
 Maze maze;
 
+bool isBorder(void) {
+    // window borders are essentially walls, but whatever
+    assert (pacman.direction == right ||
+            pacman.direction == up    ||
+            pacman.direction == left  ||
+            pacman.direction == down);
+    switch (pacman.direction) {
+        case right:
+            return (pacman.x+1 > WINDOW_HEIGHT - (pacman.size/2+1));
+        case up:
+            return (pacman.y-1 < pacman.size / 2+1);
+        case left:
+            return (pacman.x-1 < pacman.size / 2+1);
+        case down:
+            return (pacman.y+1 > WINDOW_HEIGHT - (pacman.size/2+1));
+    }
+    return false; // should never happen
+}
+
 bool isOffTrack(void) {
     // returns true if pacman can proceed in this direction
     switch (pacman.direction) {
@@ -98,32 +117,6 @@ bool isWall(void) {
     }
 
     if (maze.tiles_blocked[x/CORRIDOR_SIZE][y/CORRIDOR_SIZE]) {
-        return true;
-    }
-    return false;
-}
-
-bool isBorder(void) {
-    // window borders are essentially walls, but whatever
-    Point p = { pacman.x, pacman.y };
-    switch (pacman.direction) {
-        case right:
-            p.x++;
-            break;
-        case up:
-            p.y--;
-            break;
-        case left:
-            p.x--;
-            break;
-        case down:
-            p.y++;
-            break;
-    }
-
-    if ((p.x < pacman.size / 2+1) || (p.x > WINDOW_HEIGHT - (pacman.size/2+1))) {
-        return true;
-    } else if ((p.y < pacman.size / 2+1) || (p.y > WINDOW_HEIGHT - (pacman.size/2+1))) {
         return true;
     }
     return false;
