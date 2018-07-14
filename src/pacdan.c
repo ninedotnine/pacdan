@@ -45,7 +45,6 @@ uint64_t move_dude(Dude* dude, Direction dir, Maze* maze, Display* dpy, Window w
 
     if (dude->x % CORRIDOR_SIZE == 0 && dude->y % CORRIDOR_SIZE == 0) {
         if (maze->tiles[dude->x/CORRIDOR_SIZE][dude->y/CORRIDOR_SIZE] == food) {
-            puts("ate food");
             maze->tiles[dude->x/CORRIDOR_SIZE][dude->y/CORRIDOR_SIZE] = vacant;
             return 1;
         }
@@ -71,7 +70,7 @@ uint64_t handle_keypress(XEvent event, Dude* dude, Maze* maze, Display** dpy_p, 
         case XK_Down:
             return move_dude(dude, down, maze, *dpy_p, win);
         default:
-            fputs("some other key was pressed, who cares.\n", stderr);
+            fputs("that key doesn't do anything.\n", stderr);
     }
     return 0; // no points for you
 }
@@ -123,7 +122,6 @@ int main(void) {
                event.type == ButtonRelease);
         switch (event.type) {
           case Expose:
-            puts("Expose detected");
             draw_game(display, window, &maze, &dude);
             break;
           case KeyPress:

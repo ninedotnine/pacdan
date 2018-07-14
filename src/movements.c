@@ -49,14 +49,12 @@ static gcc_pure bool isWall(Dude* dude, Maze* maze) {
     return (maze->tiles[x/CORRIDOR_SIZE][y/CORRIDOR_SIZE] == blocked);
 }
 
-bool can_proceed(Dude* dude, Maze* maze) {
+bool gcc_pure can_proceed(Dude* dude, Maze* maze) {
     if (isOffTrack(dude)) {
-        fprintf(stderr, "not on track at %u %u\n", dude->x, dude->y);
         return false;
     }
 
     if (isWall(dude, maze)) {
-        fprintf(stderr, "running into a wall at %u %u\n", dude->x, dude->y);
         return false;
     }
     return true;
