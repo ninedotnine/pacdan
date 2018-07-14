@@ -253,21 +253,6 @@ void build_wall(uint32_t x, uint32_t y, uint32_t length, Direction dir) {
     maze.wall_count++;
 }
 
-
-void print_tiles_blocked(void) {
-    puts("printin tiles blocd");
-    for (int x = 0; x < WINDOW_HEIGHT/CORRIDOR_SIZE; x++) {
-        for (int y = 0; y < WINDOW_HEIGHT/CORRIDOR_SIZE; y++) {
-            if (maze.tiles_blocked[x][y]) {
-                putchar('1');
-            } else {
-                putchar('0');
-            }
-        }
-        putchar('\n');
-    }
-}
-
 void build_maze(void) {
     maze.wall_count = 0;
     memset(maze.tiles_blocked, 0, sizeof(maze.tiles_blocked));
@@ -519,7 +504,6 @@ int main(void) {
     errno = 0;
 
     build_maze();
-    print_tiles_blocked();
 
     display = XOpenDisplay(NULL);
     if (display == NULL) {
