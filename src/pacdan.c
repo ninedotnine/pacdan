@@ -33,28 +33,25 @@ void move_dude(Direction dir) {
     assert (dir == right || dir == up || dir == left || dir == down);
     dude.direction = dir;
 
-    if (! can_proceed(&dude, &maze)) {
-        draw_dude(display, window, &dude); // dude doesn't move
-        return;
-    }
-
-    switch (dir) {
-        case right:
-            assert (dude.x < WINDOW_HEIGHT);
-            dude.x += CORRIDOR_SIZE / 5;
-            break;
-        case up:
-            assert (dude.y > 0);
-            dude.y -= CORRIDOR_SIZE / 5;
-            break;
-        case left:
-            assert (dude.x > 0);
-            dude.x -= CORRIDOR_SIZE / 5;
-            break;
-        case down:
-            assert (dude.y < WINDOW_HEIGHT);
-            dude.y += CORRIDOR_SIZE / 5;
-            break;
+    if (can_proceed(&dude, &maze)) {
+        switch (dir) {
+            case right:
+                assert (dude.x < WINDOW_HEIGHT);
+                dude.x += CORRIDOR_SIZE / 5;
+                break;
+            case up:
+                assert (dude.y > 0);
+                dude.y -= CORRIDOR_SIZE / 5;
+                break;
+            case left:
+                assert (dude.x > 0);
+                dude.x -= CORRIDOR_SIZE / 5;
+                break;
+            case down:
+                assert (dude.y < WINDOW_HEIGHT);
+                dude.y += CORRIDOR_SIZE / 5;
+                break;
+        }
     }
     draw_dude(display, window, &dude);
 }
