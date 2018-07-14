@@ -40,10 +40,8 @@ Pacman pacman = {
 
 /* don't initialize a Wall except by calling build_wall */
 typedef struct {
-    uint32_t x1; // coordinates of one end
-    uint32_t y1;
-    uint32_t x2; // coordinates of the other end
-    uint32_t y2;
+    Point start;
+    Point end;
 } Wall;
 
 /* call build_maze to make the maze */
@@ -165,49 +163,50 @@ void build_wall(uint32_t x, uint32_t y, uint32_t length, Direction dir) {
     assert (length + x < WINDOW_HEIGHT || length + y < WINDOW_HEIGHT);
 
     Wall wall = {
-        .x1 = x,
-        .y1 = y,
-        .x2 = x,
-        .y2 = y,
+        // one of these will be changed
+        .start.x = x,
+        .start.y = y,
+        .end.x = x,
+        .end.y = y,
     };
 
     switch (dir) {
         case right:
             assert (x + length < WINDOW_HEIGHT);
-            wall.x2 = x+length;
+            wall.end.x = x+length;
             break;
         case up:
             assert (y - length > 0);
-            wall.y1 = y-length;
+            wall.start.y = y-length;
             break;
         case left:
             assert (x - length > 0);
-            wall.x1 = x-length;
+            wall.start.x = x-length;
             break;
         case down:
             assert (y + length < WINDOW_HEIGHT);
-            wall.y2 = y+length;
+            wall.end.y = y+length;
             break;
     }
 
-    assert (wall.x1 == wall.x2 || wall.y1 == wall.y2); // no diagonal walls
-    assert (wall.x1 < wall.x2 || wall.y1 < wall.y2); // all walls must go either downward or rightward
-    assert (wall.x1 > 0); // make sure the wall doesn't go past the edge of the window
-    assert (wall.x1 < WINDOW_HEIGHT);
-    assert (wall.y1 > 0);
-    assert (wall.y1 < WINDOW_HEIGHT);
-    assert (wall.x2 > 0);
-    assert (wall.x2 < WINDOW_HEIGHT);
-    assert (wall.y2 > 0);
-    assert (wall.y2 < WINDOW_HEIGHT);
+    assert (wall.start.x == wall.end.x || wall.start.y == wall.end.y); // no diagonal walls
+    assert (wall.start.x < wall.end.x || wall.start.y < wall.end.y); // all walls must go either downward or rightward
+    assert (wall.start.x > 0); // make sure the wall doesn't go past the edge of the window
+    assert (wall.start.x < WINDOW_HEIGHT);
+    assert (wall.start.y > 0);
+    assert (wall.start.y < WINDOW_HEIGHT);
+    assert (wall.end.x > 0);
+    assert (wall.end.x < WINDOW_HEIGHT);
+    assert (wall.end.y > 0);
+    assert (wall.end.y < WINDOW_HEIGHT);
 
     if (dir == up || dir == down) {
-        for (uint32_t i = wall.y1/CORRIDOR_SIZE; i-1 < wall.y2/CORRIDOR_SIZE; i++) {
-            maze.tiles_blocked[wall.x1/CORRIDOR_SIZE][i] = true;
+        for (uint32_t i = wall.start.y/CORRIDOR_SIZE; i-1 < wall.end.y/CORRIDOR_SIZE; i++) {
+            maze.tiles_blocked[wall.start.x/CORRIDOR_SIZE][i] = true;
         }
     } else if (dir == left || dir == right) {
-        for (uint32_t i = wall.x1/CORRIDOR_SIZE; i-1 < wall.x2/CORRIDOR_SIZE; i++) {
-            maze.tiles_blocked[i][wall.y1/CORRIDOR_SIZE] = true;
+        for (uint32_t i = wall.start.x/CORRIDOR_SIZE; i-1 < wall.end.x/CORRIDOR_SIZE; i++) {
+            maze.tiles_blocked[i][wall.end.y/CORRIDOR_SIZE] = true;
         }
     } else {
         fputs("build_wall: this should never have happened.\n", stderr);
@@ -308,7 +307,7 @@ void draw_maze(void) {
     Wall wall;
     for (uint16_t i = 0; i < WALL_LIMIT; i++) {
         wall = maze.walls[i];
-        XDrawLine(display, window, gc, wall.x1, wall.y1, wall.x2, wall.y2);
+        XDrawLine(display, window, gc, wall.start.x, wall.start.y, wall.end.x, wall.end.y);
     }
 }
 
