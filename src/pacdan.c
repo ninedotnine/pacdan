@@ -14,10 +14,7 @@
 #include "maze.c"
 #include "dude.c"
 
-Display * display;
-Window window;
-
-void move_dude(Dude* dude, Direction dir, Maze* maze) {
+void move_dude(Dude* dude, Direction dir, Maze* maze, Display* display, Window window) {
     erase_dude(display, window, dude);
 
     assert (dir == right || dir == up || dir == left || dir == down);
@@ -46,7 +43,7 @@ void move_dude(Dude* dude, Direction dir, Maze* maze) {
     draw_dude(display, window, dude);
 }
 
-void handle_keypress(XEvent event, Dude* dude, Maze* maze) {
+void handle_keypress(XEvent event, Dude* dude, Maze* maze, Display* display, Window window) {
     KeySym keysym = XLookupKeysym(&event.xkey, 0);
     switch (keysym) {
         case XK_Escape:
@@ -56,16 +53,16 @@ void handle_keypress(XEvent event, Dude* dude, Maze* maze) {
             display = NULL;
             exit(0);
         case XK_Right:
-            move_dude(dude, right, maze);
+            move_dude(dude, right, maze, display, window);
             break;
         case XK_Up:
-            move_dude(dude, up, maze);
+            move_dude(dude, up, maze, display, window);
             break;
         case XK_Left:
-            move_dude(dude, left, maze);
+            move_dude(dude, left, maze, display, window);
             break;
         case XK_Down:
-            move_dude(dude, down, maze);
+            move_dude(dude, down, maze, display, window);
             break;
         default:
             fputs("some other key was pressed, who cares.\n", stderr);
@@ -74,7 +71,7 @@ void handle_keypress(XEvent event, Dude* dude, Maze* maze) {
 
 void draw_game(Display* display, Window win, Maze* maze, Dude* dude) {
     draw_maze(display, win, maze);
-    draw_dude(display, window, dude);
+    draw_dude(display, win, dude);
 }
 
 int main(void) {
@@ -91,7 +88,7 @@ int main(void) {
         .direction = right
     };
 
-    display = XOpenDisplay(NULL);
+    Display * display = XOpenDisplay(NULL);
     if (display == NULL) {
         fputs("no display.", stderr);
         exit(2);
@@ -106,7 +103,7 @@ int main(void) {
     attrs.colormap = CopyFromParent;
     attrs.event_mask = ExposureMask | KeyPressMask | KeyReleaseMask | ButtonPressMask | ButtonReleaseMask;
 
-    window = XCreateWindow(display, RootWindow(display, screen), 1100, 50, WINDOW_HEIGHT, WINDOW_HEIGHT, 0,
+    Window window = XCreateWindow(display, RootWindow(display, screen), 1100, 50, WINDOW_HEIGHT, WINDOW_HEIGHT, 0,
                 DefaultDepth(display, screen), InputOutput, CopyFromParent,
                 CWBackPixel | CWColormap | CWBorderPixel | CWEventMask, &attrs);
 
@@ -128,7 +125,7 @@ int main(void) {
             draw_game(display, window, &maze, &dude);
             break;
           case KeyPress:
-            handle_keypress(event, &dude, &maze);
+            handle_keypress(event, &dude, &maze, display, window);
             break;
           case KeyRelease: // FIXME : prevent the player from holding multiple keys
             break;
