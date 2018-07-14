@@ -54,9 +54,6 @@ bool gcc_pure can_proceed(Dude* dude, Maze* maze) {
         return false;
     }
 
-    if (isWall(dude, maze)) {
-        return false;
-    }
-    return true;
+    return (! (isWall(dude, maze)));
 }
 
