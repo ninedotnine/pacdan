@@ -12,6 +12,7 @@
 #include "types.h"
 #include "movements.c"
 #include "maze.c"
+#include "dude.c"
 
 Display * display;
 Window window;
@@ -26,73 +27,14 @@ Pacman pacman = {
 
 Maze maze;
 
-void draw_or_erase_pacman(bool erase) {
-    assert (display != NULL);
-
-    static XGCValues gcv;
-    gcv.background = BlackPixel(display, DefaultScreen(display));
-    if (erase) {
-        gcv.foreground = BlackPixel(display, DefaultScreen(display));
-    } else {
-        gcv.foreground = WhitePixel(display, DefaultScreen(display));
-    }
-    const GC gc = XCreateGC(display, DefaultRootWindow(display),
-            GCForeground | GCBackground, &gcv);
-
-    assert (pacman.size > 0);
-    const uint32_t halfsize = pacman.size / 2;
-    const uint16_t mouth_line_length = 20;
-    const uint32_t startCircle = (pacman.direction * 90 * 64) + 2500;
-    const uint32_t endCircle = 360 * 64 - 5000;
-    XDrawArc(display, window, gc,
-        pacman.x-halfsize, pacman.y-halfsize, // x and y are in the upper-left corner
-        pacman.size, pacman.size, // width and height
-        startCircle, endCircle);
-
-    switch (pacman.direction) {
-        case right:
-            XDrawLine(display, window, gc,
-                      pacman.x, pacman.y, pacman.x + mouth_line_length, pacman.y + 15);
-            XDrawLine(display, window, gc,
-                      pacman.x, pacman.y, pacman.x + mouth_line_length, pacman.y - 15);
-            break;
-        case up:
-            XDrawLine(display, window, gc,
-                      pacman.x, pacman.y, pacman.x + 15, pacman.y - mouth_line_length);
-            XDrawLine(display, window, gc,
-                      pacman.x, pacman.y, pacman.x - 15, pacman.y - mouth_line_length);
-            break;
-        case left:
-            XDrawLine(display, window, gc,
-                      pacman.x, pacman.y, pacman.x - mouth_line_length, pacman.y + 15);
-            XDrawLine(display, window, gc,
-                      pacman.x, pacman.y, pacman.x - mouth_line_length, pacman.y - 15);
-            break;
-        case down:
-            XDrawLine(display, window, gc,
-                      pacman.x, pacman.y, pacman.x + 15, pacman.y + mouth_line_length);
-            XDrawLine(display, window, gc,
-                      pacman.x, pacman.y, pacman.x - 15, pacman.y + mouth_line_length);
-            break;
-    }
-}
-
-void draw_pacman(void) {
-    draw_or_erase_pacman(false);
-}
-
-void erase_pacman(void) {
-    draw_or_erase_pacman(true);
-}
-
 void move_pacman(Direction dir) {
-    erase_pacman();
+    erase_pacman(display, window, &pacman);
 
     assert (dir == right || dir == up || dir == left || dir == down);
     pacman.direction = dir;
 
     if (! can_proceed(&pacman, &maze)) {
-        draw_pacman(); // pacman doesn't move
+        draw_pacman(display, window, &pacman); // pacman doesn't move
         return;
     }
 
@@ -114,7 +56,7 @@ void move_pacman(Direction dir) {
             pacman.y += CORRIDOR_SIZE / 5;
             break;
     }
-    draw_pacman();
+    draw_pacman(display, window, &pacman);
 }
 
 void handle_keypress(XEvent event) {
@@ -145,7 +87,7 @@ void handle_keypress(XEvent event) {
 
 void draw_game(Display* display, Window win, Maze* maze) {
     draw_maze(display, win, maze);
-    draw_pacman();
+    draw_pacman(display, window, &pacman);
 }
 
 int main(void) {
