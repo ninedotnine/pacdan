@@ -14,8 +14,8 @@
 #include "maze.c"
 #include "dude.c"
 
-void move_dude(Dude* dude, Direction dir, Maze* maze, Display* display, Window window) {
-    erase_dude(display, window, dude);
+void move_dude(Dude* dude, Direction dir, Maze* maze, Display* dpy, Window window) {
+    erase_dude(dpy, window, dude);
 
     assert (dir == right || dir == up || dir == left || dir == down);
     dude->direction = dir;
@@ -40,38 +40,38 @@ void move_dude(Dude* dude, Direction dir, Maze* maze, Display* display, Window w
                 break;
         }
     }
-    draw_dude(display, window, dude);
+    draw_dude(dpy, window, dude);
 }
 
-void handle_keypress(XEvent event, Dude* dude, Maze* maze, Display* display, Window window) {
+void handle_keypress(XEvent event, Dude* dude, Maze* maze, Display* dpy, Window window) {
     KeySym keysym = XLookupKeysym(&event.xkey, 0);
     switch (keysym) {
         case XK_Escape:
         case XK_q:
-            XDestroyWindow(display, window);
-            XCloseDisplay(display);
-            display = NULL;
+            XDestroyWindow(dpy, window);
+            XCloseDisplay(dpy);
+            dpy = NULL;
             exit(0);
         case XK_Right:
-            move_dude(dude, right, maze, display, window);
+            move_dude(dude, right, maze, dpy, window);
             break;
         case XK_Up:
-            move_dude(dude, up, maze, display, window);
+            move_dude(dude, up, maze, dpy, window);
             break;
         case XK_Left:
-            move_dude(dude, left, maze, display, window);
+            move_dude(dude, left, maze, dpy, window);
             break;
         case XK_Down:
-            move_dude(dude, down, maze, display, window);
+            move_dude(dude, down, maze, dpy, window);
             break;
         default:
             fputs("some other key was pressed, who cares.\n", stderr);
     }
 }
 
-void draw_game(Display* display, Window win, Maze* maze, Dude* dude) {
-    draw_maze(display, win, maze);
-    draw_dude(display, win, dude);
+void draw_game(Display* dpy, Window win, Maze* maze, Dude* dude) {
+    draw_maze(dpy, win, maze);
+    draw_dude(dpy, win, dude);
 }
 
 int main(void) {

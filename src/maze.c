@@ -145,16 +145,16 @@ void build_maze(Maze* maze) {
     assert (WALL_LIMIT == maze->wall_count); // couldn't make any more walls if we wanted to
 }
 
-void draw_maze(Display* display, Window win, Maze* maze) {
+void draw_maze(Display* dpy, Window win, Maze* maze) {
     assert (WALL_LIMIT == maze->wall_count); // don't try to draw the maze until you've populated it
     XGCValues gcv;
-    gcv.background = BlackPixel(display, DefaultScreen(display));
-    gcv.foreground = WhitePixel(display, DefaultScreen(display));
-    const GC gc = XCreateGC(display, DefaultRootWindow(display), GCForeground | GCBackground, &gcv);
+    gcv.background = BlackPixel(dpy, DefaultScreen(dpy));
+    gcv.foreground = WhitePixel(dpy, DefaultScreen(dpy));
+    const GC gc = XCreateGC(dpy, DefaultRootWindow(dpy), GCForeground | GCBackground, &gcv);
     Wall wall;
     for (uint16_t i = 0; i < WALL_LIMIT; i++) {
         wall = maze->walls[i];
-        XDrawLine(display, win, gc, wall.start.x, wall.start.y, wall.end.x, wall.end.y);
+        XDrawLine(dpy, win, gc, wall.start.x, wall.start.y, wall.end.x, wall.end.y);
     }
 }
 
