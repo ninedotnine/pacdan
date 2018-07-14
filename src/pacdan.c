@@ -95,6 +95,9 @@ int main(void) {
         .direction = right
     };
 
+    maze.tiles[dude.x/CORRIDOR_SIZE][dude.y/CORRIDOR_SIZE] = vacant; // FIXME this is a hack
+
+
     Display * display = XOpenDisplay(NULL);
     if (display == NULL) {
         fputs("no display.", stderr);
