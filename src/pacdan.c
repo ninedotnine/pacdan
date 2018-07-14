@@ -1,4 +1,4 @@
-/* pacman game with xlib */
+// /* pacman game with xlib */
 #include <stdio.h>
 #include <stdint.h>
 #include <assert.h>
@@ -137,8 +137,6 @@ bool isWall(void) {
             fputs("isWall: this should never have happened.\n", stderr);
             abort();
     }
-
-    printf("checking for wall: %d, %d\n", x, y);
 
     if (maze.tiles_blocked[x/CORRIDOR_SIZE][y/CORRIDOR_SIZE]) {
         return true;
@@ -448,24 +446,16 @@ void handle_keypress(XEvent event) {
             display = NULL;
             exit(0);
         case XK_Up:
-            puts("going up");
             move_pacman(up);
             break;
         case XK_Right:
-            puts("going right");
             move_pacman(right);
             break;
         case XK_Down:
-            puts("going down");
             move_pacman(down);
             break;
         case XK_Left:
-            puts("going left");
             move_pacman(left);
-            break;
-        case XK_space:
-            puts("erasing"); // FIXME delete this temporary stuff
-            erase_pacman();
             break;
         default:
             fputs("some other key was pressed, who cares.\n", stderr);
@@ -532,7 +522,6 @@ int main(void) {
     XEvent event;
     while (display != NULL) {
         XNextEvent(display, &event);
-        printf("event.type is: %d\n", event.type);
         assert(event.type == Expose ||
                event.type == KeyPress ||
                event.type == KeyRelease ||
@@ -544,11 +533,9 @@ int main(void) {
             draw_game();
             break;
           case KeyPress:
-            puts("key pressed");
             handle_keypress(event);
             break;
           case KeyRelease: // FIXME : prevent the player from holding multiple keys
-            puts("key released, stop moving.");
             break;
           case ButtonPress:
             puts("button pressed, does nothing");
