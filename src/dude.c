@@ -1,6 +1,6 @@
 // #include "types.h"
 
-static void draw_or_erase_dude(Display* dpy, Window window, Dude* dude, bool erase) {
+static void draw_or_erase_dude(Display* dpy, Window win, Dude* dude, bool erase) {
     assert (dpy != NULL);
 
     static XGCValues gcv;
@@ -18,34 +18,34 @@ static void draw_or_erase_dude(Display* dpy, Window window, Dude* dude, bool era
     const uint16_t mouth_line_length = 20;
     const uint32_t startCircle = (dude->direction * 90 * 64) + 2500;
     const uint32_t endCircle = 360 * 64 - 5000;
-    XDrawArc(dpy, window, gc,
+    XDrawArc(dpy, win, gc,
         dude->x-halfsize, dude->y-halfsize, // x and y are in the upper-left corner
         dude->size, dude->size, // width and height
         startCircle, endCircle);
 
     switch (dude->direction) {
         case right:
-            XDrawLine(dpy, window, gc,
+            XDrawLine(dpy, win, gc,
                       dude->x, dude->y, dude->x + mouth_line_length, dude->y + 15);
-            XDrawLine(dpy, window, gc,
+            XDrawLine(dpy, win, gc,
                       dude->x, dude->y, dude->x + mouth_line_length, dude->y - 15);
             break;
         case up:
-            XDrawLine(dpy, window, gc,
+            XDrawLine(dpy, win, gc,
                       dude->x, dude->y, dude->x + 15, dude->y - mouth_line_length);
-            XDrawLine(dpy, window, gc,
+            XDrawLine(dpy, win, gc,
                       dude->x, dude->y, dude->x - 15, dude->y - mouth_line_length);
             break;
         case left:
-            XDrawLine(dpy, window, gc,
+            XDrawLine(dpy, win, gc,
                       dude->x, dude->y, dude->x - mouth_line_length, dude->y + 15);
-            XDrawLine(dpy, window, gc,
+            XDrawLine(dpy, win, gc,
                       dude->x, dude->y, dude->x - mouth_line_length, dude->y - 15);
             break;
         case down:
-            XDrawLine(dpy, window, gc,
+            XDrawLine(dpy, win, gc,
                       dude->x, dude->y, dude->x + 15, dude->y + mouth_line_length);
-            XDrawLine(dpy, window, gc,
+            XDrawLine(dpy, win, gc,
                       dude->x, dude->y, dude->x - 15, dude->y + mouth_line_length);
             break;
     }

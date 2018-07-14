@@ -14,8 +14,8 @@
 #include "maze.c"
 #include "dude.c"
 
-void move_dude(Dude* dude, Direction dir, Maze* maze, Display* dpy, Window window) {
-    erase_dude(dpy, window, dude);
+void move_dude(Dude* dude, Direction dir, Maze* maze, Display* dpy, Window win) {
+    erase_dude(dpy, win, dude);
 
     assert (dir == right || dir == up || dir == left || dir == down);
     dude->direction = dir;
@@ -40,29 +40,29 @@ void move_dude(Dude* dude, Direction dir, Maze* maze, Display* dpy, Window windo
                 break;
         }
     }
-    draw_dude(dpy, window, dude);
+    draw_dude(dpy, win, dude);
 }
 
-void handle_keypress(XEvent event, Dude* dude, Maze* maze, Display* dpy, Window window) {
+void handle_keypress(XEvent event, Dude* dude, Maze* maze, Display* dpy, Window win) {
     KeySym keysym = XLookupKeysym(&event.xkey, 0);
     switch (keysym) {
         case XK_Escape:
         case XK_q:
-            XDestroyWindow(dpy, window);
+            XDestroyWindow(dpy, win);
             XCloseDisplay(dpy);
             dpy = NULL;
             exit(0);
         case XK_Right:
-            move_dude(dude, right, maze, dpy, window);
+            move_dude(dude, right, maze, dpy, win);
             break;
         case XK_Up:
-            move_dude(dude, up, maze, dpy, window);
+            move_dude(dude, up, maze, dpy, win);
             break;
         case XK_Left:
-            move_dude(dude, left, maze, dpy, window);
+            move_dude(dude, left, maze, dpy, win);
             break;
         case XK_Down:
-            move_dude(dude, down, maze, dpy, window);
+            move_dude(dude, down, maze, dpy, win);
             break;
         default:
             fputs("some other key was pressed, who cares.\n", stderr);
