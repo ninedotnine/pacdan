@@ -4,6 +4,7 @@
 
 static gcc_pure bool isOffTrack(Dude* dude) {
     // returns true if dude can proceed in this direction
+    assert (dude->direction == right || dude->direction == up || dude->direction == left || dude->direction == down);
     switch (dude->direction) {
         case up:
         case down:
