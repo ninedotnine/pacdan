@@ -1,4 +1,4 @@
-// /* pacman game with xlib */
+/* pacman game with xlib */
 #include <stdio.h>
 #include <stdint.h>
 #include <assert.h>
@@ -32,9 +32,7 @@ typedef struct {
 
 /* starting position */
 Pacman pacman = {
-//     .x = 75,
     .x = CORRIDOR_SIZE,
-//     .y = 75,
     .y = CORRIDOR_SIZE,
     .size = 48,
     .direction = right
@@ -347,7 +345,6 @@ void draw_or_erase_pacman(bool erase) {
     const GC gc = XCreateGC(display, DefaultRootWindow(display),
             GCForeground | GCBackground, &gcv);
 
-//     const GC gc = DefaultGC(display, screen);
     assert (pacman.size > 0);
     const uint32_t halfsize = pacman.size / 2;
     const uint16_t mouth_line_length = 20;
@@ -361,7 +358,6 @@ void draw_or_erase_pacman(bool erase) {
     switch (pacman.direction) {
         case up:
             XDrawLine(display, window, gc,
-//                       pacman.x, pacman.y, pacman.x + 15, pacman.y - halfsize + 4);
                       pacman.x, pacman.y, pacman.x + 15, pacman.y - mouth_line_length);
             XDrawLine(display, window, gc,
                       pacman.x, pacman.y, pacman.x - 15, pacman.y - mouth_line_length);
@@ -411,22 +407,18 @@ void move_pacman(Direction dir) {
     switch (dir) {
         case up:
             assert (pacman.y > 0);
-//             pacman.y--;
             pacman.y -= CORRIDOR_SIZE / 5;
             break;
         case left:
             assert (pacman.x > 0);
-//             pacman.x--;
             pacman.x -= CORRIDOR_SIZE / 5;
             break;
         case down:
             assert (pacman.y < WINDOW_HEIGHT);
-//             pacman.y++;
             pacman.y += CORRIDOR_SIZE / 5;
             break;
         case right:
             assert (pacman.x < WINDOW_HEIGHT);
-//             pacman.x++;
             pacman.x += CORRIDOR_SIZE / 5;
             break;
         case unused:
@@ -504,12 +496,6 @@ int main(void) {
     attrs.override_redirect = true;
     attrs.colormap = CopyFromParent;
     attrs.event_mask = ExposureMask | KeyPressMask | KeyReleaseMask | ButtonPressMask | ButtonReleaseMask;
-
-/*
-    Window win = XCreateSimpleWindow(display, RootWindow(display, screen),
-              500, 200, 500, 300,
-              1, BlackPixel(display, screen), WhitePixel(display, screen));
-*/
 
     window = XCreateWindow(display, RootWindow(display, screen), 1100, 50, WINDOW_HEIGHT, WINDOW_HEIGHT, 0,
                 DefaultDepth(display, screen), InputOutput, CopyFromParent,
