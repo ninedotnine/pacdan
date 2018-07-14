@@ -107,6 +107,12 @@ void build_maze(Maze* maze) {
     build_wall(10, 10, 8, down, maze);
     build_wall(10, 18, 8, right, maze);
     build_wall(18, 10, 8, down, maze);
+    for (uint16_t x = 11; x < 18; x++) {
+        for (uint16_t y = 11; y < 18; y++) {
+            assert (maze->tiles[x][y] == vacant);
+            maze->tiles[x][y] = special;
+        }
+    }
 
     // rest of the maze
     build_wall(2, 2, 4, right, maze);

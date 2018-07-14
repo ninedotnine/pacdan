@@ -23,7 +23,7 @@ typedef struct {
     Point end;
 } Wall;
 
-typedef enum { vacant, food, blocked } Tile;
+typedef enum { vacant, food, blocked, special } Tile;
 
 typedef struct {
     int16_t wall_count; // 255 walls ought to suffice
