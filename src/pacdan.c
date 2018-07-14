@@ -374,6 +374,8 @@ void erase_pacman(void) {
 
 void move_pacman(Direction dir) {
     erase_pacman();
+
+    assert (dir == right || dir == up || dir == left || dir == down);
     pacman.direction = dir;
 
     if (! can_proceed()) {
