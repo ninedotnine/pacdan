@@ -7,3 +7,4 @@ colours
 use points more? or use them less? be consistent at least
 can't build walls that start at 0
 make the maze walls symmetrical?
+consolidate CORRIDOR_SIZE and pixels better?

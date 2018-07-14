@@ -47,7 +47,7 @@ static gcc_pure bool isWall(Dude* dude, Maze* maze) {
     }
 
     if (maze->tiles[x/CORRIDOR_SIZE][y/CORRIDOR_SIZE]) {
-        return true;
+        return true; // FIXME zen
     }
     return false;
 }

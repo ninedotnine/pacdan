@@ -64,8 +64,8 @@ static void build_wall(uint32_t x, uint32_t y, uint32_t length, Direction dir, M
 }
 
 static void distribute_food(Maze* maze) {
-    for (uint16_t x = 0; x < WINDOW_HEIGHT/CORRIDOR_SIZE; x++) {
-        for (uint16_t y = 0; y < WINDOW_HEIGHT/CORRIDOR_SIZE; y++) {
+    for (uint16_t x = 0; x < TILES_HEIGHT-1; x++) {
+        for (uint16_t y = 0; y < TILES_HEIGHT-1; y++) {
             if (maze->tiles[x][y] == vacant) {;
 //                 printf("vacancy: \t%d\t%d\n", x, y);
 
@@ -83,13 +83,13 @@ void build_maze(Maze* maze) {
     memset(maze->tiles, 0, sizeof(maze->tiles)); // all tiles are vacant to begin
 
     // the window borders are blocked,
-    for (uint32_t i = 0; i < WINDOW_HEIGHT/CORRIDOR_SIZE; i++) {
+    for (uint32_t i = 0; i < TILES_HEIGHT-1; i++) {
         maze->tiles[i][0] = blocked;
         maze->tiles[0][i] = blocked;
-        maze->tiles[i][WINDOW_HEIGHT/CORRIDOR_SIZE] = blocked;
-        maze->tiles[WINDOW_HEIGHT/CORRIDOR_SIZE][i] = blocked;
+        maze->tiles[i][TILES_HEIGHT-1] = blocked;
+        maze->tiles[TILES_HEIGHT-1][i] = blocked;
     }
-    maze->tiles[WINDOW_HEIGHT/CORRIDOR_SIZE][WINDOW_HEIGHT/CORRIDOR_SIZE] = blocked; // get the last one in the corner
+    maze->tiles[TILES_HEIGHT-1][TILES_HEIGHT-1] = blocked; // get the last one in the corner
 
     // the walls are hardcoded, deal with it.
     assert (maze->wall_count == 0);

@@ -1,6 +1,7 @@
 #define WALL_LIMIT 66
 #define WINDOW_HEIGHT 700 // also window width, because the game is a square
 #define CORRIDOR_SIZE 25
+#define TILES_HEIGHT WINDOW_HEIGHT/CORRIDOR_SIZE + 1
 
 typedef enum { right, up, left, down } Direction;
 
@@ -27,6 +28,6 @@ typedef enum { vacant, food, blocked } Tile;
 typedef struct {
     int16_t wall_count; // 255 walls ought to suffice
     Wall walls[WALL_LIMIT];
-    Tile tiles[WINDOW_HEIGHT/CORRIDOR_SIZE + 1][WINDOW_HEIGHT/CORRIDOR_SIZE + 1]; // FIXME use a bitfield instead.
+    Tile tiles[TILES_HEIGHT][TILES_HEIGHT]; // FIXME use a bitfield instead.
 } Maze;
 
