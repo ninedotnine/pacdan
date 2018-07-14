@@ -173,14 +173,6 @@ void draw_wall(const Wall wall) {
     XDrawLine(display, window, gc, wall.x1, wall.y1, wall.x2, wall.y2);
 }
 
-void print_wall(Wall* wall) {
-    puts("this wall has:");
-    printf("\tx1: %d\n", wall->x1);
-    printf("\ty1: %d\n", wall->y1);
-    printf("\tx2: %d\n", wall->x2);
-    printf("\ty2: %d\n", wall->y2);
-}
-
 void print_where_i_am(void) {
     printf("pacman at: \t%d\t%d\n", pacman.x, pacman.y);
 }
@@ -259,7 +251,6 @@ void build_wall(uint32_t x, uint32_t y, uint32_t length, Direction dir) {
 
     maze.walls[maze.wall_count] = wall;
     maze.wall_count++;
-    print_wall(&wall);
 }
 
 
