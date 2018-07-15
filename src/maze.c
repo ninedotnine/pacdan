@@ -66,7 +66,7 @@ static void build_wall(uint32_t x, uint32_t y, uint32_t length, Direction dir, M
 static void distribute_food(Maze* maze) {
     for (uint16_t x = 1; x < TILES_HEIGHT-1; x++) {
         for (uint16_t y = 1; y < TILES_HEIGHT-1; y++) {
-            if (maze->tiles[x][y] == vacant) {;
+            if (maze->tiles[x][y] == vacant) {
                 maze->tiles[x][y] = food;
             }
         }
