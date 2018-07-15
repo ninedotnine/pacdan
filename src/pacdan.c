@@ -4,7 +4,6 @@
 #include <assert.h>
 #include <stdbool.h>
 #include <stdlib.h>
-#include <errno.h>
 #include <string.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -43,8 +42,6 @@ void draw_game(Display* dpy, Window win, Maze* maze, Dude* dude) {
 }
 
 int main(void) {
-    errno = 0;
-
     Maze maze;
     build_maze(&maze);
 
