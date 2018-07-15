@@ -64,14 +64,15 @@ static void build_wall(uint32_t x, uint32_t y, uint32_t length, Direction dir, M
 }
 
 static void distribute_food(Maze* maze) {
+    maze->food_count = 0;
     for (uint16_t x = 1; x < TILES_HEIGHT-1; x++) {
         for (uint16_t y = 1; y < TILES_HEIGHT-1; y++) {
             if (maze->tiles[x][y] == vacant) {
                 maze->tiles[x][y] = food;
+                maze->food_count++;
             }
         }
     }
-
 }
 
 /* call build_maze to make the maze */
@@ -167,10 +168,9 @@ void build_maze(Maze* maze) {
     build_wall(26, 10, 4, down, maze);
     build_wall(26, 16, 4, down, maze);
     build_wall(26, 24, 2, down, maze);
+    assert (WALL_LIMIT == maze->wall_count); // couldn't make any more walls if we wanted to
 
     distribute_food(maze);
-
-    assert (WALL_LIMIT == maze->wall_count); // couldn't make any more walls if we wanted to
 }
 
 void draw_maze(Display* dpy, Window win, Maze* maze) {
@@ -203,5 +203,6 @@ Dude starting_dude(uint32_t x, uint32_t y, Direction dir, Maze* maze) {
     };
 
     maze->tiles[dude.x/CORRIDOR_SIZE][dude.y/CORRIDOR_SIZE] = vacant;
+    maze->food_count--;
     return dude;
 }

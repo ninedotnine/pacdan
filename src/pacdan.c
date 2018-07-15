@@ -88,6 +88,12 @@ int main(void) {
     uint64_t foods_eaten = 0;
     XEvent event;
     while (display != NULL) {
+        if (0 == maze.food_count) {
+            XCloseDisplay(display);
+            display = NULL;
+            puts("okay, you win.");
+            break;
+        }
         XNextEvent(display, &event);
         assert(event.type == Expose ||
                event.type == KeyPress ||

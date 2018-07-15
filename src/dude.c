@@ -93,6 +93,7 @@ uint64_t move_dude(Dude* dude, Direction dir, Maze* maze, Display* dpy, Window w
     if (dude->x % CORRIDOR_SIZE == 0 && dude->y % CORRIDOR_SIZE == 0) {
         if (maze->tiles[dude->x/CORRIDOR_SIZE][dude->y/CORRIDOR_SIZE] == food) {
             maze->tiles[dude->x/CORRIDOR_SIZE][dude->y/CORRIDOR_SIZE] = vacant;
+            maze->food_count--;
             return 1;
         }
     }

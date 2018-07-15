@@ -27,6 +27,7 @@ typedef enum { vacant , food , blocked , special } Tile;
 
 typedef struct {
     uint8_t wall_count; // 255 walls ought to suffice
+    uint16_t food_count;
     Wall walls[WALL_LIMIT];
     Tile tiles[TILES_HEIGHT][TILES_HEIGHT]; // FIXME use a bitfield instead.
 } Maze;
