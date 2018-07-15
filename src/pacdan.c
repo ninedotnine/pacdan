@@ -52,7 +52,7 @@ int main(void) {
 
     Display * display = XOpenDisplay(NULL);
     if (display == NULL) {
-        fputs("no display.", stderr);
+        fputs("no display.\n", stderr);
         exit(2);
     }
 
