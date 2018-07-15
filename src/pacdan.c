@@ -58,6 +58,17 @@ int main(void) {
 
     int screen = DefaultScreen(display);
 
+    XWindowAttributes root_attrs;
+    if (0 == XGetWindowAttributes(display, RootWindow(display, screen), &root_attrs)) {
+        fputs("error getting root window attributes.\n", stderr);
+        exit(3);
+    }
+
+    if (root_attrs.width < WINDOW_HEIGHT || root_attrs.height < WINDOW_HEIGHT) {
+        fputs("display isn't big enough.\n", stderr);
+        exit(4);
+    }
+
     XSetWindowAttributes attrs;
     attrs.border_pixel = WhitePixel(display, screen);
     attrs.background_pixel = BlackPixel(display, screen);
@@ -65,8 +76,9 @@ int main(void) {
     attrs.colormap = CopyFromParent;
     attrs.event_mask = ExposureMask | KeyPressMask | KeyReleaseMask | ButtonPressMask | ButtonReleaseMask;
 
-    Window window = XCreateWindow(display, RootWindow(display, screen), 1100, 50, WINDOW_HEIGHT, WINDOW_HEIGHT, 0,
-                DefaultDepth(display, screen), InputOutput, CopyFromParent,
+    Window window = XCreateWindow(display, RootWindow(display, screen),
+                root_attrs.width/2-WINDOW_HEIGHT/2, root_attrs.height/2-WINDOW_HEIGHT/2, WINDOW_HEIGHT, WINDOW_HEIGHT,
+                0, DefaultDepth(display, screen), InputOutput, CopyFromParent,
                 CWBackPixel | CWColormap | CWBorderPixel | CWEventMask, &attrs);
 
     XStoreName(display, window, "pacdan");
