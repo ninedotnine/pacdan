@@ -183,8 +183,7 @@ int main(void) {
 
     // what does this do...
 //     XSelectInput(display, maze.centre_win,
-    XSelectInput(display, window,
-            ExposureMask | KeyPressMask | ButtonPressMask | ButtonReleaseMask);
+    XSelectInput(display, window, ExposureMask | KeyPressMask | ButtonPressMask | ButtonReleaseMask);
 
     XEvent event;
     while (display != NULL) {

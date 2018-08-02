@@ -26,28 +26,20 @@ static void draw_or_erase_dude(Display* dpy, Window win, Dude* dude, bool erase)
 
     switch (dude->direction) {
         case right:
-            XDrawLine(dpy, win, gc,
-                      dude->x, dude->y, dude->x + mouth_line_length, dude->y + 15);
-            XDrawLine(dpy, win, gc,
-                      dude->x, dude->y, dude->x + mouth_line_length, dude->y - 15);
+            XDrawLine(dpy, win, gc, dude->x, dude->y, dude->x + mouth_line_length, dude->y + 15);
+            XDrawLine(dpy, win, gc, dude->x, dude->y, dude->x + mouth_line_length, dude->y - 15);
             break;
         case up:
-            XDrawLine(dpy, win, gc,
-                      dude->x, dude->y, dude->x + 15, dude->y - mouth_line_length);
-            XDrawLine(dpy, win, gc,
-                      dude->x, dude->y, dude->x - 15, dude->y - mouth_line_length);
+            XDrawLine(dpy, win, gc, dude->x, dude->y, dude->x + 15, dude->y - mouth_line_length);
+            XDrawLine(dpy, win, gc, dude->x, dude->y, dude->x - 15, dude->y - mouth_line_length);
             break;
         case left:
-            XDrawLine(dpy, win, gc,
-                      dude->x, dude->y, dude->x - mouth_line_length, dude->y + 15);
-            XDrawLine(dpy, win, gc,
-                      dude->x, dude->y, dude->x - mouth_line_length, dude->y - 15);
+            XDrawLine(dpy, win, gc, dude->x, dude->y, dude->x - mouth_line_length, dude->y + 15);
+            XDrawLine(dpy, win, gc, dude->x, dude->y, dude->x - mouth_line_length, dude->y - 15);
             break;
         case down:
-            XDrawLine(dpy, win, gc,
-                      dude->x, dude->y, dude->x + 15, dude->y + mouth_line_length);
-            XDrawLine(dpy, win, gc,
-                      dude->x, dude->y, dude->x - 15, dude->y + mouth_line_length);
+            XDrawLine(dpy, win, gc, dude->x, dude->y, dude->x + 15, dude->y + mouth_line_length);
+            XDrawLine(dpy, win, gc, dude->x, dude->y, dude->x - 15, dude->y + mouth_line_length);
             break;
     }
 }
