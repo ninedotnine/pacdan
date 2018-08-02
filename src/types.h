@@ -15,6 +15,7 @@ typedef struct {
     uint32_t y;
     uint32_t size; // pacman is a square, this means width and height
     Direction direction;
+    uint64_t foods_eaten;
 } Dude;
 
 /* don't initialize a Wall except by calling build_wall */

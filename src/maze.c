@@ -199,7 +199,8 @@ Dude starting_dude(uint32_t x, uint32_t y, Direction dir, Maze* maze) {
         .x = x * CORRIDOR_SIZE,
         .y = y * CORRIDOR_SIZE,
         .size = 48,
-        .direction = dir
+        .direction = dir,
+        .foods_eaten = 0
     };
 
     maze->tiles[dude.x/CORRIDOR_SIZE][dude.y/CORRIDOR_SIZE] = vacant;
