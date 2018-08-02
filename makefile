@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -std=gnu99 -Wall -Wextra -g -pedantic -march=native -O2
-FILES = src/pacdan.c
+FILES = src/main.c
 OUT_EXE = bin/pacdan
 LIBS = -lX11
 # LIBS = -lpthread -lmath
