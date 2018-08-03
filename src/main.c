@@ -41,7 +41,7 @@ void initialize_font_and_colours(Display * dpy, XFontStruct** font, GC* gc_fab, 
 
     if (fontList == NULL) {
         fputs("error, no fonts.", stderr);
-        exit(5);
+        exit(EXIT_FAILURE);
     }
 
 //     XFontStruct * font = XLoadQueryFont(dpy, "-xos4-terminus-bold-r-normal--12-120-72-72-c-60-iso10646-1");
@@ -52,7 +52,7 @@ void initialize_font_and_colours(Display * dpy, XFontStruct** font, GC* gc_fab, 
 //     XFontStruct * font = XLoadQueryFont(dpy, "7x14"); // original example code
     if ((*font) == NULL) {
         fputs("font no exist\n", stderr);
-        exit(6);
+        exit(EXIT_FAILURE);
     }
 }
 
@@ -143,7 +143,7 @@ int main(void) {
     Display * display = XOpenDisplay(NULL);
     if (display == NULL) {
         fputs("no display.\n", stderr);
-        exit(2);
+        exit(EXIT_FAILURE);
     }
 
     int screen = DefaultScreen(display);
@@ -151,12 +151,12 @@ int main(void) {
     XWindowAttributes root_attrs;
     if (0 == XGetWindowAttributes(display, RootWindow(display, screen), &root_attrs)) {
         fputs("error getting root window attributes.\n", stderr);
-        exit(3);
+        exit(EXIT_FAILURE);
     }
 
     if (root_attrs.width < WINDOW_HEIGHT || root_attrs.height < WINDOW_HEIGHT) {
         fputs("display isn't big enough.\n", stderr);
-        exit(4);
+        exit(EXIT_FAILURE);
     }
 
     XSetWindowAttributes attrs;
@@ -221,7 +221,7 @@ int main(void) {
             break;
           default:
             puts("huh?");
-            exit(7);
+            exit(EXIT_FAILURE);
         }
     }
     printf("final score is: %lu.\n", dude.foods_eaten*100); // make the score bigger, that's what makes games fun
