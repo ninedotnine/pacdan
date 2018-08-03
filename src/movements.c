@@ -1,5 +1,3 @@
-// #include "types.h"
-
 #define gcc_pure __attribute__((pure))
 
 static gcc_pure bool isOnTrack(Dude* dude) {

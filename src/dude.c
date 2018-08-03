@@ -1,5 +1,3 @@
-// #include "types.h"
-
 static void draw_or_erase_dude(Display* dpy, Window win, Dude* dude, bool erase) {
     assert (dpy != NULL);
 
