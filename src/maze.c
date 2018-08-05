@@ -173,6 +173,7 @@ void build_maze(Maze* maze) {
 
 void draw_maze(Display* dpy, Window win, Maze* maze) {
     assert (WALL_LIMIT == maze->wall_count); // don't try to draw the maze until you've populated it
+    assert(dpy);
     XGCValues gcv = {
        .foreground = WhitePixel(dpy, DefaultScreen(dpy)),
        .background = BlackPixel(dpy, DefaultScreen(dpy))

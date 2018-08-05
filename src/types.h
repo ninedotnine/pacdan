@@ -6,6 +6,13 @@
 typedef enum { right , up , left , down } Direction;
 
 typedef struct {
+    bool right;
+    bool up;
+    bool left;
+    bool down;
+} Directions;
+
+typedef struct {
     uint32_t x;
     uint32_t y;
 } Point;
@@ -32,3 +39,11 @@ typedef struct {
     Wall walls[WALL_LIMIT];
     Tile tiles[TILES_HEIGHT][TILES_HEIGHT]; // FIXME use a bitfield instead.
 } Maze;
+
+typedef struct {
+    Display** dpy_p;
+    Window* win_p;
+    bool game_over;
+    Directions* dirs;
+} Xevent_thread_data;
+

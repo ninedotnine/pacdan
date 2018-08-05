@@ -48,7 +48,6 @@ void draw_dude(Display * dpy, Window win, Dude* dude) {
 
 void erase_dude(Display * dpy, Window win, Dude* dude) {
     draw_or_erase_dude(dpy, win, dude, true);
-
 }
 
 void move_dude(Dude* dude, Direction dir, Maze* maze, Display* dpy, Window win) {

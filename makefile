@@ -2,9 +2,9 @@ CC = gcc
 CFLAGS = -std=gnu99 -Wall -Wextra -g -pedantic -march=native -O2
 FILES = src/main.c
 OUT_EXE = bin/pacdan
-LIBS = -lX11
+LIBS = -l X11 -l pthread
 # LIBS = -lpthread -lmath
-DEBUGFLAGS = -fsanitize=enum -fsanitize=undefined -fstack-protector-all -Wsuggest-attribute=pure
+DEBUGFLAGS = -fsanitize=thread -fsanitize=undefined -fstack-protector-all -Wsuggest-attribute=pure
 # DEBUGFLAGS = -fsanitize=thread -fsanitize=undefined -fstack-protector-all
 # DEBUGFLAGS = -fsanitize=address -fsanitize=undefined -fstack-protector-all
 
