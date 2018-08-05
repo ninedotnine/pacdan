@@ -214,8 +214,7 @@ void * handle_xevents(void * arg) {
             puts("MappingNotify, don't care");
             break;
           default:
-            puts("huh?");
-            exit(EXIT_FAILURE);
+            fprintf(stderr, "received unusual XEvent of type %d\n", event.type);
         }
     }
     pthread_exit(0);
