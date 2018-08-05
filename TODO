@@ -7,7 +7,6 @@ can't build walls that start at 0
 make the maze walls symmetrical?
 consolidate CORRIDOR_SIZE and pixels better?
 
-control with up/left/down/right, WASD, HJKL 
 make all directions behave the same way; right now going right is special
 
 pause button

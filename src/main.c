@@ -118,21 +118,29 @@ void handle_keypress(XEvent event, Xevent_thread_data* data) {
             thread_unlock();
             pthread_exit(0); // the end of the game
         case XK_Right:
+        case XK_d:
+        case XK_l:
             if (! data->dirs->right) {
                 data->dirs->right = true;
             }
             break;
         case XK_Up:
+        case XK_w:
+        case XK_k:
             if (! data->dirs->up) {
                 data->dirs->up = true;
             }
             break;
         case XK_Left:
+        case XK_a:
+        case XK_h:
             if (! data->dirs->left) {
                 data->dirs->left = true;
             }
             break;
         case XK_Down:
+        case XK_s:
+        case XK_j:
             if (! data->dirs->down) {
                 data->dirs->down = true;
             }
@@ -148,15 +156,23 @@ void handle_keyrelease(XEvent event, Directions* dirs) {
     thread_lock();
     switch (keysym) {
         case XK_Right:
+        case XK_d:
+        case XK_l:
             dirs->right = false;
             break;
         case XK_Up:
+        case XK_w:
+        case XK_k:
             dirs->up = false;
             break;
         case XK_Left:
+        case XK_a:
+        case XK_h:
             dirs->left = false;
             break;
         case XK_Down:
+        case XK_s:
+        case XK_j:
             dirs->down = false;
             break;
         default:
