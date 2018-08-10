@@ -87,3 +87,18 @@ void move_dude(Dude* dude, Direction dir, Maze* maze, Display* dpy, Window win) 
         }
     }
 }
+
+Dude initialize_dude(uint32_t x, uint32_t y, Direction dir, Maze* maze) {
+    /* gives the starting position */
+    Dude dude = {
+        .x = x * CORRIDOR_SIZE,
+        .y = y * CORRIDOR_SIZE,
+        .size = 48,
+        .direction = dir,
+        .foods_eaten = 0
+    };
+
+    maze->tiles[dude.x/CORRIDOR_SIZE][dude.y/CORRIDOR_SIZE] = vacant;
+    maze->food_count--;
+    return dude;
+}

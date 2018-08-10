@@ -241,7 +241,7 @@ int main(void) {
     Maze maze;
     build_maze(&maze);
 
-    Dude dude = starting_dude(1, 1, right, &maze);
+    Dude dude = initialize_dude(1, 1, right, &maze);
 
     Display * display = XOpenDisplay(NULL);
     if (display == NULL) {
