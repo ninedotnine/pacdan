@@ -25,6 +25,13 @@ typedef struct {
     uint64_t foods_eaten;
 } Dude;
 
+typedef struct {
+    uint32_t x; // these are the centre of the ghostie
+    uint32_t y;
+    Direction direction;
+    uint32_t size; // a ghostie is a square, this means width and height
+} Ghostie;
+
 /* don't initialize a Wall except by calling build_wall */
 typedef struct {
     Point start;

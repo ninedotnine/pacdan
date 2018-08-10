@@ -17,6 +17,7 @@
 #include "movements.c"
 #include "maze.c"
 #include "dude.c"
+#include "ghosties.c"
 #include "threading.c"
 
 void initialize_font_and_colours(Display * dpy, XFontStruct** font, GC* gc_fab, GC* gc_black) {
@@ -220,10 +221,11 @@ void * handle_xevents(void * arg) {
     pthread_exit(0);
 }
 
-void draw_game(Display* dpy, Window win, Maze* maze, Dude* dude, Window centre_win) {
+void draw_game(Display* dpy, Window win, Maze* maze, Dude* dude, Ghostie* ghostie, Window centre_win) {
 //     XLockDisplay(dpy);
     draw_maze(dpy, win, maze);
     draw_dude(dpy, win, dude);
+    draw_ghostie(dpy, win, ghostie);
     update_score(dpy, centre_win, dude->foods_eaten);
 //     XUnlockDisplay(dpy);
 }
@@ -242,6 +244,7 @@ int main(void) {
     build_maze(&maze);
 
     Dude dude = initialize_dude(1, 1, right, &maze);
+    Ghostie ghostie = initialize_ghostie(1, 27, right, &maze);
 
     Display * display = XOpenDisplay(NULL);
     if (display == NULL) {
@@ -291,7 +294,7 @@ int main(void) {
         .game_over = false
     };
 
-    draw_game(display, window, &maze, &dude, centre_win);
+    draw_game(display, window, &maze, &dude, &ghostie, centre_win);
 
     pthread_t thread;
     if (0 != pthread_create(&thread, NULL, handle_xevents, &data)) {
@@ -303,8 +306,8 @@ int main(void) {
 
     const struct timespec tim = {.tv_sec = 0, .tv_nsec = 50000000L};
     while (! data.game_over) {
-        assert (maze.food_count + dude.foods_eaten == 388);
-        draw_game(display, window, &maze, &dude, centre_win);
+        assert (maze.food_count + dude.foods_eaten == 387);
+        draw_game(display, window, &maze, &dude, &ghostie, centre_win);
         XFlush(display);
         nanosleep(&tim, NULL);
 
@@ -323,6 +326,7 @@ int main(void) {
         } else if (dirs.down) {
             move_dude(&dude, down, &maze, display, window);
         }
+        move_ghostie(&ghostie, &maze, display, window);
         thread_unlock();
     }
     printf("final score is: %lu.\n", dude.foods_eaten*100); // make the score bigger, that's what makes games fun

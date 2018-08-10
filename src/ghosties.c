@@ -1,0 +1,170 @@
+static void draw_or_erase_ghostie(Display* dpy, Window win, Ghostie* ghostie, bool erase) {
+    assert (dpy != NULL);
+
+    static XGCValues gcv;
+    gcv.background = BlackPixel(dpy, DefaultScreen(dpy));
+    if (erase) {
+        gcv.foreground = BlackPixel(dpy, DefaultScreen(dpy));
+    } else {
+        gcv.foreground = WhitePixel(dpy, DefaultScreen(dpy));
+    }
+    const GC gc = XCreateGC(dpy, DefaultRootWindow(dpy),
+            GCForeground | GCBackground, &gcv);
+
+    assert (ghostie->size > 0);
+    const uint32_t halfsize = ghostie->size / 2;
+    const uint8_t squiggle_line_length = 8;
+    const uint32_t fullCircle = 360 * 64;
+    const uint32_t halfCircle = fullCircle / 2;
+    const uint32_t eye_height = ghostie->y-12;
+//     XDrawPoint(dpy, win, gc, ghostie->x, ghostie->y); // middle of the ghostie, a nose maybe
+
+    XPoint points[9] = {{
+        .x = ghostie->x-halfsize,
+        .y = ghostie->y
+    }, {
+        .x = 0,
+        .y = +halfsize
+    }, {
+        .x = squiggle_line_length,
+        .y = -squiggle_line_length
+    }, {
+        .x = squiggle_line_length,
+        .y = squiggle_line_length
+    }, {
+        .x = squiggle_line_length,
+        .y = -squiggle_line_length
+    }, {
+        .x = squiggle_line_length,
+        .y = squiggle_line_length
+    }, {
+        .x = squiggle_line_length,
+        .y = -squiggle_line_length
+    }, {
+        .x = squiggle_line_length,
+        .y = squiggle_line_length
+    }, {
+        .x = 0,
+        .y = -halfsize
+    }};
+
+    XDrawLines(dpy, win, gc, points, 9, CoordModePrevious);
+
+    XDrawArc(dpy, win, gc,
+        ghostie->x-halfsize, ghostie->y-halfsize, // x and y are in the upper-left corner
+        ghostie->size, ghostie->size, // width and height
+        0, halfCircle);
+
+    // draw the eyes
+    XDrawArc(dpy, win, gc,
+        ghostie->x-15, eye_height, // x and y are in the upper-left corner
+        6, 6, // width and height
+        0, fullCircle);
+
+    XDrawArc(dpy, win, gc,
+        ghostie->x+9, eye_height, // x and y are in the upper-left corner
+        6, 6, // width and height
+        0, fullCircle);
+
+    // the little irises can face different directions
+    switch (ghostie->direction) {
+        case right:
+            XDrawArc(dpy, win, gc,
+                ghostie->x+12, eye_height+2, // x and y are in the upper-left corner
+                2, 2, // width and height
+                0, fullCircle);
+            XDrawArc(dpy, win, gc,
+                ghostie->x-12, eye_height+2, // x and y are in the upper-left corner
+                2, 2, // width and height
+                0, fullCircle);
+            break;
+        case up:
+            XDrawArc(dpy, win, gc,
+                ghostie->x+11, eye_height+1, // x and y are in the upper-left corner
+                2, 2, // width and height
+                0, fullCircle);
+            XDrawArc(dpy, win, gc,
+                ghostie->x-13, eye_height+1, // x and y are in the upper-left corner
+                2, 2, // width and height
+                0, fullCircle);
+            break;
+        case left:
+            XDrawArc(dpy, win, gc,
+                ghostie->x+10, eye_height+2, // x and y are in the upper-left corner
+                2, 2, // width and height
+                0, fullCircle);
+            XDrawArc(dpy, win, gc,
+                ghostie->x-14, eye_height+2, // x and y are in the upper-left corner
+                2, 2, // width and height
+                0, fullCircle);
+            break;
+        case down:
+            XDrawArc(dpy, win, gc,
+                ghostie->x+11, eye_height+3, // x and y are in the upper-left corner
+                2, 2, // width and height
+                0, fullCircle);
+            XDrawArc(dpy, win, gc,
+                ghostie->x-13, eye_height+3, // x and y are in the upper-left corner
+                2, 2, // width and height
+                0, fullCircle);
+            break;
+    }
+}
+
+void draw_ghostie(Display * dpy, Window win, Ghostie* ghostie) {
+    draw_or_erase_ghostie(dpy, win, ghostie, false);
+}
+
+void erase_ghostie(Display * dpy, Window win, Ghostie* ghostie) {
+    draw_or_erase_ghostie(dpy, win, ghostie, true);
+}
+
+void move_ghostie(Ghostie* ghostie, Maze* maze, Display* dpy, Window win) {
+    erase_ghostie(dpy, win, ghostie);
+
+    assert (ghostie->direction == right ||
+            ghostie->direction == up ||
+            ghostie->direction == left ||
+            ghostie->direction == down);
+
+    while (! ghostie_can_proceed(ghostie, maze)) {
+        ghostie->direction = (ghostie->direction + 1) % 4;
+    }
+
+    assert (ghostie_can_proceed(ghostie, maze));
+    switch (ghostie->direction) {
+        case right:
+            assert (ghostie->x < WINDOW_HEIGHT);
+            ghostie->x += CORRIDOR_SIZE / 5;
+            break;
+        case up:
+            assert (ghostie->y > 0);
+            ghostie->y -= CORRIDOR_SIZE / 5;
+            break;
+        case left:
+            assert (ghostie->x > 0);
+            ghostie->x -= CORRIDOR_SIZE / 5;
+            break;
+        case down:
+            assert (ghostie->y < WINDOW_HEIGHT);
+            ghostie->y += CORRIDOR_SIZE / 5;
+            break;
+    }
+
+    draw_ghostie(dpy, win, ghostie);
+}
+
+
+Ghostie initialize_ghostie(uint32_t x, uint32_t y, Direction dir, Maze* maze) {
+    /* gives the starting position */
+    Ghostie ghostie = {
+        .x = x * CORRIDOR_SIZE,
+        .y = y * CORRIDOR_SIZE,
+        .size = 48,
+        .direction = dir,
+    };
+
+    maze->tiles[ghostie.x/CORRIDOR_SIZE][ghostie.y/CORRIDOR_SIZE] = vacant;
+    maze->food_count--;
+    return ghostie;
+}
