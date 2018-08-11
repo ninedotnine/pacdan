@@ -235,7 +235,9 @@ Ghostie initialize_ghostie(uint32_t x, uint32_t y, Direction dir, Maze* maze) {
         .direction = dir,
     };
 
-    maze->tiles[ghostie.x/CORRIDOR_SIZE][ghostie.y/CORRIDOR_SIZE] = vacant;
-    maze->food_count--;
+    if (maze->tiles[ghostie.x/CORRIDOR_SIZE][ghostie.y/CORRIDOR_SIZE] == food) {
+        maze->tiles[ghostie.x/CORRIDOR_SIZE][ghostie.y/CORRIDOR_SIZE] = vacant;
+        maze->food_count--;
+    }
     return ghostie;
 }

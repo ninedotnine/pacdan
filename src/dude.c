@@ -98,7 +98,9 @@ Dude initialize_dude(uint32_t x, uint32_t y, Direction dir, Maze* maze) {
         .foods_eaten = 0
     };
 
-    maze->tiles[dude.x/CORRIDOR_SIZE][dude.y/CORRIDOR_SIZE] = vacant;
-    maze->food_count--;
+    if (maze->tiles[dude.x/CORRIDOR_SIZE][dude.y/CORRIDOR_SIZE] == food) {
+        maze->tiles[dude.x/CORRIDOR_SIZE][dude.y/CORRIDOR_SIZE] = vacant;
+        maze->food_count--;
+    }
     return dude;
 }
