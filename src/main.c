@@ -44,16 +44,6 @@ void initialize_font_and_colours(Display * dpy, XFontStruct** font, GC* gc_fab, 
     *gc_fab = XCreateGC(dpy, RootWindow(dpy, screen), GCForeground | GCBackground, &gcv_fab);
     *gc_black = XCreateGC(dpy, RootWindow(dpy, screen), GCForeground | GCBackground, &gcv_black);
 
-
-    int actual_count_return = 0;
-    char ** fontList = XListFonts(dpy, "*-terminus-*", 450, &actual_count_return);
-//     char ** fontList = XListFonts(dpy, "*-inconsolata-*", 450, &actual_count_return);
-
-    if (fontList == NULL) {
-        fputs("error, no fonts.", stderr);
-        exit(EXIT_FAILURE);
-    }
-
     *font = XLoadQueryFont(dpy, "*-18-*");
 
     if ((*font) == NULL) {
