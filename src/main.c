@@ -221,11 +221,14 @@ void * handle_xevents(void * arg) {
     pthread_exit(0);
 }
 
-void draw_game(Display* dpy, Window win, Maze* maze, Dude* dude, Ghostie* ghostie, Window centre_win) {
+void draw_game(Display* dpy, Window win, Maze* maze, Dude* dude, Ghostie ghosties[], uint8_t num_ghosties,
+                Window centre_win) {
 //     XLockDisplay(dpy);
     draw_maze(dpy, win, maze);
     draw_dude(dpy, win, dude);
-    draw_ghostie(dpy, win, ghostie);
+    for (uint8_t i = 0; i < num_ghosties; i++) {
+        draw_ghostie(dpy, win, &ghosties[i]);
+    }
     update_score(dpy, centre_win, dude->foods_eaten);
 //     XUnlockDisplay(dpy);
 }
@@ -244,7 +247,16 @@ int main(void) {
     build_maze(&maze);
 
     Dude dude = initialize_dude(1, 1, right, &maze);
-    Ghostie ghostie = initialize_ghostie(1, 27, right, &maze);
+
+    uint32_t num_ghosties = 7;
+    Ghostie ghosties[num_ghosties];
+    ghosties[0] = initialize_ghostie(1, 27, right, &maze);
+    ghosties[1] = initialize_ghostie(27, 27, up, &maze);
+    ghosties[2] = initialize_ghostie(27, 1, down, &maze);
+    ghosties[3] = initialize_ghostie(19, 9, down, &maze);
+    ghosties[4] = initialize_ghostie(9, 19, down, &maze);
+    ghosties[5] = initialize_ghostie(9, 9, down, &maze);
+    ghosties[6] = initialize_ghostie(19, 19, down, &maze);
 
     Display * display = XOpenDisplay(NULL);
     if (display == NULL) {
@@ -294,7 +306,7 @@ int main(void) {
         .game_over = false
     };
 
-    draw_game(display, window, &maze, &dude, &ghostie, centre_win);
+    draw_game(display, window, &maze, &dude, ghosties, num_ghosties, centre_win);
 
     pthread_t thread;
     if (0 != pthread_create(&thread, NULL, handle_xevents, &data)) {
@@ -306,8 +318,8 @@ int main(void) {
 
     const struct timespec tim = {.tv_sec = 0, .tv_nsec = 50000000L};
     while (! data.game_over) {
-        assert (maze.food_count + dude.foods_eaten == 387);
-        draw_game(display, window, &maze, &dude, &ghostie, centre_win);
+        assert (maze.food_count + dude.foods_eaten == 388 - num_ghosties);
+        draw_game(display, window, &maze, &dude, ghosties, num_ghosties, centre_win);
         XFlush(display);
         nanosleep(&tim, NULL);
 
@@ -326,7 +338,9 @@ int main(void) {
         } else if (dirs.down) {
             move_dude(&dude, down, &maze, display, window);
         }
-        move_ghostie(&ghostie, &maze, display, window);
+        for (uint8_t i = 0; i < num_ghosties; i++) {
+            move_ghostie(&ghosties[i], &maze, display, window);
+        }
         thread_unlock();
     }
     printf("final score is: %lu.\n", dude.foods_eaten*100); // make the score bigger, that's what makes games fun
