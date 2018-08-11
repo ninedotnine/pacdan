@@ -171,7 +171,6 @@ void ghostie_set_direction(Ghostie* ghostie, Maze* maze) {
 
     uint8_t options = 0;
     for (uint8_t i = 0; i < 4; i++) {
-        printf("tile: %d\n", neighbours[i]);
         if (neighbours[i] != blocked) {
             options++;
         }
@@ -179,17 +178,14 @@ void ghostie_set_direction(Ghostie* ghostie, Maze* maze) {
 
     assert (options > 0 && options < 5);
     if (options == 1) {
-        puts("only one way to go!");
         turn_around(ghostie, neighbours);
     }
 
     if (options == 2) {
-        puts("one way in, one way out");
         proceed_forward(ghostie, neighbours);
     }
 
     if (options > 2) {
-        puts("fork in path");
         choose_fork(ghostie, neighbours, options);
     }
 }
