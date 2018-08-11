@@ -68,6 +68,10 @@ static gcc_pure bool ghostie_isOnTrack(Ghostie* ghostie) {
     return false; // should never happen
 }
 
+static gcc_pure bool ghostie_in_centre_of_tile(Ghostie* ghostie) {
+    return (ghostie->x % CORRIDOR_SIZE == 0 && ghostie->y % CORRIDOR_SIZE == 0);
+}
+
 static gcc_pure bool ghostie_isNotBlocked(Ghostie* ghostie, Maze* maze) {
     // returns true if ghostie is not wak-blocked
     assert (ghostie->x > 0);
@@ -75,7 +79,8 @@ static gcc_pure bool ghostie_isNotBlocked(Ghostie* ghostie, Maze* maze) {
     assert (ghostie->x < WINDOW_HEIGHT);
     assert (ghostie->y < WINDOW_HEIGHT);
     assert (ghostie->x % CORRIDOR_SIZE == 0 || ghostie->y % CORRIDOR_SIZE == 0);
-    if (ghostie->x % CORRIDOR_SIZE != 0 || ghostie->y % CORRIDOR_SIZE != 0) {
+//     if (ghostie->x % CORRIDOR_SIZE != 0 || ghostie->y % CORRIDOR_SIZE != 0) {
+    if (! ghostie_in_centre_of_tile(ghostie)) {
         return true; // walls are only relevant at turning points
     }
 

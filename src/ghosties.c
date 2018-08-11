@@ -117,6 +117,81 @@ void draw_ghostie(Display * dpy, Window win, Ghostie* ghostie) {
 
 void erase_ghostie(Display * dpy, Window win, Ghostie* ghostie) {
     draw_or_erase_ghostie(dpy, win, ghostie, true);
+
+
+}
+
+void turn_around(Ghostie* ghostie, Tile neighbours[static 4]) {
+    for (uint8_t i = 0; i < 4; i++) {
+        if (neighbours[i] != blocked) {
+            ghostie->direction = i;
+            return;
+        }
+    }
+}
+
+void proceed_forward(Ghostie* ghostie, Tile neighbours[static 4]) {
+    Direction came_from = (ghostie->direction + 2) % 4;
+    for (uint8_t i = 0; i < 4; i++) {
+        if (neighbours[i] != blocked && i != came_from) {
+            ghostie->direction = i;
+            return;
+        }
+    }
+}
+
+void choose_fork(Ghostie* ghostie, Tile neighbours[static 4], uint8_t options) {
+    Direction came_from = (ghostie->direction + 2) % 4;
+    uint32_t randy = rand(); // FIXME better random numbers?
+    options--;
+    for (uint8_t i = 0; i < 4; i++) {
+        if (neighbours[i] != blocked && i != came_from) {
+            if (randy % (options) == 0) {
+                ghostie->direction = i;
+                return;
+            } else {
+                options--;
+            }
+        }
+    }
+}
+
+void ghostie_set_direction(Ghostie* ghostie, Maze* maze) {
+    assert ((ghostie->x % CORRIDOR_SIZE == 0 && ghostie->y % CORRIDOR_SIZE == 0));
+    uint32_t x = ghostie->x / CORRIDOR_SIZE;
+    uint32_t y = ghostie->y / CORRIDOR_SIZE;
+    assert ((x < TILES_HEIGHT && y < TILES_HEIGHT));
+
+    Tile neighbours[4] = {
+        maze->tiles[x+1][y],
+        maze->tiles[x][y-1],
+        maze->tiles[x-1][y],
+        maze->tiles[x][y+1]
+    };
+
+    uint8_t options = 0;
+    for (uint8_t i = 0; i < 4; i++) {
+        printf("tile: %d\n", neighbours[i]);
+        if (neighbours[i] != blocked) {
+            options++;
+        }
+    }
+
+    assert (options > 0 && options < 5);
+    if (options == 1) {
+        puts("only one way to go!");
+        turn_around(ghostie, neighbours);
+    }
+
+    if (options == 2) {
+        puts("one way in, one way out");
+        proceed_forward(ghostie, neighbours);
+    }
+
+    if (options > 2) {
+        puts("fork in path");
+        choose_fork(ghostie, neighbours, options);
+    }
 }
 
 void move_ghostie(Ghostie* ghostie, Maze* maze, Display* dpy, Window win) {
@@ -127,8 +202,8 @@ void move_ghostie(Ghostie* ghostie, Maze* maze, Display* dpy, Window win) {
             ghostie->direction == left ||
             ghostie->direction == down);
 
-    while (! ghostie_can_proceed(ghostie, maze)) {
-        ghostie->direction = (ghostie->direction + 1) % 4;
+    if (ghostie_in_centre_of_tile(ghostie)) {
+        ghostie_set_direction(ghostie, maze);
     }
 
     assert (ghostie_can_proceed(ghostie, maze));
