@@ -20,29 +20,24 @@
 #include "ghosties.c"
 #include "threading.c"
 
-void initialize_font_and_colours(Display * dpy, XFontStruct** font, GC* gc_fab, GC* gc_black) {
+void initialize_font_and_colours(Display * dpy, int screen, XFontStruct** font, GC* gc_fab) {
+    assert (dpy != NULL);
+    assert (font != NULL);
+    assert (gc_fab != NULL);
+    assert (*font == NULL); // this routine should be called only once
+    assert (*gc_fab == NULL);
     Colormap colourmap;
-    XColor black_colour, fab_colour;
-    XGCValues gcv_black, gcv_fab;
-
-    int screen = DefaultScreen(dpy);
+    XColor fab_colour;
+    XGCValues gcv_fab;
 
     colourmap = DefaultColormap(dpy, screen);
-    XParseColor(dpy, colourmap, "rgb:00/00/00", &black_colour);
-    XAllocColor(dpy, colourmap, &black_colour);
 
     XParseColor(dpy, colourmap, "rgb:fa/aa/ab", &fab_colour);
     XAllocColor(dpy, colourmap, &fab_colour);
 
     gcv_fab.foreground = fab_colour.pixel;
-    gcv_fab.background = black_colour.pixel;
-    gcv_black.foreground = black_colour.pixel;
-    gcv_black.background = black_colour.pixel;
 
-//     GC gc_fab = XCreateGC(dpy, RootWindow(dpy, screen), GCForeground | GCBackground, &gcv_fab);
-//     GC gc_black = XCreateGC(dpy, RootWindow(dpy, screen), GCForeground | GCBackground, &gcv_black);
     *gc_fab = XCreateGC(dpy, RootWindow(dpy, screen), GCForeground | GCBackground, &gcv_fab);
-    *gc_black = XCreateGC(dpy, RootWindow(dpy, screen), GCForeground | GCBackground, &gcv_black);
 
     *font = XLoadQueryFont(dpy, "*-18-*");
 
@@ -52,51 +47,32 @@ void initialize_font_and_colours(Display * dpy, XFontStruct** font, GC* gc_fab, 
     }
 }
 
-void update_score(Display * dpy, Window centre_win, uint64_t foods_eaten) {
-    static uint64_t previous_foods_eaten = 42; // anything that isn't 0
-    static GC gc_fab;
-    static GC gc_black;
-    static XFontStruct* font;
-    static bool initialized = false;
-
-    if (! initialized) {
-        initialize_font_and_colours(dpy, &font, &gc_fab, &gc_black);
-        initialized = true;
-    }
-
-    if (foods_eaten == previous_foods_eaten) {
-        return; // no need to redraw anything
-    }
-
+void update_score(Display* dpy, Window centre_win, GC gc_fab, XFontStruct* font, uint64_t foods_eaten) {
+    const uint8_t max_text_length = 15;
+    assert (dpy != NULL);
+    assert (gc_fab != NULL);
+    assert (font != NULL);
     XTextItem xti;
-    xti.chars = "score:";
-    xti.nchars = strlen(xti.chars);
     xti.delta = 0;
     xti.font = font->fid;
+
+    XClearWindow(dpy, centre_win);
+
+    char text[max_text_length];
+    xti.chars = "score:";
+    xti.nchars = strlen(xti.chars);
     XDrawText(dpy, centre_win, gc_fab,
            (195-XTextWidth(font, xti.chars, xti.nchars))/2,
            ((195-(font->ascent+font->descent))/2)+font->ascent-18,
             &xti, 1);
 
-    char text[15];
-    snprintf(text, 15, "%ld", previous_foods_eaten * 100); // in games, numbers are always multiplied by 100
-    xti.chars = text;
-    xti.nchars = strlen(xti.chars);
-    XDrawText(dpy, centre_win, gc_black,
-           (195-XTextWidth(font, xti.chars, xti.nchars))/2,
-           ((195-(font->ascent+font->descent))/2)+font->ascent,
-            &xti, 1);
-
-    previous_foods_eaten = foods_eaten;
-
-    snprintf(text, 15, "%ld", foods_eaten * 100);
+    snprintf(text, max_text_length, "%ld", foods_eaten * 100); // in games, numbers are always multiplied by 100
     xti.chars = text;
     xti.nchars = strlen(xti.chars);
     XDrawText(dpy, centre_win, gc_fab,
            (195-XTextWidth(font, xti.chars, xti.nchars))/2,
            ((195-(font->ascent+font->descent))/2)+font->ascent,
             &xti, 1);
-//     XUnloadFont(dpy, font->fid);
 }
 
 void handle_keypress(XEvent event, Xevent_thread_data* data) {
@@ -212,15 +188,13 @@ void * handle_xevents(void * arg) {
     pthread_exit(0);
 }
 
-void draw_game(Display* dpy, Window win, Maze* maze, Dude* dude, Ghostie ghosties[], uint8_t num_ghosties,
-                Window centre_win) {
+void draw_game(Display* dpy, Window win, Maze* maze, Dude* dude, Ghostie ghosties[], uint8_t num_ghosties) {
 //     XLockDisplay(dpy);
     draw_maze(dpy, win, maze);
     draw_dude(dpy, win, dude);
     for (uint8_t i = 0; i < num_ghosties; i++) {
         draw_ghostie(dpy, win, &ghosties[i]);
     }
-    update_score(dpy, centre_win, dude->foods_eaten);
 //     XUnlockDisplay(dpy);
 }
 
@@ -290,14 +264,16 @@ int main(void) {
                 CWBackPixel | CWColormap | CWBorderPixel, &attrs);
     XMapWindow(display, centre_win);
 
+    GC gc_fab = NULL;
+    XFontStruct* font = NULL;
+    initialize_font_and_colours(display, screen, &font, &gc_fab);
+
     Xevent_thread_data data = {
         .dpy_p = &display,
         .win_p = &window,
         .dirs = &dirs,
         .game_over = false
     };
-
-    draw_game(display, window, &maze, &dude, ghosties, num_ghosties, centre_win);
 
     pthread_t thread;
     if (0 != pthread_create(&thread, NULL, handle_xevents, &data)) {
@@ -310,7 +286,8 @@ int main(void) {
     const struct timespec tim = {.tv_sec = 0, .tv_nsec = 50000000L};
     while (! data.game_over) {
         assert (maze.food_count + dude.foods_eaten == 388 - num_ghosties);
-        draw_game(display, window, &maze, &dude, ghosties, num_ghosties, centre_win);
+        draw_game(display, window, &maze, &dude, ghosties, num_ghosties);
+        update_score(display, centre_win, gc_fab, font, dude.foods_eaten); // FIXME only update if necessary
         XFlush(display);
         nanosleep(&tim, NULL);
 
@@ -336,6 +313,8 @@ int main(void) {
     }
     printf("final score is: %lu.\n", dude.foods_eaten*100); // make the score bigger, that's what makes games fun
     pthread_join(thread, NULL);
+    XUnloadFont(display, font->fid);
+    XDestroyWindow(display, centre_win);
     XDestroyWindow(display, window);
     XCloseDisplay(display);
     return 0;
