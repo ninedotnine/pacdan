@@ -51,6 +51,7 @@ typedef struct {
     Display** dpy_p;
     Window* win_p;
     bool game_over;
+    bool paused;
     Directions* dirs;
 } Xevent_thread_data;
 

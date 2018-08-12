@@ -75,11 +75,40 @@ void update_score(Display* dpy, Window centre_win, GC gc_fab, XFontStruct* font,
             &xti, 1);
 }
 
-void congratulate(Display* dpy, Window centre_win, GC gc_fab, XFontStruct* font, uint64_t foods_eaten) {
+void game_paused(Display* dpy, Window centre_win, GC gc_fab, XFontStruct* font, bool begin) {
     assert (dpy != NULL);
     assert (gc_fab != NULL);
     assert (font != NULL);
-    update_score(dpy, centre_win, gc_fab, font, foods_eaten);
+
+    XTextItem xti;
+    xti.delta = 0;
+    xti.font = font->fid;
+
+    xti.chars = "paused";
+    xti.nchars = strlen(xti.chars);
+    XDrawText(dpy, centre_win, gc_fab,
+           (195-XTextWidth(font, xti.chars, xti.nchars))/2,
+           ((195-(font->ascent+font->descent))/2)-(font->ascent*2),
+            &xti, 1);
+
+    if (begin) {
+        xti.chars = "move to begin.";
+    } else {
+        xti.chars = "move to resume.";
+    }
+    xti.nchars = strlen(xti.chars);
+    XDrawText(dpy, centre_win, gc_fab,
+           (195-XTextWidth(font, xti.chars, xti.nchars))/2,
+           ((195-(font->ascent+font->descent))/2)+(font->ascent*4),
+            &xti, 1);
+
+    XFlush(dpy);
+}
+
+void congratulate(Display* dpy, Window centre_win, GC gc_fab, XFontStruct* font) {
+    assert (dpy != NULL);
+    assert (gc_fab != NULL);
+    assert (font != NULL);
 
     XTextItem xti;
     xti.delta = 0;
@@ -109,7 +138,13 @@ void handle_keypress(XEvent event, Xevent_thread_data* data) {
         case XK_q:
             data->game_over = true;
             thread_unlock();
+            thread_signal();
             pthread_exit(0); // the end of the game
+        case XK_Pause:
+        case XK_space:
+            data->paused = true;
+            thread_unlock();
+            return;
         case XK_Right:
         case XK_d:
         case XK_l:
@@ -140,8 +175,14 @@ void handle_keypress(XEvent event, Xevent_thread_data* data) {
             break;
         default:
             fputs("that key doesn't do anything.\n", stderr);
+            thread_unlock();
+            return;
     }
     thread_unlock();
+    if (data->paused) {
+        data->paused = false; // whichever way you go, unpause the game
+        thread_signal();
+    }
 }
 
 void handle_keyrelease(XEvent event, Directions* dirs) {
@@ -190,7 +231,7 @@ void * handle_xevents(void * arg) {
                event.type == MappingNotify);
         switch (event.type) {
           case Expose:
-            thread_signal(); // only necessary the first time, does nothing afterward
+            puts("received expose event"); // should signal main thread to redraw
             break;
           case KeyPress:
             handle_keypress(event, data);
@@ -274,6 +315,7 @@ int main(void) {
     attrs.override_redirect = true;
     attrs.colormap = CopyFromParent;
     attrs.event_mask = ExposureMask | KeyPressMask | KeyReleaseMask | ButtonPressMask | ButtonReleaseMask;
+    // FIXME use FocusChangeMask to automatically pause
 
     Window window = XCreateWindow(display, RootWindow(display, screen),
                 root_attrs.width/2-WINDOW_HEIGHT/2, root_attrs.height/2-WINDOW_HEIGHT/2,
@@ -298,7 +340,8 @@ int main(void) {
         .dpy_p = &display,
         .win_p = &window,
         .dirs = &dirs,
-        .game_over = false
+        .game_over = false,
+        .paused = true // start game paused
     };
 
     pthread_t thread;
@@ -307,26 +350,22 @@ int main(void) {
         exit(EXIT_FAILURE);
     }
 
-    thread_wait(); // wait until expose event is received
-
     const struct timespec tim = {.tv_sec = 0, .tv_nsec = 50000000L};
-    while (! data.game_over) {
+    while (game_in_progress(&data)) {
         assert (maze.food_count + dude.foods_eaten == 388 - num_ghosties);
         draw_game(display, window, &maze, &dude, ghosties, num_ghosties);
         update_score(display, centre_win, gc_fab, font, dude.foods_eaten); // FIXME only update if necessary
         XFlush(display);
 
-        if (data.paused) {
+        if (game_is_paused(&data)) {
+            game_paused(display, centre_win, gc_fab, font, dude.foods_eaten == 0);
             thread_wait();
+        } else if (0 == maze.food_count) {
+            congratulate(display, centre_win, gc_fab, font);
+            break;
         }
 
         nanosleep(&tim, NULL);
-
-        if (0 == maze.food_count) {
-            puts("okay, you win.");
-            congratulate(display, centre_win, gc_fab, font, dude.foods_eaten);
-            break;
-        }
 
         thread_lock();
         if (dirs.right) {

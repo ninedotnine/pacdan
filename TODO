@@ -2,8 +2,6 @@ colours
 
 make all directions behave the same way; right now going right is special
 
-pause button
-
 pause when window loses focus
 
 internal:
