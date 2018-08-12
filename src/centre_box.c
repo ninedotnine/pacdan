@@ -4,16 +4,16 @@ void initialize_font_and_colours(Display * dpy, int screen, XFontStruct** font, 
     assert (gc_fab != NULL);
     assert (*font == NULL); // this routine should be called only once
     assert (*gc_fab == NULL);
-    Colormap colourmap;
+
+    Colormap colourmap = DefaultColormap(dpy, screen);
+
     XColor fab_colour;
-    XGCValues gcv_fab;
-
-    colourmap = DefaultColormap(dpy, screen);
-
     XParseColor(dpy, colourmap, "rgb:fa/aa/ab", &fab_colour);
     XAllocColor(dpy, colourmap, &fab_colour);
 
-    gcv_fab.foreground = fab_colour.pixel;
+    XGCValues gcv_fab = {
+        .foreground = fab_colour.pixel
+    };
 
     *gc_fab = XCreateGC(dpy, RootWindow(dpy, screen), GCForeground | GCBackground, &gcv_fab);
 
