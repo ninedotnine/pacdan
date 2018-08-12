@@ -30,20 +30,22 @@ void update_score(Display* dpy, Window centre_win, GC gc_fab, XFontStruct* font,
     assert (dpy != NULL);
     assert (gc_fab != NULL);
     assert (font != NULL);
-    XTextItem xti;
-    xti.delta = 0;
-    xti.font = font->fid;
 
     XClearWindow(dpy, centre_win);
 
-    char text[max_text_length];
-    xti.chars = "score:";
-    xti.nchars = strlen(xti.chars);
+    XTextItem xti = {
+        .delta = 0,
+        .font = font->fid,
+        .chars = "score:",
+        .nchars = strlen(xti.chars)
+    };
+
     XDrawText(dpy, centre_win, gc_fab,
            (195-XTextWidth(font, xti.chars, xti.nchars))/2,
            ((195-(font->ascent+font->descent))/2),
             &xti, 1);
 
+    char text[max_text_length];
     snprintf(text, max_text_length, "%ld", foods_eaten * 100); // in games, numbers are always multiplied by 100
     xti.chars = text;
     xti.nchars = strlen(xti.chars);
@@ -58,12 +60,13 @@ void game_paused(Display* dpy, Window centre_win, GC gc_fab, XFontStruct* font, 
     assert (gc_fab != NULL);
     assert (font != NULL);
 
-    XTextItem xti;
-    xti.delta = 0;
-    xti.font = font->fid;
+    XTextItem xti = {
+        .delta = 0,
+        .font = font->fid,
+        .chars = "paused",
+        .nchars = strlen(xti.chars)
+    };
 
-    xti.chars = "paused";
-    xti.nchars = strlen(xti.chars);
     XDrawText(dpy, centre_win, gc_fab,
            (195-XTextWidth(font, xti.chars, xti.nchars))/2,
            ((195-(font->ascent+font->descent))/2)-(font->ascent*2),
@@ -75,6 +78,7 @@ void game_paused(Display* dpy, Window centre_win, GC gc_fab, XFontStruct* font, 
         xti.chars = "move to resume.";
     }
     xti.nchars = strlen(xti.chars);
+
     XDrawText(dpy, centre_win, gc_fab,
            (195-XTextWidth(font, xti.chars, xti.nchars))/2,
            ((195-(font->ascent+font->descent))/2)+(font->ascent*4),
@@ -88,12 +92,13 @@ void congratulate(Display* dpy, Window centre_win, GC gc_fab, XFontStruct* font)
     assert (gc_fab != NULL);
     assert (font != NULL);
 
-    XTextItem xti;
-    xti.delta = 0;
-    xti.font = font->fid;
+    XTextItem xti = {
+        .delta = 0,
+        .font = font->fid,
+        .chars = "okay, you win.",
+        .nchars = strlen(xti.chars)
+    };
 
-    xti.chars = "okay, you win.";
-    xti.nchars = strlen(xti.chars);
     XDrawText(dpy, centre_win, gc_fab,
            (195-XTextWidth(font, xti.chars, xti.nchars))/2,
            ((195-(font->ascent+font->descent))/2)-(font->ascent*2),
