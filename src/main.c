@@ -184,7 +184,8 @@ void * handle_xevents(void * arg) {
                event.type == KeyPress ||
                event.type == KeyRelease ||
                event.type == ButtonPress ||
-               event.type == ButtonRelease);
+               event.type == ButtonRelease ||
+               event.type == MappingNotify);
         switch (event.type) {
           case Expose:
             thread_signal(); // only necessary the first time, does nothing afterward
@@ -202,7 +203,7 @@ void * handle_xevents(void * arg) {
             puts("button released, does nothing");
             break;
           case MappingNotify:
-            puts("MappingNotify, don't care");
+            XRefreshKeyboardMapping(&event.xmapping);
             break;
           default:
             fprintf(stderr, "received unusual XEvent of type %d\n", event.type);
