@@ -33,14 +33,14 @@ void thread_signal(void) {
     thread_unlock();
 }
 
-bool game_is_paused(Xevent_thread_data* data) {
+bool game_is_paused(Controls_thread_data* data) {
     thread_lock();
     bool b = data->paused;
     thread_unlock();
     return b;
 }
 
-bool game_in_progress(Xevent_thread_data* data) {
+bool game_in_progress(Controls_thread_data* data) {
     thread_lock();
     bool b = ! data->game_over;
     thread_unlock();

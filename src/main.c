@@ -19,6 +19,7 @@
 #include "dude.c"
 #include "ghosties.c"
 #include "threading.c"
+#include "controls.c"
 
 void initialize_font_and_colours(Display * dpy, int screen, XFontStruct** font, GC* gc_fab) {
     assert (dpy != NULL);
@@ -130,131 +131,6 @@ void congratulate(Display* dpy, Window centre_win, GC gc_fab, XFontStruct* font)
     XFlush(dpy);
 }
 
-void handle_keypress(XEvent event, Xevent_thread_data* data) {
-    KeySym keysym = XLookupKeysym(&event.xkey, 0);
-    thread_lock();
-    switch (keysym) {
-        case XK_Escape:
-        case XK_q:
-            data->game_over = true;
-            thread_unlock();
-            thread_signal();
-            pthread_exit(0); // the end of the game
-        case XK_Pause:
-        case XK_space:
-            data->paused = true;
-            thread_unlock();
-            return;
-        case XK_Right:
-        case XK_d:
-        case XK_l:
-            if (! data->dirs->right) {
-                data->dirs->right = true;
-            }
-            break;
-        case XK_Up:
-        case XK_w:
-        case XK_k:
-            if (! data->dirs->up) {
-                data->dirs->up = true;
-            }
-            break;
-        case XK_Left:
-        case XK_a:
-        case XK_h:
-            if (! data->dirs->left) {
-                data->dirs->left = true;
-            }
-            break;
-        case XK_Down:
-        case XK_s:
-        case XK_j:
-            if (! data->dirs->down) {
-                data->dirs->down = true;
-            }
-            break;
-        default:
-            fputs("that key doesn't do anything.\n", stderr);
-            thread_unlock();
-            return;
-    }
-    thread_unlock();
-    if (data->paused) {
-        data->paused = false; // whichever way you go, unpause the game
-        thread_signal();
-    }
-}
-
-void handle_keyrelease(XEvent event, Directions* dirs) {
-    KeySym keysym = XLookupKeysym(&event.xkey, 0);
-    thread_lock();
-    switch (keysym) {
-        case XK_Right:
-        case XK_d:
-        case XK_l:
-            dirs->right = false;
-            break;
-        case XK_Up:
-        case XK_w:
-        case XK_k:
-            dirs->up = false;
-            break;
-        case XK_Left:
-        case XK_a:
-        case XK_h:
-            dirs->left = false;
-            break;
-        case XK_Down:
-        case XK_s:
-        case XK_j:
-            dirs->down = false;
-            break;
-        default:
-            break;
-    }
-    thread_unlock();
-}
-
-void * handle_xevents(void * arg) {
-    Xevent_thread_data* data = (Xevent_thread_data*) arg;
-    assert (data != NULL);
-    assert (data->dpy_p != NULL);
-
-    XEvent event;
-    while (*data->dpy_p != NULL && (! data->game_over)) {
-        XNextEvent(*data->dpy_p, &event);
-        assert(event.type == Expose ||
-               event.type == KeyPress ||
-               event.type == KeyRelease ||
-               event.type == ButtonPress ||
-               event.type == ButtonRelease ||
-               event.type == MappingNotify);
-        switch (event.type) {
-          case Expose:
-            puts("received expose event"); // should signal main thread to redraw
-            break;
-          case KeyPress:
-            handle_keypress(event, data);
-            break;
-          case KeyRelease: // FIXME : prevent the player from holding multiple keys
-            handle_keyrelease(event, data->dirs);
-            break;
-          case ButtonPress:
-            puts("button pressed, does nothing");
-            break;
-          case ButtonRelease:
-            puts("button released, does nothing");
-            break;
-          case MappingNotify:
-            XRefreshKeyboardMapping(&event.xmapping);
-            break;
-          default:
-            fprintf(stderr, "received unusual XEvent of type %d\n", event.type);
-        }
-    }
-    pthread_exit(0);
-}
-
 void draw_game(Display* dpy, Window win, Maze* maze, Dude* dude, Ghostie ghosties[], uint8_t num_ghosties) {
 //     XLockDisplay(dpy);
     draw_maze(dpy, win, maze);
@@ -336,16 +212,10 @@ int main(void) {
     XFontStruct* font = NULL;
     initialize_font_and_colours(display, screen, &font, &gc_fab);
 
-    Xevent_thread_data data = {
-        .dpy_p = &display,
-        .win_p = &window,
-        .dirs = &dirs,
-        .game_over = false,
-        .paused = true // start game paused
-    };
+    Controls_thread_data data = new_thread_data(&display, &window, &dirs);
 
-    pthread_t thread;
-    if (0 != pthread_create(&thread, NULL, handle_xevents, &data)) {
+    pthread_t controls;
+    if (0 != pthread_create(&controls, NULL, handle_xevents, &data)) {
         fputs("could not create thread.\n", stderr);
         exit(EXIT_FAILURE);
     }
@@ -383,7 +253,7 @@ int main(void) {
         thread_unlock();
     }
     printf("final score is: %lu.\n", dude.foods_eaten*100); // make the score bigger, that's what makes games fun
-    pthread_join(thread, NULL); // quit for player to hit q or escape
+    pthread_join(controls, NULL); // quit for player to hit q or escape
     XUnloadFont(display, font->fid);
     XDestroyWindow(display, centre_win);
     XDestroyWindow(display, window);

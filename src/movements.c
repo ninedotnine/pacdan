@@ -1,5 +1,3 @@
-#define gcc_pure __attribute__((pure))
-
 static gcc_pure bool isOnTrack(Dude* dude) {
     // returns true if dude can proceed in this direction
     assert (dude->direction == right || dude->direction == up || dude->direction == left || dude->direction == down);

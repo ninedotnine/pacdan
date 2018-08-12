@@ -3,6 +3,8 @@
 #define CORRIDOR_SIZE 25
 #define TILES_HEIGHT WINDOW_HEIGHT/CORRIDOR_SIZE + 1
 
+#define gcc_pure __attribute__((pure))
+
 typedef enum { right , up , left , down } Direction;
 
 typedef struct {
@@ -53,5 +55,5 @@ typedef struct {
     bool game_over;
     bool paused;
     Directions* dirs;
-} Xevent_thread_data;
+} Controls_thread_data;
 
