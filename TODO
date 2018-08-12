@@ -18,8 +18,8 @@ rename "isnotblocked" to "pathisclear"?
 
 make ghosties start going the correct direction they are initialized with
 
-fix data race: main.c lines 118 and 300
-one thread sets gameover to true and the main thread checks it, possibly causing a race
-(i don't think this ever matters)
-
 redraw everything when expose event is received
+
+make different mazes
+
+allow an arbitrary number of ghosties
