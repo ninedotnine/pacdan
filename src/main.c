@@ -48,16 +48,6 @@ int main(void) {
 
     Dude dude = initialize_dude(1, 1, right, &maze);
 
-    uint32_t num_ghosties = 7;
-    Ghostie ghosties[num_ghosties];
-    ghosties[0] = initialize_ghostie(1, 27, right, &maze);
-    ghosties[1] = initialize_ghostie(27, 27, up, &maze);
-    ghosties[2] = initialize_ghostie(27, 1, down, &maze);
-    ghosties[3] = initialize_ghostie(19, 9, down, &maze);
-    ghosties[4] = initialize_ghostie(9, 19, down, &maze);
-    ghosties[5] = initialize_ghostie(9, 9, down, &maze);
-    ghosties[6] = initialize_ghostie(19, 19, down, &maze);
-
     Display * display = XOpenDisplay(NULL);
     if (display == NULL) {
         fputs("no display.\n", stderr);
@@ -65,6 +55,17 @@ int main(void) {
     }
 
     int screen = DefaultScreen(display);
+
+    uint32_t num_ghosties = 7;
+    Ghostie ghosties[num_ghosties];
+    ghosties[0] = new_ghostie(display, screen, 1, 27, right, &maze, "rgb:fa/aa/ab");
+    ghosties[1] = new_ghostie(display, screen, 27, 27, up, &maze, "rgb:33/99/cc");
+    ghosties[2] = new_ghostie(display, screen, 27, 1, down, &maze, "rgb:99/33/ff");
+    ghosties[3] = new_ghostie(display, screen, 19, 9, down, &maze, "rgb:11/11/ee");
+    ghosties[4] = new_ghostie(display, screen, 9, 19, down, &maze, "rgb:ee/11/11");
+//     ghosties[5] = new_ghostie(display, screen, 9, 9, down, &maze, "rgb:cc/ee/11"); // this will be the dude's colour
+    ghosties[5] = new_ghostie(display, screen, 9, 9, down, &maze, "rgb:11/ee/11");
+    ghosties[6] = new_ghostie(display, screen, 19, 19, down, &maze, "rgb:ee/11/ee");
 
     XWindowAttributes root_attrs;
     if (0 == XGetWindowAttributes(display, RootWindow(display, screen), &root_attrs)) {

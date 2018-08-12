@@ -1,5 +1,3 @@
-colours
-
 make all directions behave the same way; right now going right is special
 
 pause when window loses focus
@@ -22,4 +20,6 @@ redraw everything when expose event is received
 
 make different mazes
 
-allow an arbitrary number of ghosties
+allow an arbitrary number of ghosties (with colours!)
+
+colour the main dude

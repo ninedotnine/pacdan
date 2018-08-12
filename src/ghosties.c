@@ -1,15 +1,17 @@
 static void draw_or_erase_ghostie(Display* dpy, Window win, Ghostie* ghostie, bool erase) {
     assert (dpy != NULL);
+    assert (ghostie != NULL);
 
-    static XGCValues gcv;
-    gcv.background = BlackPixel(dpy, DefaultScreen(dpy));
+    GC gc = NULL;
     if (erase) {
-        gcv.foreground = BlackPixel(dpy, DefaultScreen(dpy));
+        XGCValues gcv = {
+            .background = BlackPixel(dpy, DefaultScreen(dpy)),
+            .foreground = BlackPixel(dpy, DefaultScreen(dpy))
+        };
+        gc = XCreateGC(dpy, DefaultRootWindow(dpy), GCForeground | GCBackground, &gcv);
     } else {
-        gcv.foreground = WhitePixel(dpy, DefaultScreen(dpy));
+        gc = ghostie->gc;
     }
-    const GC gc = XCreateGC(dpy, DefaultRootWindow(dpy),
-            GCForeground | GCBackground, &gcv);
 
     assert (ghostie->size > 0);
     const uint32_t halfsize = ghostie->size / 2;
@@ -226,13 +228,28 @@ void move_ghostie(Ghostie* ghostie, Maze* maze, Display* dpy, Window win) {
 }
 
 
-Ghostie initialize_ghostie(uint32_t x, uint32_t y, Direction dir, Maze* maze) {
-    /* gives the starting position */
+Ghostie new_ghostie(Display* dpy, int screen, uint32_t x, uint32_t y, Direction dir, Maze* maze, const char* colour) {
+    /* gives the starting position and facing direction */
+
+    Colormap colourmap = DefaultColormap(dpy, screen);
+
+    XColor ghostie_colour;
+    XParseColor(dpy, colourmap, colour, &ghostie_colour);
+    XAllocColor(dpy, colourmap, &ghostie_colour);
+
+    XGCValues gcv_ghostie = {
+        .foreground = ghostie_colour.pixel
+    };
+
+    GC gc_ghostie = XCreateGC(dpy, RootWindow(dpy, screen), GCForeground | GCBackground, &gcv_ghostie);
+
+
     Ghostie ghostie = {
         .x = x * CORRIDOR_SIZE,
         .y = y * CORRIDOR_SIZE,
         .size = 48,
         .direction = dir,
+        .gc = gc_ghostie
     };
 
     if (maze->tiles[ghostie.x/CORRIDOR_SIZE][ghostie.y/CORRIDOR_SIZE] == food) {

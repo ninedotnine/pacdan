@@ -32,6 +32,7 @@ typedef struct {
     uint32_t y;
     Direction direction;
     uint32_t size; // a ghostie is a square, this means width and height
+    GC gc;
 } Ghostie;
 
 /* don't initialize a Wall except by calling build_wall */
