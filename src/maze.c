@@ -1,4 +1,4 @@
-static void build_wall(uint32_t x, uint32_t y, uint32_t length, Direction dir, Maze* maze) {
+static void build_wall(uint32_t x, uint32_t y, uint32_t length, const Direction dir, Maze* const maze) {
     assert (maze->wall_count < WALL_LIMIT);
     assert (dir == right || dir == up || dir == left || dir == down);
     assert (length > 0);
@@ -61,7 +61,7 @@ static void build_wall(uint32_t x, uint32_t y, uint32_t length, Direction dir, M
     maze->wall_count++;
 }
 
-static void distribute_food(Maze* maze) {
+static void distribute_food(Maze* const maze) {
     maze->food_count = 0;
     for (uint16_t x = 1; x < TILES_HEIGHT-1; x++) {
         for (uint16_t y = 1; y < TILES_HEIGHT-1; y++) {
@@ -74,7 +74,7 @@ static void distribute_food(Maze* maze) {
 }
 
 /* call build_maze to make the maze */
-static void initialize_maze(Maze* maze) {
+static void initialize_maze(Maze* const maze) {
     maze->wall_count = 0;
     memset(maze->tiles, 0, sizeof(maze->tiles)); // all tiles are vacant to begin
 
@@ -171,7 +171,7 @@ static void initialize_maze(Maze* maze) {
     distribute_food(maze);
 }
 
-static void draw_maze(Display* dpy, Window win, Maze* maze) {
+static void draw_maze(Display* const dpy, const Window win, const Maze* const maze) {
     assert (WALL_LIMIT == maze->wall_count); // don't try to draw the maze until you've populated it
     assert(dpy);
     XGCValues gcv = {

@@ -33,16 +33,16 @@ static void thread_signal(void) {
     thread_unlock();
 }
 
-static bool game_is_paused(Controls_thread_data* data) {
+static bool game_is_paused(const Controls_thread_data* const data) {
     thread_lock();
-    bool b = data->paused;
+    const bool b = data->paused;
     thread_unlock();
     return b;
 }
 
-static bool game_in_progress(Controls_thread_data* data) {
+static bool game_in_progress(const Controls_thread_data* const data) {
     thread_lock();
-    bool b = ! data->game_over;
+    const bool b = ! data->game_over;
     thread_unlock();
     return b;
 }

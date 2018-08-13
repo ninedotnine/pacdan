@@ -22,8 +22,10 @@
 #include "centre_box.c"
 
 
-static void draw_game(Display* dpy, Window win, Maze* maze, Dude* dude, Dude ghosties[], uint8_t num_ghosties) {
+static void draw_game(Display* const dpy, const Window win, const Maze* const maze, const Dude* const dude,
+                      const Dude ghosties[const], const uint8_t num_ghosties) {
 //     XLockDisplay(dpy);
+    assert (ghosties != NULL);
     draw_maze(dpy, win, maze);
     draw_dan(dpy, win, dude);
     for (uint8_t i = 0; i < num_ghosties; i++) {
@@ -45,13 +47,13 @@ int main(void) {
     Maze maze;
     initialize_maze(&maze);
 
-    Display * display = XOpenDisplay(NULL);
+    Display* const display = XOpenDisplay(NULL);
     if (display == NULL) {
         fputs("no display.\n", stderr);
         exit(EXIT_FAILURE);
     }
 
-    int screen = DefaultScreen(display);
+    const int screen = DefaultScreen(display);
 
     Dude dan = new_dude(display, screen, 1, 1, right, &maze, "rgb:cc/ee/11");
 
@@ -84,7 +86,7 @@ int main(void) {
     attrs.event_mask = ExposureMask | KeyPressMask | KeyReleaseMask | ButtonPressMask | ButtonReleaseMask;
     // FIXME use FocusChangeMask to automatically pause
 
-    Window window = XCreateWindow(display, RootWindow(display, screen),
+    const Window window = XCreateWindow(display, RootWindow(display, screen),
                 root_attrs.width/2-WINDOW_HEIGHT/2, root_attrs.height/2-WINDOW_HEIGHT/2,
                 WINDOW_HEIGHT, WINDOW_HEIGHT,
                 0, DefaultDepth(display, screen), InputOutput, CopyFromParent,
@@ -94,7 +96,7 @@ int main(void) {
 
     XMapWindow(display, window);
 
-    Window centre_win = XCreateWindow(display, window, 252, 252, 195, 195,
+    const Window centre_win = XCreateWindow(display, window, 252, 252, 195, 195,
                 0, CopyFromParent, CopyFromParent, CopyFromParent,
                 CWBackPixel | CWColormap | CWBorderPixel, &attrs);
     XMapWindow(display, centre_win);

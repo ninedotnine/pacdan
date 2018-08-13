@@ -1,6 +1,7 @@
 /*  this file contains routines relevant to the scoreboard.
  */
-static void initialize_font_and_colours(Display * dpy, int screen, XFontStruct** font, GC* gc_fab) {
+static void initialize_font_and_colours(Display* const dpy, const int screen, XFontStruct** const font,
+                                        GC* const gc_fab) {
     assert (dpy != NULL);
     assert (font != NULL);
     assert (gc_fab != NULL);
@@ -27,7 +28,8 @@ static void initialize_font_and_colours(Display * dpy, int screen, XFontStruct**
     }
 }
 
-static void update_score(Display* dpy, Window centre_win, GC gc_fab, XFontStruct* font, uint64_t foods_eaten) {
+static void update_score(Display* const dpy, const Window centre_win, const GC gc_fab, XFontStruct* const font,
+                         const uint64_t foods_eaten) {
     const uint8_t max_text_length = 15;
     assert (dpy != NULL);
     assert (gc_fab != NULL);
@@ -57,7 +59,8 @@ static void update_score(Display* dpy, Window centre_win, GC gc_fab, XFontStruct
             &xti, 1);
 }
 
-static void game_paused(Display* dpy, Window centre_win, GC gc_fab, XFontStruct* font, bool begin) {
+static void game_paused(Display* const dpy, const Window centre_win, const GC gc_fab, XFontStruct* const font,
+                        const bool begin) {
     assert (dpy != NULL);
     assert (gc_fab != NULL);
     assert (font != NULL);
@@ -89,7 +92,7 @@ static void game_paused(Display* dpy, Window centre_win, GC gc_fab, XFontStruct*
     XFlush(dpy);
 }
 
-static void congratulate(Display* dpy, Window centre_win, GC gc_fab, XFontStruct* font) {
+static void congratulate(Display* const dpy, const Window centre_win, const GC gc_fab, XFontStruct* const font) {
     assert (dpy != NULL);
     assert (gc_fab != NULL);
     assert (font != NULL);

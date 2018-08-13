@@ -1,5 +1,5 @@
-static void handle_keypress(XEvent event, Controls_thread_data* data) {
-    KeySym keysym = XLookupKeysym(&event.xkey, 0);
+static void handle_keypress(XEvent event, Controls_thread_data* const data) {
+    const KeySym keysym = XLookupKeysym(&event.xkey, 0);
     thread_lock();
     switch (keysym) {
         case XK_Escape:
@@ -53,8 +53,8 @@ static void handle_keypress(XEvent event, Controls_thread_data* data) {
     }
 }
 
-static void handle_keyrelease(XEvent event, Directions* dirs) {
-    KeySym keysym = XLookupKeysym(&event.xkey, 0);
+static void handle_keyrelease(XEvent event, Directions* const dirs) {
+    const KeySym keysym = XLookupKeysym(&event.xkey, 0);
     thread_lock();
     switch (keysym) {
         case XK_Right:
@@ -124,8 +124,9 @@ static void * handle_xevents(void * arg) {
 }
 
 
-static Controls_thread_data gcc_pure new_thread_data(Display* dpy, Window* win, Directions* dirs) {
-    Controls_thread_data data = {
+static Controls_thread_data gcc_pure new_thread_data(Display* const dpy, const Window* const win,
+                                                     Directions* const dirs) {
+    const Controls_thread_data data = {
         .dpy = dpy,
         .win_p = win,
         .dirs = dirs,
