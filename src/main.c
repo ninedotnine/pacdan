@@ -112,15 +112,17 @@ int main(void) {
         exit(EXIT_FAILURE);
     }
 
+    uint64_t foods_eaten = 0;
+
     const struct timespec tim = {.tv_sec = 0, .tv_nsec = 50000000L};
     while (game_in_progress(&data)) {
-        assert (maze.food_count + dude.foods_eaten == 388 - num_ghosties);
+        assert (maze.food_count + foods_eaten == 388 - num_ghosties);
         draw_game(display, window, &maze, &dude, ghosties, num_ghosties);
-        update_score(display, centre_win, gc_fab, font, dude.foods_eaten); // FIXME only update if necessary
+        update_score(display, centre_win, gc_fab, font, foods_eaten); // FIXME only update if necessary
         XFlush(display);
 
         if (game_is_paused(&data)) {
-            game_paused(display, centre_win, gc_fab, font, dude.foods_eaten == 0);
+            game_paused(display, centre_win, gc_fab, font, foods_eaten == 0);
             thread_wait();
         } else if (0 == maze.food_count) {
             congratulate(display, centre_win, gc_fab, font);
@@ -131,20 +133,20 @@ int main(void) {
 
         thread_lock();
         if (dirs.right) {
-            move_dude(&dude, right, &maze, display, window);
+            move_dude(&dude, right, &maze, display, window, &foods_eaten);
         } else if (dirs.up) {
-            move_dude(&dude, up, &maze, display, window);
+            move_dude(&dude, up, &maze, display, window, &foods_eaten);
         } else if (dirs.left) {
-            move_dude(&dude, left, &maze, display, window);
+            move_dude(&dude, left, &maze, display, window, &foods_eaten);
         } else if (dirs.down) {
-            move_dude(&dude, down, &maze, display, window);
+            move_dude(&dude, down, &maze, display, window, &foods_eaten);
         }
         for (uint8_t i = 0; i < num_ghosties; i++) {
             move_ghostie(&ghosties[i], &maze, display, window);
         }
         thread_unlock();
     }
-    printf("final score is: %lu.\n", dude.foods_eaten*100); // make the score bigger, that's what makes games fun
+    printf("final score is: %lu.\n", foods_eaten*100); // make the score bigger, that's what makes games fun
     pthread_join(controls, NULL); // quit for player to hit q or escape
     XUnloadFont(display, font->fid);
     XDestroyWindow(display, centre_win);

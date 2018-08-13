@@ -53,7 +53,7 @@ void erase_dude(Display * dpy, Window win, Dude* dude) {
     draw_or_erase_dude(dpy, win, dude, true);
 }
 
-void move_dude(Dude* dude, Direction dir, Maze* maze, Display* dpy, Window win) {
+void move_dude(Dude* dude, Direction dir, Maze* maze, Display* dpy, Window win, uint64_t* foods_eaten) {
     erase_dude(dpy, win, dude);
 
     assert (dir == right || dir == up || dir == left || dir == down);
@@ -86,7 +86,7 @@ void move_dude(Dude* dude, Direction dir, Maze* maze, Display* dpy, Window win) 
         if (maze->tiles[dude->x/CORRIDOR_SIZE][dude->y/CORRIDOR_SIZE] == food) {
             maze->tiles[dude->x/CORRIDOR_SIZE][dude->y/CORRIDOR_SIZE] = vacant;
             maze->food_count--; // FIXME remove this?
-            dude->foods_eaten++;
+            (*foods_eaten)++;
         }
     }
 }
@@ -110,7 +110,6 @@ Dude new_dude(Display* dpy, int screen, uint32_t x, uint32_t y, Direction dir, M
         .y = y * CORRIDOR_SIZE,
         .size = 48,
         .direction = dir,
-        .foods_eaten = 0,
         .gc = gc_dude
     };
 
