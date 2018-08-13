@@ -86,11 +86,11 @@ void handle_keyrelease(XEvent event, Directions* dirs) {
 void * handle_xevents(void * arg) {
     Controls_thread_data* data = (Controls_thread_data*) arg;
     assert (data != NULL);
-    assert (data->dpy_p != NULL);
+    assert (data->dpy != NULL);
 
     XEvent event;
-    while (*data->dpy_p != NULL && (! data->game_over)) {
-        XNextEvent(*data->dpy_p, &event);
+    while (data->dpy != NULL && (! data->game_over)) {
+        XNextEvent(data->dpy, &event);
         assert(event.type == Expose ||
                event.type == KeyPress ||
                event.type == KeyRelease ||
@@ -124,9 +124,9 @@ void * handle_xevents(void * arg) {
 }
 
 
-Controls_thread_data gcc_pure new_thread_data(Display** dpy, Window* win, Directions* dirs) {
+Controls_thread_data gcc_pure new_thread_data(Display* dpy, Window* win, Directions* dirs) {
     Controls_thread_data data = {
-        .dpy_p = dpy,
+        .dpy = dpy,
         .win_p = win,
         .dirs = dirs,
         .game_over = false,

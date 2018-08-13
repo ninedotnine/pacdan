@@ -43,7 +43,7 @@ typedef struct {
 } Maze;
 
 typedef struct {
-    Display** dpy_p;
+    Display* dpy;
     Window* win_p;
     bool game_over;
     bool paused;

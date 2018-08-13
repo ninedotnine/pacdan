@@ -104,7 +104,7 @@ int main(void) {
     XFontStruct* font = NULL;
     initialize_font_and_colours(display, screen, &font, &gc_fab);
 
-    Controls_thread_data data = new_thread_data(&display, &window, &dirs);
+    Controls_thread_data data = new_thread_data(display, &window, &dirs);
 
     pthread_t controls;
     if (0 != pthread_create(&controls, NULL, handle_xevents, &data)) {
