@@ -49,4 +49,3 @@ typedef struct {
     bool paused;
     Directions* dirs;
 } Controls_thread_data;
-

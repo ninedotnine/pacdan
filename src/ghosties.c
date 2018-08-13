@@ -19,7 +19,6 @@ static void draw_or_erase_ghostie(Display* dpy, Window win, Dude* ghostie, bool 
     const uint32_t fullCircle = 360 * 64;
     const uint32_t halfCircle = fullCircle / 2;
     const uint32_t eye_height = ghostie->y-12;
-//     XDrawPoint(dpy, win, gc, ghostie->x, ghostie->y); // middle of the ghostie, a nose maybe
 
     XPoint points[9] = {{
         .x = ghostie->x-halfsize,

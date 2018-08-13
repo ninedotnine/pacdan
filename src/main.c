@@ -26,7 +26,7 @@
 void draw_game(Display* dpy, Window win, Maze* maze, Dude* dude, Dude ghosties[], uint8_t num_ghosties) {
 //     XLockDisplay(dpy);
     draw_maze(dpy, win, maze);
-    draw_dude(dpy, win, dude);
+    draw_dan(dpy, win, dude);
     for (uint8_t i = 0; i < num_ghosties; i++) {
         draw_ghostie(dpy, win, &ghosties[i]);
     }
@@ -34,7 +34,6 @@ void draw_game(Display* dpy, Window win, Maze* maze, Dude* dude, Dude ghosties[]
 }
 
 int main(void) {
-//     mutex = (void *) 0;
     pthread_mutex_init(&mutex, NULL);
 
     if (0 == XInitThreads()) {
@@ -54,7 +53,7 @@ int main(void) {
 
     int screen = DefaultScreen(display);
 
-    Dude dude = new_dude(display, screen, 1, 1, right, &maze, "rgb:cc/ee/11");
+    Dude dan = new_dude(display, screen, 1, 1, right, &maze, "rgb:cc/ee/11");
 
     uint32_t num_ghosties = 7;
     Dude ghosties[num_ghosties];
@@ -117,7 +116,7 @@ int main(void) {
     const struct timespec tim = {.tv_sec = 0, .tv_nsec = 50000000L};
     while (game_in_progress(&data)) {
         assert (maze.food_count + foods_eaten == 388 - num_ghosties);
-        draw_game(display, window, &maze, &dude, ghosties, num_ghosties);
+        draw_game(display, window, &maze, &dan, ghosties, num_ghosties);
         update_score(display, centre_win, gc_fab, font, foods_eaten); // FIXME only update if necessary
         XFlush(display);
 
@@ -133,13 +132,13 @@ int main(void) {
 
         thread_lock();
         if (dirs.right) {
-            move_dude(&dude, right, &maze, display, window, &foods_eaten);
+            move_dan(&dan, right, &maze, display, window, &foods_eaten);
         } else if (dirs.up) {
-            move_dude(&dude, up, &maze, display, window, &foods_eaten);
+            move_dan(&dan, up, &maze, display, window, &foods_eaten);
         } else if (dirs.left) {
-            move_dude(&dude, left, &maze, display, window, &foods_eaten);
+            move_dan(&dan, left, &maze, display, window, &foods_eaten);
         } else if (dirs.down) {
-            move_dude(&dude, down, &maze, display, window, &foods_eaten);
+            move_dan(&dan, down, &maze, display, window, &foods_eaten);
         }
         for (uint8_t i = 0; i < num_ghosties; i++) {
             move_ghostie(&ghosties[i], &maze, display, window);

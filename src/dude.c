@@ -1,6 +1,6 @@
-static void draw_or_erase_dude(Display* dpy, Window win, Dude* dude, bool erase) {
+static void draw_or_erase_dan(Display* dpy, Window win, Dude* dan, bool erase) {
     assert (dpy != NULL);
-    assert (dude != NULL);
+    assert (dan != NULL);
 
     GC gc = NULL;
     if (erase) {
@@ -11,80 +11,80 @@ static void draw_or_erase_dude(Display* dpy, Window win, Dude* dude, bool erase)
         gc = XCreateGC(dpy, DefaultRootWindow(dpy),
                 GCForeground | GCBackground, &gcv);
     } else {
-        gc = dude->gc;
+        gc = dan->gc;
     }
 
-    assert (dude->size > 0);
-    const uint32_t halfsize = dude->size / 2;
+    assert (dan->size > 0);
+    const uint32_t halfsize = dan->size / 2;
     const uint8_t mouth_line_length = 20;
-    const uint32_t startCircle = (dude->direction * 90 * 64) + 2500;
+    const uint32_t startCircle = (dan->direction * 90 * 64) + 2500;
     const uint32_t endCircle = 360 * 64 - 5000;
-    XDrawPoint(dpy, win, gc, dude->x, dude->y);
+    XDrawPoint(dpy, win, gc, dan->x, dan->y);
     XDrawArc(dpy, win, gc,
-        dude->x-halfsize, dude->y-halfsize, // x and y are in the upper-left corner
-        dude->size, dude->size, // width and height
+        dan->x-halfsize, dan->y-halfsize, // x and y are in the upper-left corner
+        dan->size, dan->size, // width and height
         startCircle, endCircle);
 
-    switch (dude->direction) {
+    switch (dan->direction) {
         case right:
-            XDrawLine(dpy, win, gc, dude->x, dude->y, dude->x + mouth_line_length, dude->y + 15);
-            XDrawLine(dpy, win, gc, dude->x, dude->y, dude->x + mouth_line_length, dude->y - 15);
+            XDrawLine(dpy, win, gc, dan->x, dan->y, dan->x + mouth_line_length, dan->y + 15);
+            XDrawLine(dpy, win, gc, dan->x, dan->y, dan->x + mouth_line_length, dan->y - 15);
             break;
         case up:
-            XDrawLine(dpy, win, gc, dude->x, dude->y, dude->x + 15, dude->y - mouth_line_length);
-            XDrawLine(dpy, win, gc, dude->x, dude->y, dude->x - 15, dude->y - mouth_line_length);
+            XDrawLine(dpy, win, gc, dan->x, dan->y, dan->x + 15, dan->y - mouth_line_length);
+            XDrawLine(dpy, win, gc, dan->x, dan->y, dan->x - 15, dan->y - mouth_line_length);
             break;
         case left:
-            XDrawLine(dpy, win, gc, dude->x, dude->y, dude->x - mouth_line_length, dude->y + 15);
-            XDrawLine(dpy, win, gc, dude->x, dude->y, dude->x - mouth_line_length, dude->y - 15);
+            XDrawLine(dpy, win, gc, dan->x, dan->y, dan->x - mouth_line_length, dan->y + 15);
+            XDrawLine(dpy, win, gc, dan->x, dan->y, dan->x - mouth_line_length, dan->y - 15);
             break;
         case down:
-            XDrawLine(dpy, win, gc, dude->x, dude->y, dude->x + 15, dude->y + mouth_line_length);
-            XDrawLine(dpy, win, gc, dude->x, dude->y, dude->x - 15, dude->y + mouth_line_length);
+            XDrawLine(dpy, win, gc, dan->x, dan->y, dan->x + 15, dan->y + mouth_line_length);
+            XDrawLine(dpy, win, gc, dan->x, dan->y, dan->x - 15, dan->y + mouth_line_length);
             break;
     }
 }
 
-void draw_dude(Display * dpy, Window win, Dude* dude) {
-    draw_or_erase_dude(dpy, win, dude, false);
+void draw_dan(Display * dpy, Window win, Dude* dan) {
+    draw_or_erase_dan(dpy, win, dan, false);
 }
 
-void erase_dude(Display * dpy, Window win, Dude* dude) {
-    draw_or_erase_dude(dpy, win, dude, true);
+void erase_dan(Display * dpy, Window win, Dude* dan) {
+    draw_or_erase_dan(dpy, win, dan, true);
 }
 
-void move_dude(Dude* dude, Direction dir, Maze* maze, Display* dpy, Window win, uint64_t* foods_eaten) {
-    erase_dude(dpy, win, dude);
+void move_dan(Dude* dan, Direction dir, Maze* maze, Display* dpy, Window win, uint64_t* foods_eaten) {
+    erase_dan(dpy, win, dan);
 
     assert (dir == right || dir == up || dir == left || dir == down);
-    dude->direction = dir;
+    dan->direction = dir;
 
-    if (can_proceed(dude, maze)) {
+    if (can_proceed(dan, maze)) {
         switch (dir) {
             case right:
-                assert (dude->x < WINDOW_HEIGHT);
-                dude->x += CORRIDOR_SIZE / 5;
+                assert (dan->x < WINDOW_HEIGHT);
+                dan->x += CORRIDOR_SIZE / 5;
                 break;
             case up:
-                assert (dude->y > 0);
-                dude->y -= CORRIDOR_SIZE / 5;
+                assert (dan->y > 0);
+                dan->y -= CORRIDOR_SIZE / 5;
                 break;
             case left:
-                assert (dude->x > 0);
-                dude->x -= CORRIDOR_SIZE / 5;
+                assert (dan->x > 0);
+                dan->x -= CORRIDOR_SIZE / 5;
                 break;
             case down:
-                assert (dude->y < WINDOW_HEIGHT);
-                dude->y += CORRIDOR_SIZE / 5;
+                assert (dan->y < WINDOW_HEIGHT);
+                dan->y += CORRIDOR_SIZE / 5;
                 break;
         }
     }
 
-    draw_dude(dpy, win, dude);
+    draw_dan(dpy, win, dan);
 
-    if (dude->x % CORRIDOR_SIZE == 0 && dude->y % CORRIDOR_SIZE == 0) {
-        if (maze->tiles[dude->x/CORRIDOR_SIZE][dude->y/CORRIDOR_SIZE] == food) {
-            maze->tiles[dude->x/CORRIDOR_SIZE][dude->y/CORRIDOR_SIZE] = vacant;
+    if (dan->x % CORRIDOR_SIZE == 0 && dan->y % CORRIDOR_SIZE == 0) {
+        if (maze->tiles[dan->x/CORRIDOR_SIZE][dan->y/CORRIDOR_SIZE] == food) {
+            maze->tiles[dan->x/CORRIDOR_SIZE][dan->y/CORRIDOR_SIZE] = vacant;
             maze->food_count--; // FIXME remove this?
             (*foods_eaten)++;
         }
