@@ -23,7 +23,7 @@
 #include "centre_box.c"
 
 
-void draw_game(Display* dpy, Window win, Maze* maze, Dude* dude, Ghostie ghosties[], uint8_t num_ghosties) {
+void draw_game(Display* dpy, Window win, Maze* maze, Dude* dude, Dude ghosties[], uint8_t num_ghosties) {
 //     XLockDisplay(dpy);
     draw_maze(dpy, win, maze);
     draw_dude(dpy, win, dude);
@@ -57,7 +57,7 @@ int main(void) {
     Dude dude = new_dude(display, screen, 1, 1, right, &maze, "rgb:cc/ee/11");
 
     uint32_t num_ghosties = 7;
-    Ghostie ghosties[num_ghosties];
+    Dude ghosties[num_ghosties];
     ghosties[0] = new_dude(display, screen, 1, 27, right, &maze, "rgb:fa/aa/ab");
     ghosties[1] = new_dude(display, screen, 27, 27, up, &maze, "rgb:33/99/cc");
     ghosties[2] = new_dude(display, screen, 27, 1, down, &maze, "rgb:99/33/ff");

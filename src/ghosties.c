@@ -1,4 +1,4 @@
-static void draw_or_erase_ghostie(Display* dpy, Window win, Ghostie* ghostie, bool erase) {
+static void draw_or_erase_ghostie(Display* dpy, Window win, Dude* ghostie, bool erase) {
     assert (dpy != NULL);
     assert (ghostie != NULL);
 
@@ -113,17 +113,17 @@ static void draw_or_erase_ghostie(Display* dpy, Window win, Ghostie* ghostie, bo
     }
 }
 
-void draw_ghostie(Display * dpy, Window win, Ghostie* ghostie) {
+void draw_ghostie(Display * dpy, Window win, Dude* ghostie) {
     draw_or_erase_ghostie(dpy, win, ghostie, false);
 }
 
-void erase_ghostie(Display * dpy, Window win, Ghostie* ghostie) {
+void erase_ghostie(Display * dpy, Window win, Dude* ghostie) {
     draw_or_erase_ghostie(dpy, win, ghostie, true);
 
 
 }
 
-void turn_around(Ghostie* ghostie, Tile neighbours[static 4]) {
+void turn_around(Dude* ghostie, Tile neighbours[static 4]) {
     for (uint8_t i = 0; i < 4; i++) {
         if (neighbours[i] != blocked) {
             ghostie->direction = i;
@@ -132,7 +132,7 @@ void turn_around(Ghostie* ghostie, Tile neighbours[static 4]) {
     }
 }
 
-void proceed_forward(Ghostie* ghostie, Tile neighbours[static 4]) {
+void proceed_forward(Dude* ghostie, Tile neighbours[static 4]) {
     Direction came_from = (ghostie->direction + 2) % 4;
     for (uint8_t i = 0; i < 4; i++) {
         if (neighbours[i] != blocked && i != came_from) {
@@ -142,7 +142,7 @@ void proceed_forward(Ghostie* ghostie, Tile neighbours[static 4]) {
     }
 }
 
-void choose_fork(Ghostie* ghostie, Tile neighbours[static 4], uint8_t options) {
+void choose_fork(Dude* ghostie, Tile neighbours[static 4], uint8_t options) {
     Direction came_from = (ghostie->direction + 2) % 4;
     uint32_t randy = rand(); // FIXME better random numbers?
     options--;
@@ -158,7 +158,7 @@ void choose_fork(Ghostie* ghostie, Tile neighbours[static 4], uint8_t options) {
     }
 }
 
-void ghostie_set_direction(Ghostie* ghostie, Maze* maze) {
+void ghostie_set_direction(Dude* ghostie, Maze* maze) {
     assert ((ghostie->x % CORRIDOR_SIZE == 0 && ghostie->y % CORRIDOR_SIZE == 0));
     uint32_t x = ghostie->x / CORRIDOR_SIZE;
     uint32_t y = ghostie->y / CORRIDOR_SIZE;
@@ -192,7 +192,7 @@ void ghostie_set_direction(Ghostie* ghostie, Maze* maze) {
     }
 }
 
-void move_ghostie(Ghostie* ghostie, Maze* maze, Display* dpy, Window win) {
+void move_ghostie(Dude* ghostie, Maze* maze, Display* dpy, Window win) {
     erase_ghostie(dpy, win, ghostie);
 
     assert (ghostie->direction == right ||
