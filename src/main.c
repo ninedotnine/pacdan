@@ -14,9 +14,9 @@
 #include <X11/Xutil.h>
 
 #include "types.h"
-#include "movements.c"
 #include "maze.c"
 #include "dude.c"
+#include "dan.c"
 #include "ghosties.c"
 #include "threading.c"
 #include "controls.c"

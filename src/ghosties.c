@@ -1,3 +1,6 @@
+/*  this file contains routines relevant to the ghosties.
+ */
+
 static void draw_or_erase_ghostie(Display* dpy, Window win, Dude* ghostie, bool erase) {
     assert (dpy != NULL);
     assert (ghostie != NULL);

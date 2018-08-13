@@ -1,3 +1,5 @@
+/*  this file contains routines relevant to the scoreboard.
+ */
 void initialize_font_and_colours(Display * dpy, int screen, XFontStruct** font, GC* gc_fab) {
     assert (dpy != NULL);
     assert (font != NULL);

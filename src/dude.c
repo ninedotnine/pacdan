@@ -1,3 +1,62 @@
+/* this file contains functions and routines applicable to both dan and the ghosties.
+ */
+static gcc_pure bool in_centre_of_tile(Dude* dude) {
+    return (dude->x % CORRIDOR_SIZE == 0 && dude->y % CORRIDOR_SIZE == 0);
+}
+
+static gcc_pure bool isOnTrack(Dude* dude) {
+    // returns true if dude can proceed in this direction
+    assert (dude->direction == right || dude->direction == up || dude->direction == left || dude->direction == down);
+    switch (dude->direction) {
+        case up:
+        case down:
+            return dude->x % CORRIDOR_SIZE == 0;
+        case left:
+        case right:
+            return dude->y % CORRIDOR_SIZE == 0;
+    }
+    abort();
+    return false; // should never happen
+}
+
+static gcc_pure bool isNotBlocked(Dude* dude, Maze* maze) {
+    // returns true if dude is not wak-blocked
+    assert (dude->x > 0);
+    assert (dude->y > 0);
+    assert (dude->x < WINDOW_HEIGHT);
+    assert (dude->y < WINDOW_HEIGHT);
+    assert (dude->x % CORRIDOR_SIZE == 0 || dude->y % CORRIDOR_SIZE == 0);
+//     if (dude->x % CORRIDOR_SIZE != 0 || dude->y % CORRIDOR_SIZE != 0) {
+    if (! in_centre_of_tile(dude)) {
+        return true; // walls are only relevant at turning points
+    }
+
+    assert (dude->x % CORRIDOR_SIZE == 0);
+    assert (dude->y % CORRIDOR_SIZE == 0);
+
+    uint32_t x = dude->x;
+    uint32_t y = dude->y;
+    switch (dude->direction) {
+        case right:
+            x += CORRIDOR_SIZE;
+            break;
+        case up:
+            y -= CORRIDOR_SIZE;
+            break;
+        case down:
+            y += CORRIDOR_SIZE;
+            break;
+        case left:
+            x -= CORRIDOR_SIZE;
+            break;
+    }
+    return (maze->tiles[x/CORRIDOR_SIZE][y/CORRIDOR_SIZE] != blocked);
+}
+
+bool gcc_pure can_proceed(Dude* dude, Maze* maze) {
+    return isOnTrack(dude) && isNotBlocked(dude, maze);
+}
+
 static void draw_or_erase_dan(Display* dpy, Window win, Dude* dan, bool erase) {
     assert (dpy != NULL);
     assert (dan != NULL);
@@ -42,52 +101,6 @@ static void draw_or_erase_dan(Display* dpy, Window win, Dude* dan, bool erase) {
             XDrawLine(dpy, win, gc, dan->x, dan->y, dan->x + 15, dan->y + mouth_line_length);
             XDrawLine(dpy, win, gc, dan->x, dan->y, dan->x - 15, dan->y + mouth_line_length);
             break;
-    }
-}
-
-void draw_dan(Display * dpy, Window win, Dude* dan) {
-    draw_or_erase_dan(dpy, win, dan, false);
-}
-
-void erase_dan(Display * dpy, Window win, Dude* dan) {
-    draw_or_erase_dan(dpy, win, dan, true);
-}
-
-void move_dan(Dude* dan, Direction dir, Maze* maze, Display* dpy, Window win, uint64_t* foods_eaten) {
-    erase_dan(dpy, win, dan);
-
-    assert (dir == right || dir == up || dir == left || dir == down);
-    dan->direction = dir;
-
-    if (can_proceed(dan, maze)) {
-        switch (dir) {
-            case right:
-                assert (dan->x < WINDOW_HEIGHT);
-                dan->x += CORRIDOR_SIZE / 5;
-                break;
-            case up:
-                assert (dan->y > 0);
-                dan->y -= CORRIDOR_SIZE / 5;
-                break;
-            case left:
-                assert (dan->x > 0);
-                dan->x -= CORRIDOR_SIZE / 5;
-                break;
-            case down:
-                assert (dan->y < WINDOW_HEIGHT);
-                dan->y += CORRIDOR_SIZE / 5;
-                break;
-        }
-    }
-
-    draw_dan(dpy, win, dan);
-
-    if (dan->x % CORRIDOR_SIZE == 0 && dan->y % CORRIDOR_SIZE == 0) {
-        if (maze->tiles[dan->x/CORRIDOR_SIZE][dan->y/CORRIDOR_SIZE] == food) {
-            maze->tiles[dan->x/CORRIDOR_SIZE][dan->y/CORRIDOR_SIZE] = vacant;
-            maze->food_count--; // FIXME remove this?
-            (*foods_eaten)++;
-        }
     }
 }
 
