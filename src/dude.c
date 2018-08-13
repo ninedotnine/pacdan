@@ -1,15 +1,18 @@
 static void draw_or_erase_dude(Display* dpy, Window win, Dude* dude, bool erase) {
     assert (dpy != NULL);
+    assert (dude != NULL);
 
-    static XGCValues gcv;
-    gcv.background = BlackPixel(dpy, DefaultScreen(dpy));
+    GC gc = NULL;
     if (erase) {
-        gcv.foreground = BlackPixel(dpy, DefaultScreen(dpy));
+        XGCValues gcv = {
+            .background = BlackPixel(dpy, DefaultScreen(dpy)),
+            .foreground = BlackPixel(dpy, DefaultScreen(dpy))
+        };
+        gc = XCreateGC(dpy, DefaultRootWindow(dpy),
+                GCForeground | GCBackground, &gcv);
     } else {
-        gcv.foreground = WhitePixel(dpy, DefaultScreen(dpy));
+        gc = dude->gc;
     }
-    const GC gc = XCreateGC(dpy, DefaultRootWindow(dpy),
-            GCForeground | GCBackground, &gcv);
 
     assert (dude->size > 0);
     const uint32_t halfsize = dude->size / 2;
@@ -88,14 +91,27 @@ void move_dude(Dude* dude, Direction dir, Maze* maze, Display* dpy, Window win) 
     }
 }
 
-Dude initialize_dude(uint32_t x, uint32_t y, Direction dir, Maze* maze) {
+Dude new_dude(Display* dpy, int screen, uint32_t x, uint32_t y, Direction dir, Maze* maze, char* colour) {
     /* gives the starting position */
+    Colormap colourmap = DefaultColormap(dpy, screen);
+
+    XColor dude_colour;
+    XParseColor(dpy, colourmap, colour, &dude_colour);
+    XAllocColor(dpy, colourmap, &dude_colour);
+
+    XGCValues gcv_dude = {
+        .foreground = dude_colour.pixel
+    };
+
+    GC gc_dude = XCreateGC(dpy, RootWindow(dpy, screen), GCForeground | GCBackground, &gcv_dude);
+
     Dude dude = {
         .x = x * CORRIDOR_SIZE,
         .y = y * CORRIDOR_SIZE,
         .size = 48,
         .direction = dir,
-        .foods_eaten = 0
+        .foods_eaten = 0,
+        .gc = gc_dude
     };
 
     if (maze->tiles[dude.x/CORRIDOR_SIZE][dude.y/CORRIDOR_SIZE] == food) {

@@ -46,8 +46,6 @@ int main(void) {
     Maze maze;
     build_maze(&maze);
 
-    Dude dude = initialize_dude(1, 1, right, &maze);
-
     Display * display = XOpenDisplay(NULL);
     if (display == NULL) {
         fputs("no display.\n", stderr);
@@ -56,6 +54,8 @@ int main(void) {
 
     int screen = DefaultScreen(display);
 
+    Dude dude = new_dude(display, screen, 1, 1, right, &maze, "rgb:cc/ee/11");
+
     uint32_t num_ghosties = 7;
     Ghostie ghosties[num_ghosties];
     ghosties[0] = new_ghostie(display, screen, 1, 27, right, &maze, "rgb:fa/aa/ab");
@@ -63,7 +63,6 @@ int main(void) {
     ghosties[2] = new_ghostie(display, screen, 27, 1, down, &maze, "rgb:99/33/ff");
     ghosties[3] = new_ghostie(display, screen, 19, 9, down, &maze, "rgb:11/11/ee");
     ghosties[4] = new_ghostie(display, screen, 9, 19, down, &maze, "rgb:ee/11/11");
-//     ghosties[5] = new_ghostie(display, screen, 9, 9, down, &maze, "rgb:cc/ee/11"); // this will be the dude's colour
     ghosties[5] = new_ghostie(display, screen, 9, 9, down, &maze, "rgb:11/ee/11");
     ghosties[6] = new_ghostie(display, screen, 19, 19, down, &maze, "rgb:ee/11/ee");
 

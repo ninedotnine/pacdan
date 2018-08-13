@@ -25,6 +25,7 @@ typedef struct {
     uint32_t size; // pacman is a square, this means width and height
     Direction direction;
     uint64_t foods_eaten;
+    GC gc;
 } Dude;
 
 typedef struct {
