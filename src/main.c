@@ -37,6 +37,7 @@ int main(void) {
 
     if (0 == XInitThreads()) {
         fputs("not able to initialize multithreading.", stderr);
+        exit(EXIT_FAILURE);
     }
 
     Directions dirs = { false, false, false, false };
