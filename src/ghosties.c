@@ -150,7 +150,7 @@ static void choose_fork(Dude* ghostie, Tile neighbours[static 4], uint8_t option
     options--;
     for (uint8_t i = 0; i < 4; i++) {
         if (neighbours[i] != blocked && i != came_from) {
-            if (randy % (options) == 0) {
+            if (randy % options == 0) {
                 ghostie->direction = i;
                 return;
             } else {
