@@ -44,7 +44,7 @@ typedef struct {
 
 typedef struct {
     Display* const dpy;
-    const Window* const win_p;
+    const Window win;
     bool game_over;
     bool paused;
     Directions* dirs;

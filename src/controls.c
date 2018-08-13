@@ -124,11 +124,10 @@ static void * handle_xevents(void * arg) {
 }
 
 
-static Controls_thread_data gcc_pure new_thread_data(Display* const dpy, const Window* const win,
-                                                     Directions* const dirs) {
+static Controls_thread_data gcc_pure new_thread_data(Display* const dpy, const Window win, Directions* const dirs) {
     const Controls_thread_data data = {
         .dpy = dpy,
-        .win_p = win,
+        .win = win,
         .dirs = dirs,
         .game_over = false,
         .paused = true // start game paused
