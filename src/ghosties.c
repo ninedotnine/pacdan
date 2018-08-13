@@ -200,11 +200,11 @@ void move_ghostie(Ghostie* ghostie, Maze* maze, Display* dpy, Window win) {
             ghostie->direction == left ||
             ghostie->direction == down);
 
-    if (ghostie_in_centre_of_tile(ghostie)) {
+    if (in_centre_of_tile(ghostie)) {
         ghostie_set_direction(ghostie, maze);
     }
 
-    assert (ghostie_can_proceed(ghostie, maze));
+    assert (can_proceed(ghostie, maze));
     switch (ghostie->direction) {
         case right:
             assert (ghostie->x < WINDOW_HEIGHT);
