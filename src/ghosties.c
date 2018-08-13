@@ -115,17 +115,17 @@ static void draw_or_erase_ghostie(Display* dpy, Window win, Dude* ghostie, bool 
     }
 }
 
-void draw_ghostie(Display * dpy, Window win, Dude* ghostie) {
+static void draw_ghostie(Display * dpy, Window win, Dude* ghostie) {
     draw_or_erase_ghostie(dpy, win, ghostie, false);
 }
 
-void erase_ghostie(Display * dpy, Window win, Dude* ghostie) {
+static void erase_ghostie(Display * dpy, Window win, Dude* ghostie) {
     draw_or_erase_ghostie(dpy, win, ghostie, true);
 
 
 }
 
-void turn_around(Dude* ghostie, Tile neighbours[static 4]) {
+static void turn_around(Dude* ghostie, Tile neighbours[static 4]) {
     for (uint8_t i = 0; i < 4; i++) {
         if (neighbours[i] != blocked) {
             ghostie->direction = i;
@@ -134,7 +134,7 @@ void turn_around(Dude* ghostie, Tile neighbours[static 4]) {
     }
 }
 
-void proceed_forward(Dude* ghostie, Tile neighbours[static 4]) {
+static void proceed_forward(Dude* ghostie, Tile neighbours[static 4]) {
     Direction came_from = (ghostie->direction + 2) % 4;
     for (uint8_t i = 0; i < 4; i++) {
         if (neighbours[i] != blocked && i != came_from) {
@@ -144,7 +144,7 @@ void proceed_forward(Dude* ghostie, Tile neighbours[static 4]) {
     }
 }
 
-void choose_fork(Dude* ghostie, Tile neighbours[static 4], uint8_t options) {
+static void choose_fork(Dude* ghostie, Tile neighbours[static 4], uint8_t options) {
     Direction came_from = (ghostie->direction + 2) % 4;
     uint32_t randy = rand(); // FIXME better random numbers?
     options--;
@@ -194,7 +194,7 @@ void ghostie_set_direction(Dude* ghostie, Maze* maze) {
     }
 }
 
-void move_ghostie(Dude* ghostie, Maze* maze, Display* dpy, Window win) {
+static void move_ghostie(Dude* ghostie, Maze* maze, Display* dpy, Window win) {
     erase_ghostie(dpy, win, ghostie);
 
     assert (ghostie->direction == right ||

@@ -23,7 +23,7 @@
 #include "centre_box.c"
 
 
-void draw_game(Display* dpy, Window win, Maze* maze, Dude* dude, Dude ghosties[], uint8_t num_ghosties) {
+static void draw_game(Display* dpy, Window win, Maze* maze, Dude* dude, Dude ghosties[], uint8_t num_ghosties) {
 //     XLockDisplay(dpy);
     draw_maze(dpy, win, maze);
     draw_dan(dpy, win, dude);
@@ -43,7 +43,7 @@ int main(void) {
     Directions dirs = { false, false, false, false };
 
     Maze maze;
-    build_maze(&maze);
+    initialize_maze(&maze);
 
     Display * display = XOpenDisplay(NULL);
     if (display == NULL) {

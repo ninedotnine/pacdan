@@ -74,7 +74,7 @@ static void distribute_food(Maze* maze) {
 }
 
 /* call build_maze to make the maze */
-void build_maze(Maze* maze) {
+static void initialize_maze(Maze* maze) {
     maze->wall_count = 0;
     memset(maze->tiles, 0, sizeof(maze->tiles)); // all tiles are vacant to begin
 
@@ -171,7 +171,7 @@ void build_maze(Maze* maze) {
     distribute_food(maze);
 }
 
-void draw_maze(Display* dpy, Window win, Maze* maze) {
+static void draw_maze(Display* dpy, Window win, Maze* maze) {
     assert (WALL_LIMIT == maze->wall_count); // don't try to draw the maze until you've populated it
     assert(dpy);
     XGCValues gcv = {

@@ -1,15 +1,15 @@
 /* dan is the name of the protagonist.
  */
 
-void draw_dan(Display * dpy, Window win, Dude* dan) {
+static void draw_dan(Display * dpy, Window win, Dude* dan) {
     draw_or_erase_dan(dpy, win, dan, false);
 }
 
-void erase_dan(Display * dpy, Window win, Dude* dan) {
+static void erase_dan(Display * dpy, Window win, Dude* dan) {
     draw_or_erase_dan(dpy, win, dan, true);
 }
 
-void move_dan(Dude* dan, Direction dir, Maze* maze, Display* dpy, Window win, uint64_t* foods_eaten) {
+static void move_dan(Dude* dan, Direction dir, Maze* maze, Display* dpy, Window win, uint64_t* foods_eaten) {
     erase_dan(dpy, win, dan);
 
     assert (dir == right || dir == up || dir == left || dir == down);

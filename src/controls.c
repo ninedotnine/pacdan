@@ -1,4 +1,4 @@
-void handle_keypress(XEvent event, Controls_thread_data* data) {
+static void handle_keypress(XEvent event, Controls_thread_data* data) {
     KeySym keysym = XLookupKeysym(&event.xkey, 0);
     thread_lock();
     switch (keysym) {
@@ -53,7 +53,7 @@ void handle_keypress(XEvent event, Controls_thread_data* data) {
     }
 }
 
-void handle_keyrelease(XEvent event, Directions* dirs) {
+static void handle_keyrelease(XEvent event, Directions* dirs) {
     KeySym keysym = XLookupKeysym(&event.xkey, 0);
     thread_lock();
     switch (keysym) {
@@ -83,7 +83,7 @@ void handle_keyrelease(XEvent event, Directions* dirs) {
     thread_unlock();
 }
 
-void * handle_xevents(void * arg) {
+static void * handle_xevents(void * arg) {
     Controls_thread_data* data = (Controls_thread_data*) arg;
     assert (data != NULL);
     assert (data->dpy != NULL);
@@ -124,7 +124,7 @@ void * handle_xevents(void * arg) {
 }
 
 
-Controls_thread_data gcc_pure new_thread_data(Display* dpy, Window* win, Directions* dirs) {
+static Controls_thread_data gcc_pure new_thread_data(Display* dpy, Window* win, Directions* dirs) {
     Controls_thread_data data = {
         .dpy = dpy,
         .win_p = win,

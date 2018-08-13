@@ -53,7 +53,7 @@ static gcc_pure bool isNotBlocked(Dude* dude, Maze* maze) {
     return (maze->tiles[x/CORRIDOR_SIZE][y/CORRIDOR_SIZE] != blocked);
 }
 
-bool gcc_pure can_proceed(Dude* dude, Maze* maze) {
+static bool gcc_pure can_proceed(Dude* dude, Maze* maze) {
     return isOnTrack(dude) && isNotBlocked(dude, maze);
 }
 
@@ -104,7 +104,7 @@ static void draw_or_erase_dan(Display* dpy, Window win, Dude* dan, bool erase) {
     }
 }
 
-Dude new_dude(Display* dpy, int screen, uint32_t x, uint32_t y, Direction dir, Maze* maze, char* colour) {
+static Dude new_dude(Display* dpy, int screen, uint32_t x, uint32_t y, Direction dir, Maze* maze, char* colour) {
     /* gives the starting position */
     Colormap colourmap = DefaultColormap(dpy, screen);
 
