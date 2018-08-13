@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -std=gnu99 -Wall -Wextra -g -pedantic -march=native -O2
+CFLAGS = -std=gnu99 -Wall -Wextra -g -pedantic -march=native
 FILES = src/main.c
 OUT_EXE = bin/pacdan
 LIBS = -l X11 -l pthread
