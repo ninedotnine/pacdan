@@ -26,94 +26,84 @@ static void initialize_font_and_colours(Display* const dpy, const int screen, XF
         fputs("font no exist\n", stderr);
         exit(EXIT_FAILURE);
     }
+
+    XSetFont(dpy, *gc_fab, (*font)->fid);
 }
 
-static void update_score(Display* const dpy, const Window centre_win, const GC gc_fab, XFontStruct* const font,
+#define max_text_length 15
+static void update_score(Display* const dpy, const Window win, const GC gc, XFontStruct* const font,
                          const uint64_t foods_eaten) {
-    const uint8_t max_text_length = 15;
     assert (dpy != NULL);
-    assert (gc_fab != NULL);
+    assert (gc != NULL);
     assert (font != NULL);
 
-    XClearWindow(dpy, centre_win);
+    XClearWindow(dpy, win);
 
-    XTextItem xti = {
-        .delta = 0,
-        .font = font->fid,
-        .chars = "score:",
-        .nchars = strlen(xti.chars)
-    };
+    char text[max_text_length] = "score:";
+    int length = strlen(text);
 
-    XDrawText(dpy, centre_win, gc_fab,
-           (195-XTextWidth(font, xti.chars, xti.nchars))/2,
-           ((195-(font->ascent+font->descent))/2),
-            &xti, 1);
+    XDrawString(dpy, win, gc,
+            (195-XTextWidth(font, text, length))/2,
+            ((195-(font->ascent+font->descent))/2),
+            text, length);
 
-    char text[max_text_length];
     snprintf(text, max_text_length, "%ld", foods_eaten * 100); // in games, numbers are always multiplied by 100
-    xti.chars = text;
-    xti.nchars = strlen(xti.chars);
-    XDrawText(dpy, centre_win, gc_fab,
-           (195-XTextWidth(font, xti.chars, xti.nchars))/2,
-           ((195-(font->ascent+font->descent))/2)+font->ascent,
-            &xti, 1);
-}
 
-static void game_paused(Display* const dpy, const Window centre_win, const GC gc_fab, XFontStruct* const font,
-                        const bool begin) {
+    length = strlen(text);
+    XDrawString(dpy, win, gc,
+           (195-XTextWidth(font, text, length))/2,
+           ((195-(font->ascent+font->descent))/2)+font->ascent,
+            text, length);
+}
+#undef max_text_length
+
+static void game_paused(Display* const dpy, const Window win, const GC gc, XFontStruct* const font, const bool begin) {
     assert (dpy != NULL);
-    assert (gc_fab != NULL);
+    assert (gc != NULL);
     assert (font != NULL);
 
-    XTextItem xti = {
-        .delta = 0,
-        .font = font->fid,
-        .chars = "paused",
-        .nchars = strlen(xti.chars)
-    };
+    char* text = "paused";
+    int length = strlen(text);
 
-    XDrawText(dpy, centre_win, gc_fab,
-           (195-XTextWidth(font, xti.chars, xti.nchars))/2,
+    XDrawString(dpy, win, gc,
+           (195-XTextWidth(font, text, length))/2,
            ((195-(font->ascent+font->descent))/2)-(font->ascent*2),
-            &xti, 1);
+            text, length);
 
     if (begin) {
-        xti.chars = "move to begin.";
+        text = "move to begin.";
     } else {
-        xti.chars = "move to resume.";
+        text = "move to resume.";
     }
-    xti.nchars = strlen(xti.chars);
+    length = strlen(text);
 
-    XDrawText(dpy, centre_win, gc_fab,
-           (195-XTextWidth(font, xti.chars, xti.nchars))/2,
+    XDrawString(dpy, win, gc,
+           (195-XTextWidth(font, text, length))/2,
            ((195-(font->ascent+font->descent))/2)+(font->ascent*4),
-            &xti, 1);
+            text, length);
 
     XFlush(dpy);
 }
 
-static void congratulate(Display* const dpy, const Window centre_win, const GC gc_fab, XFontStruct* const font) {
+static void congratulate(Display* const dpy, const Window win, const GC gc, XFontStruct* const font) {
     assert (dpy != NULL);
-    assert (gc_fab != NULL);
+    assert (gc != NULL);
     assert (font != NULL);
 
-    XTextItem xti = {
-        .delta = 0,
-        .font = font->fid,
-        .chars = "okay, you win.",
-        .nchars = strlen(xti.chars)
-    };
+    char* text = "okay, you win.";
+    int length = strlen(text);
 
-    XDrawText(dpy, centre_win, gc_fab,
-           (195-XTextWidth(font, xti.chars, xti.nchars))/2,
+    XDrawString(dpy, win, gc,
+           (195-XTextWidth(font, text, length))/2,
            ((195-(font->ascent+font->descent))/2)-(font->ascent*2),
-            &xti, 1);
+            text, length);
 
-    xti.chars = "ESC to quit.";
-    xti.nchars = strlen(xti.chars);
-    XDrawText(dpy, centre_win, gc_fab,
-           (195-XTextWidth(font, xti.chars, xti.nchars))/2,
+    text = "ESC to quit.";
+    length = strlen(text);
+
+    XDrawString(dpy, win, gc,
+           (195-XTextWidth(font, text, length))/2,
            ((195-(font->ascent+font->descent))/2)+(font->ascent*4),
-            &xti, 1);
+            text, length);
     XFlush(dpy);
 }
