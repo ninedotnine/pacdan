@@ -85,6 +85,34 @@ static void game_paused(Display* const dpy, const Window win, const GC gc, XFont
     XFlush(dpy);
 }
 
+static void insult_the_loser(Display* const dpy, const Window win, const GC gc, XFontStruct* const font) {
+    assert (dpy != NULL);
+    assert (gc != NULL);
+    assert (font != NULL);
+
+    char* text = "you have";
+    int length = strlen(text);
+    XDrawString(dpy, win, gc,
+           (195-XTextWidth(font, text, length))/2,
+           ((195-(font->ascent+font->descent))/2)-(font->ascent*3),
+            text, length);
+
+    text = "been eaten";
+    length = strlen(text);
+    XDrawString(dpy, win, gc,
+           (195-XTextWidth(font, text, length))/2,
+           ((195-(font->ascent+font->descent))/2)-(font->ascent*2),
+            text, length);
+
+    text = "ESC to quit.";
+    length = strlen(text);
+    XDrawString(dpy, win, gc,
+           (195-XTextWidth(font, text, length))/2,
+           ((195-(font->ascent+font->descent))/2)+(font->ascent*4),
+            text, length);
+    XFlush(dpy);
+}
+
 static void congratulate(Display* const dpy, const Window win, const GC gc, XFontStruct* const font) {
     assert (dpy != NULL);
     assert (gc != NULL);

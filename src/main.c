@@ -134,6 +134,9 @@ int main(void) {
         } else if (0 == maze.food_count) {
             congratulate(display, centre_win, gc_fab, font);
             break;
+        } else if (dan_is_eaten(&dan, ghosties, num_ghosties)) {
+            insult_the_loser(display, centre_win, gc_fab, font);
+            break;
         }
 
         nanosleep(&tim, NULL);
