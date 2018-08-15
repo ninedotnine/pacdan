@@ -49,7 +49,7 @@ static void draw_ghostie(Display* const dpy, const Window win, const Ghostie* co
     const uint32_t halfCircle = fullCircle / 2;
     const uint32_t eye_height = y-12;
 
-    const XPoint points[9] = {{
+    XPoint points[9] = {{
         .x = x-halfsize,
         .y = y
     }, {
