@@ -1,7 +1,5 @@
 make all directions behave the same way; right now going right is special
 
-pause when window loses focus
-
 internal:
 use points more? or use them less? be consistent at least
 can't build walls that start at 0

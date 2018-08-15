@@ -92,6 +92,8 @@ static void * handle_xevents(void * arg) {
     while (data->dpy != NULL && (! data->game_over)) {
         XNextEvent(data->dpy, &event);
         assert(event.type == Expose ||
+               event.type == FocusIn ||
+               event.type == FocusOut ||
                event.type == KeyPress ||
                event.type == KeyRelease ||
                event.type == ButtonPress ||
@@ -100,6 +102,16 @@ static void * handle_xevents(void * arg) {
         switch (event.type) {
           case Expose:
             puts("received expose event"); // should signal main thread to redraw
+            break;
+          case FocusIn:
+            puts("received focusin event");
+            memset(data->dirs, 0, sizeof(*data->dirs)); // make sure dan is not moving in any direction
+            break;
+          case FocusOut:
+            puts("received focusout event");
+            thread_lock();
+            data->paused = true;
+            thread_unlock();
             break;
           case KeyPress:
             handle_keypress(event, data);

@@ -87,7 +87,9 @@ int main(void) {
     attrs.background_pixel = BlackPixel(display, screen);
     attrs.override_redirect = true;
     attrs.colormap = CopyFromParent;
-    attrs.event_mask = ExposureMask | KeyPressMask | KeyReleaseMask | ButtonPressMask | ButtonReleaseMask;
+    attrs.event_mask = KeyPressMask | KeyReleaseMask |
+                       ButtonPressMask | ButtonReleaseMask |
+                       ExposureMask | FocusChangeMask ;
     // FIXME use FocusChangeMask to automatically pause
 
     const Window window = XCreateWindow(display, RootWindow(display, screen),
