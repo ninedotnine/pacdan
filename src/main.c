@@ -22,12 +22,16 @@
 #include "centre_box.c"
 
 
-static void draw_game(Display* const dpy, const Window win, const Maze* const maze, const Dude* const dude,
+static void draw_game(Display* const dpy, const Window win, const Maze* const maze, const Dude* const dan,
                       const Dude ghosties[const], const uint8_t num_ghosties) {
 //     XLockDisplay(dpy);
+    assert (dpy != NULL);
+    assert (maze != NULL);
+    assert (dan != NULL);
     assert (ghosties != NULL);
+    assert (num_ghosties > 0);
     draw_maze(dpy, win, maze);
-    draw_dan(dpy, win, dude);
+    draw_dan(dpy, win, dan);
     for (uint8_t i = 0; i < num_ghosties; i++) {
         draw_ghostie(dpy, win, &ghosties[i]);
     }
