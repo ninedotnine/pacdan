@@ -8,8 +8,6 @@ can't build walls that start at 0
 make the maze walls symmetrical?
 consolidate CORRIDOR_SIZE and pixels better?
 
-combine ghostie and dude into one struct
-
 make ghosties eat you
 
 rename "isnotblocked" to "pathisclear"?
@@ -22,4 +20,4 @@ make different mazes
 
 allow an arbitrary number of ghosties (with colours!)
 
-colour the main dude
+figure out why the main loop stops if you don't move for 458 iterations
