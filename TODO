@@ -8,8 +8,6 @@ consolidate CORRIDOR_SIZE and pixels better?
 
 make ghosties eat you
 
-rename "isnotblocked" to "pathisclear"?
-
 make ghosties start going the correct direction they are initialized with
 
 redraw everything when expose event is received

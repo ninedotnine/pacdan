@@ -4,7 +4,7 @@ static gcc_pure bool in_centre_of_tile(const Dude* const dude) {
     return (dude->x % CORRIDOR_SIZE == 0 && dude->y % CORRIDOR_SIZE == 0);
 }
 
-static gcc_pure bool isOnTrack(const Dude* const dude) {
+static gcc_pure bool is_on_track(const Dude* const dude) {
     // returns true if dude can proceed in this direction
     assert (dude->direction == right || dude->direction == up || dude->direction == left || dude->direction == down);
     switch (dude->direction) {
@@ -19,7 +19,7 @@ static gcc_pure bool isOnTrack(const Dude* const dude) {
     return false; // should never happen
 }
 
-static gcc_pure bool isNotBlocked(const Dude* const dude, const Maze* const maze) {
+static gcc_pure bool path_is_clear(const Dude* const dude, const Maze* const maze) {
     // returns true if dude is not wak-blocked
     assert (dude->x > 0);
     assert (dude->y > 0);
@@ -54,7 +54,7 @@ static gcc_pure bool isNotBlocked(const Dude* const dude, const Maze* const maze
 }
 
 static bool gcc_pure can_proceed(const Dude* const dude, const Maze* const maze) {
-    return isOnTrack(dude) && isNotBlocked(dude, maze);
+    return is_on_track(dude) && path_is_clear(dude, maze);
 }
 
 static Dude new_dude(Display* const dpy, const int screen, const uint32_t x, const uint32_t y, const Direction dir,
