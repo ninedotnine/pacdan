@@ -62,7 +62,7 @@ static void game_paused(Display* const dpy, const Window win, const GC gc, XFont
     assert (gc != NULL);
     assert (font != NULL);
 
-    char* text = "paused";
+    const char* text = "paused";
     int length = strlen(text);
 
     XDrawString(dpy, win, gc,
@@ -90,7 +90,7 @@ static void insult_the_loser(Display* const dpy, const Window win, const GC gc, 
     assert (gc != NULL);
     assert (font != NULL);
 
-    char* text = "you have";
+    const char* text = "you have";
     int length = strlen(text);
     XDrawString(dpy, win, gc,
            (195-XTextWidth(font, text, length))/2,
@@ -118,7 +118,7 @@ static void congratulate(Display* const dpy, const Window win, const GC gc, XFon
     assert (gc != NULL);
     assert (font != NULL);
 
-    char* text = "okay, you win.";
+    const char* text = "okay, you win.";
     int length = strlen(text);
 
     XDrawString(dpy, win, gc,
