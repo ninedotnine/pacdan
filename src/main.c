@@ -128,10 +128,13 @@ int main(void) {
         update_score(display, centre_win, gc_fab, font, foods_eaten); // FIXME only update if necessary
         XFlush(display);
 
-        if (game_is_paused(&data)) {
+        while (game_is_paused(&data)) {
             game_paused(display, centre_win, gc_fab, font, foods_eaten == 0);
+            draw_game(display, window, &maze, &dan, ghosties, num_ghosties);
             thread_wait();
-        } else if (0 == maze.food_count) {
+        }
+
+        if (0 == maze.food_count) {
             congratulate(display, centre_win, gc_fab, font);
             break;
         } else if (dan_is_eaten(&dan, ghosties, num_ghosties)) {

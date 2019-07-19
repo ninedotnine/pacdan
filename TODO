@@ -10,8 +10,6 @@ make ghosties eat you
 
 make ghosties start going the correct direction they are initialized with
 
-redraw everything when expose event is received
-
 make different mazes
 
 allow an arbitrary number of ghosties (with colours!)
