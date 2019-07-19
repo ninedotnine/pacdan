@@ -87,13 +87,22 @@ static Dude new_dude(Display* const dpy, const int screen, const uint32_t x, con
     return dude;
 }
 
+static gcc_pure uint32_t unsigned_diff(uint32_t x, uint32_t y) {
+    if (x > y) {
+        return x - y;
+    } else {
+        return y - x;
+    }
+}
+
 static gcc_pure bool dudes_are_touching(const Dude* const dan, const Dude* const ghostie) {
     if (dan->x == ghostie->x) {
-        return abs(dan->y - ghostie->y) < (CORRIDOR_SIZE-3)*2;
+        return unsigned_diff(dan->y, ghostie->y) < (CORRIDOR_SIZE-3)*2;
     } else if (dan->y == ghostie->y) {
-        return abs(dan->x - ghostie->x) < (CORRIDOR_SIZE-3)*2;
+        return unsigned_diff(dan->x, ghostie->x) < (CORRIDOR_SIZE-3)*2;
     } else {
-        return ((abs(dan->x - ghostie->x) < (CORRIDOR_SIZE-5)*2) && (abs(dan->y - ghostie->y) < (CORRIDOR_SIZE-5)*2));
+        return (unsigned_diff(dan->x, ghostie->x) < (CORRIDOR_SIZE-5)*2)
+            && (unsigned_diff(dan->y, ghostie->y) < (CORRIDOR_SIZE-5)*2);
     }
 }
 
