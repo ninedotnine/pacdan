@@ -11,6 +11,7 @@
 #include <pthread.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
+#include <X11/Xlibint.h>
 
 #include "types.h"
 #include "maze.c"
@@ -30,11 +31,15 @@ static void draw_game(Display* const dpy, const Window win, const Maze* const ma
     assert (dan != NULL);
     assert (ghosties != NULL);
     assert (num_ghosties > 0);
+    puts("drawin maze");
     draw_maze(dpy, win, maze);
+    puts("drawin dan");
     draw_dan(dpy, win, dan);
     for (uint8_t i = 0; i < num_ghosties; i++) {
+        printf("drawin ghostie %u\n", i);
         draw_ghostie(dpy, win, &ghosties[i]);
     }
+    puts("done drawin");
 //     XUnlockDisplay(dpy);
 }
 
@@ -121,17 +126,41 @@ int main(void) {
 
     uint64_t foods_eaten = 0;
 
-    const struct timespec tim = {.tv_sec = 0, .tv_nsec = 50000000L};
+    const struct timespec tim = {.tv_sec = 0, .tv_nsec = 5000000L};
+    uint32_t debug_iteration = 0;
     while (game_in_progress(&data)) {
         assert (maze.food_count + foods_eaten == 388 - num_ghosties);
+
+        XNoOp(display);
+
+        long unsigned req_num = X_DPY_GET_REQUEST(display);
+        long unsigned req_last_read = X_DPY_GET_LAST_REQUEST_READ(display);
+        printf("-------------------- req num: %lu\n", req_num);
+        printf("-------------------- req num: %lu\n", req_last_read);
+        if (req_num > 10000 ) {
+            puts("-------------------------------------- goin in");
+//             __attribute__((unused)) xGetInputFocusReply rep;
+            _XGetRequest(display, X_GetInputFocus, SIZEOF(xReq));
+//             (void) _XReply (display, (xReply *)&rep, 0, xTrue);
+//             sync_while_locked(display);
+        }
+
+
+
+
+        printf("------------------------------------------------------------iteration: %u\n", debug_iteration);
+        debug_iteration++;
         draw_game(display, window, &maze, &dan, ghosties, num_ghosties);
         update_score(display, centre_win, gc_fab, font, foods_eaten); // FIXME only update if necessary
         XFlush(display);
 
-        if (game_is_paused(&data)) {
+        while (game_is_paused(&data)) {
             game_paused(display, centre_win, gc_fab, font, foods_eaten == 0);
+            draw_game(display, window, &maze, &dan, ghosties, num_ghosties);
             thread_wait();
-        } else if (0 == maze.food_count) {
+        }
+
+        if (0 == maze.food_count) {
             congratulate(display, centre_win, gc_fab, font);
             break;
         } else if (dan_is_eaten(&dan, ghosties, num_ghosties)) {
