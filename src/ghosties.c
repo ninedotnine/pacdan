@@ -52,23 +52,32 @@ static void draw_or_erase_ghostie(Display* const dpy, const Window win, const Du
         .y = -halfsize
     }};
 
+    puts("ghostie -- drawin lines");
     XDrawLines(dpy, win, gc, points, 9, CoordModePrevious);
+    puts("ghostie -- drawin arcs");
 
     XDrawArc(dpy, win, gc,
         ghostie->x-halfsize, ghostie->y-halfsize, // x and y are in the upper-left corner
         ghostie->size, ghostie->size, // width and height
-        0, halfCircle);
+        0, halfCircle); // FIXME  why does this function sometimes not return until more inputs?
+
+    puts("ghostie: arc 1");
+
 
     // draw the eyes
     XDrawArc(dpy, win, gc,
         ghostie->x-15, eye_height, // x and y are in the upper-left corner
         6, 6, // width and height
-        0, fullCircle);
+        0, fullCircle); // FIXME  why does this function sometimes not return until more inputs?
+
+    puts("ghostie: arc 2");
 
     XDrawArc(dpy, win, gc,
         ghostie->x+9, eye_height, // x and y are in the upper-left corner
         6, 6, // width and height
         0, fullCircle);
+
+    puts("ghostie: arc 3");
 
     // the little irises can face different directions
     switch (ghostie->direction) {
@@ -113,6 +122,7 @@ static void draw_or_erase_ghostie(Display* const dpy, const Window win, const Du
                 0, fullCircle);
             break;
     }
+    puts("ghostie -- all lines drawn.");
 }
 
 static void draw_ghostie(Display* const dpy, const Window win, const Dude* const ghostie) {
@@ -193,7 +203,9 @@ void ghostie_set_direction(Dude* const ghostie, const Maze* const maze) {
 }
 
 static void move_ghostie(Dude* const ghostie, const Maze* const maze, Display* const dpy, const Window win) {
+    puts("erasin ghostie");
     erase_ghostie(dpy, win, ghostie);
+    puts("movin ghostie");
 
     assert (ghostie->direction == right ||
             ghostie->direction == up ||

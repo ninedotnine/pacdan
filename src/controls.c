@@ -4,6 +4,7 @@ static void handle_keypress(XEvent event, Controls_thread_data* const data) {
     switch (keysym) {
         case XK_Escape:
         case XK_q:
+            data->paused = false;
             data->game_over = true;
             thread_unlock();
             thread_signal();
@@ -102,6 +103,9 @@ static void * handle_xevents(void * arg) {
         switch (event.type) {
           case Expose:
             puts("received expose event"); // should signal main thread to redraw
+            if (data->paused) {
+                thread_signal();
+            }
             break;
           case FocusIn:
             puts("received focusin event");
