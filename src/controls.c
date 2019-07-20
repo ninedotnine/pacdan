@@ -103,6 +103,9 @@ static void * handle_xevents(void * arg) {
         switch (event.type) {
           case Expose:
             puts("received expose event"); // should signal main thread to redraw
+            if (event.xexpose.count == 0) {
+                puts("...and no other expose events waiting");
+            }
             if (data->paused) {
                 thread_signal();
             }
@@ -135,6 +138,7 @@ static void * handle_xevents(void * arg) {
           default:
             fprintf(stderr, "received unusual XEvent of type %d\n", event.type);
         }
+//         thread_wait(); // let at least one iteration of the mainloop pass
     }
     pthread_exit(0);
 }

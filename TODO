@@ -1,5 +1,14 @@
 make all directions behave the same way; right now going right is special
 
+add a buffer to the directions so the player doesn't have to be so precise
+
+add multiple lives
+
+add harder levels (more ghosties?)
+
+add command-line args to vary the speed, number of ghosties, number of lives, etc.
+
+
 internal:
 use points more? or use them less? be consistent at least
 can't build walls that start at 0
@@ -15,3 +24,11 @@ make different mazes
 allow an arbitrary number of ghosties (with colours!)
 
 figure out why the main loop stops if you don't move for 458 iterations
+
+also learn why it sometimes freezes after a focusout automatic pause
+
+better randomness
+
+fix the FIXMEs
+
+add version and put it in window name

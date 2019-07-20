@@ -5,6 +5,7 @@ OUT_EXE = bin/pacdan
 LIBS = -l X11 -l pthread
 # LIBS = -lpthread -lmath
 # DEBUGFLAGS = -fsanitize=thread -fsanitize=undefined -fstack-protector-all -Wsuggest-attribute=pure
+# DEBUGFLAGS = -g -fsanitize=thread -fsanitize=undefined -fstack-protector-all -Wsuggest-attribute=pure
 # DEBUGFLAGS = -fsanitize=thread -fsanitize=undefined -fstack-protector-all
 # DEBUGFLAGS = -fsanitize=address -fsanitize=undefined -fstack-protector-all
 

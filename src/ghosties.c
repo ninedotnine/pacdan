@@ -1,7 +1,7 @@
 /*  this file contains routines relevant to the ghosties.
  */
 
-static void draw_or_erase_ghostie(Display* const dpy, const Window win, const Dude* const ghostie, const bool erase) {
+static void draw_or_erase_ghostie(Display* const dpy, const Window win, const Dude* const ghostie, bool erase) {
     assert (dpy != NULL);
     assert (ghostie != NULL);
 
@@ -16,7 +16,10 @@ static void draw_or_erase_ghostie(Display* const dpy, const Window win, const Du
         gc = ghostie->gc;
     }
 
+
+    erase = true;
     assert (ghostie->size > 0);
+
     const uint32_t halfsize = ghostie->size / 2;
     const uint8_t squiggle_line_length = 8;
     const uint32_t fullCircle = 360 * 64;
@@ -54,8 +57,8 @@ static void draw_or_erase_ghostie(Display* const dpy, const Window win, const Du
 
     puts("ghostie -- drawin lines");
     XDrawLines(dpy, win, gc, points, 9, CoordModePrevious);
-    puts("ghostie -- drawin arcs");
 
+    puts("ghostie -- drawin arcs");
     XDrawArc(dpy, win, gc,
         ghostie->x-halfsize, ghostie->y-halfsize, // x and y are in the upper-left corner
         ghostie->size, ghostie->size, // width and height
@@ -63,6 +66,10 @@ static void draw_or_erase_ghostie(Display* const dpy, const Window win, const Du
 
     puts("ghostie: arc 1");
 
+
+    if (! erase) {
+        puts("drew a arc");
+    }
 
     // draw the eyes
     XDrawArc(dpy, win, gc,
@@ -72,12 +79,19 @@ static void draw_or_erase_ghostie(Display* const dpy, const Window win, const Du
 
     puts("ghostie: arc 2");
 
+    if (! erase) {
+        puts("drew another arc");
+    }
+
     XDrawArc(dpy, win, gc,
         ghostie->x+9, eye_height, // x and y are in the upper-left corner
         6, 6, // width and height
         0, fullCircle);
 
     puts("ghostie: arc 3");
+    if (! erase) {
+        puts("drew a third arc");
+    }
 
     // the little irises can face different directions
     switch (ghostie->direction) {
@@ -126,7 +140,9 @@ static void draw_or_erase_ghostie(Display* const dpy, const Window win, const Du
 }
 
 static void draw_ghostie(Display* const dpy, const Window win, const Dude* const ghostie) {
+    puts("called draw_ghostie");
     draw_or_erase_ghostie(dpy, win, ghostie, false);
+//     puts("finished draw_ghostie");
 }
 
 static void erase_ghostie(Display* const dpy, const Window win, const Dude* const ghostie) {

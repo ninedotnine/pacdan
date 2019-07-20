@@ -25,12 +25,16 @@
 
 static void draw_game(Display* const dpy, const Window win, const Maze* const maze, const Dude* const dan,
                       const Dude ghosties[const], const uint8_t num_ghosties) {
-//     XLockDisplay(dpy);
     assert (dpy != NULL);
     assert (maze != NULL);
     assert (dan != NULL);
     assert (ghosties != NULL);
     assert (num_ghosties > 0);
+
+//     printf("x events: %d\n", XEventsQueued(dpy, QueuedAlready));
+
+    XFlush(dpy);
+    XLockDisplay(dpy); // this seems to prevent things from breaking even more after the ghosties decide to stop moving
     puts("drawin maze");
     draw_maze(dpy, win, maze);
     puts("drawin dan");
@@ -41,6 +45,7 @@ static void draw_game(Display* const dpy, const Window win, const Maze* const ma
     }
     puts("done drawin");
 //     XUnlockDisplay(dpy);
+    XUnlockDisplay(dpy);
 }
 
 int main(void) {
@@ -66,8 +71,10 @@ int main(void) {
 
     Dude dan = new_dude(display, screen, 1, 1, right, &maze, "rgb:cc/ee/11");
 
-    uint32_t num_ghosties = 7;
+    const uint32_t num_ghosties = 7;
+//     const uint32_t num_ghosties = 1;
     Dude ghosties[num_ghosties];
+//     ghosties[0] = new_dude(display, screen, 27, 27, right, &maze, "rgb:fa/aa/ab");
     ghosties[0] = new_dude(display, screen, 1, 27, right, &maze, "rgb:fa/aa/ab");
     ghosties[1] = new_dude(display, screen, 27, 27, up, &maze, "rgb:33/99/cc");
     ghosties[2] = new_dude(display, screen, 27, 1, down, &maze, "rgb:99/33/ff");
@@ -75,6 +82,11 @@ int main(void) {
     ghosties[4] = new_dude(display, screen, 9, 19, down, &maze, "rgb:ee/11/11");
     ghosties[5] = new_dude(display, screen, 9, 9, down, &maze, "rgb:11/ee/11");
     ghosties[6] = new_dude(display, screen, 19, 19, down, &maze, "rgb:ee/11/ee");
+//     ghosties[7] = new_dude(display, screen, 25, 25, down, &maze, "rgb:ff/ff/ff");
+//     ghosties[8] = new_dude(display, screen, 25, 23, down, &maze, "rgb:ff/ff/ff");
+//     ghosties[9] = new_dude(display, screen, 23, 23, down, &maze, "rgb:ff/ff/ff");
+//     ghosties[10] = new_dude(display, screen, 21, 21, down, &maze, "rgb:ff/ff/ff");
+//     ghosties[11] = new_dude(display, screen, 25, 21, down, &maze, "rgb:ff/ff/ff");
 
     XWindowAttributes root_attrs;
     if (0 == XGetWindowAttributes(display, RootWindow(display, screen), &root_attrs)) {
@@ -95,6 +107,7 @@ int main(void) {
     attrs.event_mask = KeyPressMask | KeyReleaseMask |
                        ButtonPressMask | ButtonReleaseMask |
                        ExposureMask | FocusChangeMask ;
+//                        ExposureMask ;
     // FIXME use FocusChangeMask to automatically pause
 
     const Window window = XCreateWindow(display, RootWindow(display, screen),
@@ -124,11 +137,16 @@ int main(void) {
         exit(EXIT_FAILURE);
     }
 
+    draw_game(display, window, &maze, &dan, ghosties, num_ghosties);
+
     uint64_t foods_eaten = 0;
 
-    const struct timespec tim = {.tv_sec = 0, .tv_nsec = 5000000L};
-    uint32_t debug_iteration = 0;
+//     const struct timespec tim = {.tv_sec = 0, .tv_nsec = 5000000L};
+    const struct timespec tim = {.tv_sec = 0, .tv_nsec = 1000000L};
+    uint64_t debug_iteration = 0;
     while (game_in_progress(&data)) {
+        debug_iteration++;
+        printf("------------------------------------------------------------iteration: %lu\n", debug_iteration);
         assert (maze.food_count + foods_eaten == 388 - num_ghosties);
 
         XNoOp(display);
@@ -145,14 +163,12 @@ int main(void) {
 //             sync_while_locked(display);
         }
 
-
-
-
-        printf("------------------------------------------------------------iteration: %u\n", debug_iteration);
-        debug_iteration++;
+        puts("drawin game");
         draw_game(display, window, &maze, &dan, ghosties, num_ghosties);
         update_score(display, centre_win, gc_fab, font, foods_eaten); // FIXME only update if necessary
+        puts("flushin");
         XFlush(display);
+        puts("flushed");
 
         while (game_is_paused(&data)) {
             game_paused(display, centre_win, gc_fab, font, foods_eaten == 0);
@@ -168,6 +184,7 @@ int main(void) {
             break;
         }
 
+        puts("sleepin");
         nanosleep(&tim, NULL);
 
         thread_lock();
@@ -180,6 +197,7 @@ int main(void) {
         } else if (dirs.down) {
             move_dan(&dan, down, &maze, display, window, &foods_eaten);
         }
+        puts("movin ghosties");
         for (uint8_t i = 0; i < num_ghosties; i++) {
             move_ghostie(&ghosties[i], &maze, display, window);
         }
