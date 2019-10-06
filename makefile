@@ -11,7 +11,7 @@ LIBS = -l X11 -l pthread
 
 build:
 	mkdir -p bin
-	$(CC) $(CFLAGS) $(DEBUGFLAGS) $(INCLUDES) -o $(OUT_EXE) $(FILES) $(LIBS)
+	$(CC) $(CFLAGS) $(DEBUGFLAGS) -o $(OUT_EXE) $(FILES) $(LIBS)
 
 clean:
 	rm -f $(OUT_EXE)
