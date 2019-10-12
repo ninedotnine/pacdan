@@ -12,8 +12,10 @@
 #include <string.h>
 /*  this file contains routines relevant to the scoreboard.
  */
-void initialize_font_and_colours(Display * const dpy, const int screen, XFontStruct** const font,
-                                        GC* const gc_fab) {
+void initialize_font_and_colours(Display * const dpy,
+                                 const int screen,
+                                 XFontStruct ** const font,
+                                 GC * const gc_fab) {
     assert (dpy != NULL);
     assert (font != NULL);
     assert (gc_fab != NULL);
@@ -78,7 +80,11 @@ void update_score(Display * const dpy,
 }
 #undef max_text_length
 
-void game_paused(Display* const dpy, const Window win, const GC gc, XFontStruct* const font, const bool begin) {
+void game_paused(Display * const dpy,
+                 const Window win,
+                 const GC gc,
+                 XFontStruct * const font,
+                 const bool begin) {
     assert (dpy != NULL);
     assert (gc != NULL);
     assert (font != NULL);
@@ -106,7 +112,10 @@ void game_paused(Display* const dpy, const Window win, const GC gc, XFontStruct*
     XFlush(dpy);
 }
 
-void insult_the_loser(Display* const dpy, const Window win, const GC gc, XFontStruct* const font) {
+void insult_the_loser(Display * const dpy,
+                      const Window win,
+                      const GC gc,
+                      XFontStruct * const font) {
     assert (dpy != NULL);
     assert (gc != NULL);
     assert (font != NULL);
@@ -134,7 +143,10 @@ void insult_the_loser(Display* const dpy, const Window win, const GC gc, XFontSt
     XFlush(dpy);
 }
 
-void congratulate(Display* const dpy, const Window win, const GC gc, XFontStruct* const font) {
+void congratulate(Display * const dpy,
+                  const Window win,
+                  const GC gc,
+                  XFontStruct * const font) {
     assert (dpy != NULL);
     assert (gc != NULL);
     assert (font != NULL);

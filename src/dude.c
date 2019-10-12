@@ -26,7 +26,8 @@ static gcc_pure bool is_on_track(const struct dude * const dude) {
     return false; // should never happen
 }
 
-static gcc_pure bool path_is_clear(const struct dude * const dude, const struct maze * const maze) {
+static gcc_pure bool path_is_clear(const struct dude * const dude,
+                                   const struct maze * const maze) {
     // returns true if dude is not wak-blocked
     assert (dude->x > 0);
     assert (dude->y > 0);
@@ -60,12 +61,18 @@ static gcc_pure bool path_is_clear(const struct dude * const dude, const struct 
     return (maze->tiles[x/CORRIDOR_SIZE][y/CORRIDOR_SIZE] != blocked);
 }
 
-bool gcc_pure can_proceed(const struct dude * const dude, const struct maze * const maze) {
+bool gcc_pure can_proceed(const struct dude * const dude,
+                          const struct maze * const maze) {
     return is_on_track(dude) && path_is_clear(dude, maze);
 }
 
-struct dude new_dude(Display* const dpy, const int screen, const int x, const int y, const enum direction dir,
-                     struct maze * const maze, const char* const colour) {
+struct dude new_dude(Display* const dpy,
+                     const int screen,
+                     const int x,
+                     const int y,
+                     const enum direction dir,
+                     struct maze * const maze,
+                     const char * const colour) {
     /* gives the starting position */
     const Colormap colourmap = DefaultColormap(dpy, screen);
 
@@ -102,7 +109,8 @@ static gcc_pure uint32_t unsigned_diff(int x, int y) {
     }
 }
 
-static gcc_pure bool dudes_are_touching(const struct dude * const dan, const struct dude * const ghostie) {
+static gcc_pure bool dudes_are_touching(const struct dude * const dan,
+                                        const struct dude * const ghostie) {
     if (dan->x == ghostie->x) {
         return unsigned_diff(dan->y, ghostie->y) < (CORRIDOR_SIZE-3)*2;
     } else if (dan->y == ghostie->y) {
@@ -113,7 +121,9 @@ static gcc_pure bool dudes_are_touching(const struct dude * const dan, const str
     }
 }
 
-gcc_pure bool dan_is_eaten(const struct dude * const dan, const struct dude ghosties[const], const uint8_t num_ghosties) {
+gcc_pure bool dan_is_eaten(const struct dude * const dan,
+                           const struct dude ghosties[const],
+                           const uint8_t num_ghosties) {
     for (uint8_t i = 0; i < num_ghosties; i++) {
         if (dudes_are_touching(dan, &ghosties[i])) {
             return true;

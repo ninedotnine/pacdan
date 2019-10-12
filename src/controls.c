@@ -155,8 +155,8 @@ void * handle_xevents(void * arg) {
 
 
 struct controls_thread_data gcc_pure new_thread_data(Display * const dpy,
-                                                            const Window win,
-                                                            struct directions * const dirs) {
+                                                     const Window win,
+                                                     struct directions * const dirs) {
     const struct controls_thread_data data = {
         .dpy = dpy,
         .win = win,
