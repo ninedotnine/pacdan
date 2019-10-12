@@ -12,8 +12,8 @@
 void draw_dan(Display * dpy, Window win, const struct dude * dan);
 
 void move_dan(struct dude * dan,
-                     const enum direction dir,
-                     struct maze * const maze,
-                     Display * const dpy,
-                     const Window win,
-                     uint64_t * const foods_eaten);
+              enum direction dir,
+              struct maze * maze,
+              Display * dpy,
+              Window win,
+              uint64_t * foods_eaten);

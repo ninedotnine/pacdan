@@ -8,6 +8,4 @@
 
 void * handle_xevents(void * arg);
 
-struct controls_thread_data gcc_pure new_thread_data(Display * const dpy,
-                                                     const Window win,
-                                                     struct directions * const dirs);
+struct controls_thread_data gcc_pure new_thread_data(Display * dpy, Window win, struct directions * dirs);

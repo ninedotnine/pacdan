@@ -11,9 +11,6 @@
 /*  this file contains routines relevant to the ghosties.
  */
 
-void draw_ghostie(Display* const dpy, const Window win, const struct dude * const ghostie);
+void draw_ghostie(Display * dpy, Window win, const struct dude * ghostie);
 
-void move_ghostie(struct dude * const ghostie,
-                         const struct maze * const maze,
-                         Display* const dpy,
-                         const Window win);
+void move_ghostie(struct dude * ghostie, const struct maze * maze, Display * dpy, Window win);

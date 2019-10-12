@@ -12,7 +12,7 @@
 #include <string.h>
 /*  this file contains routines relevant to the scoreboard.
  */
-void initialize_font_and_colours(Display* const dpy, const int screen, XFontStruct** const font,
+void initialize_font_and_colours(Display * const dpy, const int screen, XFontStruct** const font,
                                         GC* const gc_fab) {
     assert (dpy != NULL);
     assert (font != NULL);
@@ -49,8 +49,11 @@ static int strlen_int(const char * const str) {
 }
 
 #define max_text_length 15
-void update_score(Display* const dpy, const Window win, const GC gc, XFontStruct* const font,
-                         const uint64_t foods_eaten) {
+void update_score(Display * const dpy,
+                  const Window win,
+                  const GC gc,
+                  XFontStruct * const font,
+                  const uint64_t foods_eaten) {
     assert (dpy != NULL);
     assert (gc != NULL);
     assert (font != NULL);

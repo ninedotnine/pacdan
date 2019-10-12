@@ -15,7 +15,7 @@ void thread_wait(void);
 
 void thread_signal(void);
 
-bool game_is_paused(const struct controls_thread_data * const data);
+bool game_is_paused(const struct controls_thread_data * data);
 
-bool game_in_progress(const struct controls_thread_data * const data);
+bool game_in_progress(const struct controls_thread_data * data);
 
