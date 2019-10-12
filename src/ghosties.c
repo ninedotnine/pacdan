@@ -1,3 +1,4 @@
+#include <limits.h>
 /*  this file contains routines relevant to the ghosties.
  */
 
@@ -20,11 +21,11 @@ static void draw_or_erase_ghostie(Display* const dpy, const Window win, const Du
     erase = true;
     assert (ghostie->size > 0);
 
-    const uint32_t halfsize = ghostie->size / 2;
-    const uint8_t squiggle_line_length = 8;
-    const uint32_t fullCircle = 360 * 64;
-    const uint32_t halfCircle = fullCircle / 2;
-    const uint32_t eye_height = ghostie->y-12;
+    const int halfsize = ghostie->size / 2;
+    const short squiggle_line_length = 8;
+    const int fullCircle = 360 * 64;
+    const int halfCircle = fullCircle / 2;
+    const int eye_height = ghostie->y-12;
 
     XPoint points[9] = {{
         .x = ghostie->x-halfsize,
@@ -170,9 +171,9 @@ static void proceed_forward(Dude* const ghostie, const Tile neighbours[const sta
 
 static void choose_fork(Dude* const ghostie, const Tile neighbours[const static 4], uint8_t options) {
     const Direction came_from = (ghostie->direction + 2) % 4;
-    uint32_t randy = rand(); // FIXME better random numbers?
+    unsigned randy = rand(); // FIXME better random numbers?
     options--;
-    for (uint8_t i = 0; i < 4; i++) {
+    for (unsigned i = 0; i < 4; i++) {
         if (neighbours[i] != blocked && i != came_from) {
             if (randy % options == 0) {
                 ghostie->direction = i;
@@ -184,10 +185,10 @@ static void choose_fork(Dude* const ghostie, const Tile neighbours[const static 
     }
 }
 
-void ghostie_set_direction(Dude* const ghostie, const Maze* const maze) {
+static void ghostie_set_direction(Dude* const ghostie, const Maze* const maze) {
     assert ((ghostie->x % CORRIDOR_SIZE == 0 && ghostie->y % CORRIDOR_SIZE == 0));
-    const uint32_t x = ghostie->x / CORRIDOR_SIZE;
-    const uint32_t y = ghostie->y / CORRIDOR_SIZE;
+    const int x = ghostie->x / CORRIDOR_SIZE;
+    const int y = ghostie->y / CORRIDOR_SIZE;
     assert ((x < TILES_HEIGHT && y < TILES_HEIGHT));
 
     const Tile neighbours[4] = {

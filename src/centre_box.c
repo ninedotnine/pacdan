@@ -30,6 +30,12 @@ static void initialize_font_and_colours(Display* const dpy, const int screen, XF
     XSetFont(dpy, *gc_fab, (*font)->fid);
 }
 
+static int strlen_int(const char * const str) {
+    size_t length = strlen(str);
+    assert (length < INT_MAX);
+    return (int) length;
+}
+
 #define max_text_length 15
 static void update_score(Display* const dpy, const Window win, const GC gc, XFontStruct* const font,
                          const uint64_t foods_eaten) {
@@ -40,7 +46,7 @@ static void update_score(Display* const dpy, const Window win, const GC gc, XFon
     XClearWindow(dpy, win);
 
     char text[max_text_length] = "score:";
-    int length = strlen(text);
+    int length = strlen_int(text);
 
     XDrawString(dpy, win, gc,
             (195-XTextWidth(font, text, length))/2,
@@ -49,7 +55,7 @@ static void update_score(Display* const dpy, const Window win, const GC gc, XFon
 
     snprintf(text, max_text_length, "%ld", foods_eaten * 100); // in games, numbers are always multiplied by 100
 
-    length = strlen(text);
+    length = strlen_int(text);
     XDrawString(dpy, win, gc,
            (195-XTextWidth(font, text, length))/2,
            ((195-(font->ascent+font->descent))/2)+font->ascent,
@@ -63,7 +69,7 @@ static void game_paused(Display* const dpy, const Window win, const GC gc, XFont
     assert (font != NULL);
 
     const char* text = "paused";
-    int length = strlen(text);
+    int length = strlen_int(text);
 
     XDrawString(dpy, win, gc,
            (195-XTextWidth(font, text, length))/2,
@@ -75,7 +81,7 @@ static void game_paused(Display* const dpy, const Window win, const GC gc, XFont
     } else {
         text = "move to resume.";
     }
-    length = strlen(text);
+    length = strlen_int(text);
 
     XDrawString(dpy, win, gc,
            (195-XTextWidth(font, text, length))/2,
@@ -91,21 +97,21 @@ static void insult_the_loser(Display* const dpy, const Window win, const GC gc, 
     assert (font != NULL);
 
     const char* text = "you have";
-    int length = strlen(text);
+    int length = strlen_int(text);
     XDrawString(dpy, win, gc,
            (195-XTextWidth(font, text, length))/2,
            ((195-(font->ascent+font->descent))/2)-(font->ascent*3),
             text, length);
 
     text = "been eaten";
-    length = strlen(text);
+    length = strlen_int(text);
     XDrawString(dpy, win, gc,
            (195-XTextWidth(font, text, length))/2,
            ((195-(font->ascent+font->descent))/2)-(font->ascent*2),
             text, length);
 
     text = "ESC to quit.";
-    length = strlen(text);
+    length = strlen_int(text);
     XDrawString(dpy, win, gc,
            (195-XTextWidth(font, text, length))/2,
            ((195-(font->ascent+font->descent))/2)+(font->ascent*4),
@@ -119,7 +125,7 @@ static void congratulate(Display* const dpy, const Window win, const GC gc, XFon
     assert (font != NULL);
 
     const char* text = "okay, you win.";
-    int length = strlen(text);
+    int length = strlen_int(text);
 
     XDrawString(dpy, win, gc,
            (195-XTextWidth(font, text, length))/2,
@@ -127,7 +133,7 @@ static void congratulate(Display* const dpy, const Window win, const GC gc, XFon
             text, length);
 
     text = "ESC to quit.";
-    length = strlen(text);
+    length = strlen_int(text);
 
     XDrawString(dpy, win, gc,
            (195-XTextWidth(font, text, length))/2,

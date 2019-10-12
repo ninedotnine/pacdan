@@ -15,14 +15,14 @@ typedef struct {
 } Directions;
 
 typedef struct {
-    uint32_t x;
-    uint32_t y;
+    int x;
+    int y;
 } Point;
 
 typedef struct {
-    uint32_t x; // these are the centre of pacman
-    uint32_t y;
-    uint32_t size; // pacman is a square, this means width and height
+    int x; // these are the centre of pacman
+    int y;
+    unsigned size; // pacman is a square, this means width and height
     Direction direction;
     GC gc;
 } Dude;
@@ -36,10 +36,10 @@ typedef struct {
 typedef enum { vacant , food , blocked , special } Tile;
 
 typedef struct {
-    uint8_t wall_count; // 255 walls ought to suffice
-    uint16_t food_count;
     Wall walls[WALL_LIMIT];
     Tile tiles[TILES_HEIGHT][TILES_HEIGHT]; // FIXME use a bitfield instead.
+    uint16_t food_count;
+    uint16_t wall_count;
 } Maze;
 
 typedef struct {

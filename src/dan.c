@@ -18,10 +18,10 @@ static void draw_or_erase_dan(Display* const dpy, const Window win, const Dude* 
     }
 
     assert (dan->size > 0);
-    const uint32_t halfsize = dan->size / 2;
+    const int halfsize = dan->size / 2;
     const uint8_t mouth_line_length = 19;
-    const uint32_t startCircle = (dan->direction * 90 * 64) + 2500;
-    const uint32_t endCircle = 360 * 64 - 5000;
+    const int startCircle = ((int) (dan->direction) * 90 * 64) + 2500;
+    const int endCircle = 360 * 64 - 5000;
     XDrawPoint(dpy, win, gc, dan->x, dan->y);
     XDrawArc(dpy, win, gc,
         dan->x-halfsize, dan->y-halfsize, // x and y are in the upper-left corner

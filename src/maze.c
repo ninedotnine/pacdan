@@ -1,4 +1,4 @@
-static void build_wall(uint32_t x, uint32_t y, uint32_t length, const Direction dir, Maze* const maze) {
+static void build_wall(int x, int y, int length, const Direction dir, Maze* const maze) {
     assert (maze->wall_count < WALL_LIMIT);
     assert (dir == right || dir == up || dir == left || dir == down);
     assert (length > 0);
@@ -48,11 +48,11 @@ static void build_wall(uint32_t x, uint32_t y, uint32_t length, const Direction 
     assert (wall.end.y < WINDOW_HEIGHT);
 
     if (dir == up || dir == down) {
-        for (uint32_t i = wall.start.y/CORRIDOR_SIZE; i-1 < wall.end.y/CORRIDOR_SIZE; i++) {
+        for (int i = wall.start.y/CORRIDOR_SIZE; i-1 < wall.end.y/CORRIDOR_SIZE; i++) {
             maze->tiles[wall.start.x/CORRIDOR_SIZE][i] = blocked;
         }
     } else {
-        for (uint32_t i = wall.start.x/CORRIDOR_SIZE; i-1 < wall.end.x/CORRIDOR_SIZE; i++) {
+        for (int i = wall.start.x/CORRIDOR_SIZE; i-1 < wall.end.x/CORRIDOR_SIZE; i++) {
             maze->tiles[i][wall.end.y/CORRIDOR_SIZE] = blocked;
         }
     }

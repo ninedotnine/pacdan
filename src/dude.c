@@ -34,8 +34,8 @@ static gcc_pure bool path_is_clear(const Dude* const dude, const Maze* const maz
     assert (dude->x % CORRIDOR_SIZE == 0);
     assert (dude->y % CORRIDOR_SIZE == 0);
 
-    uint32_t x = dude->x;
-    uint32_t y = dude->y;
+    int x = dude->x;
+    int y = dude->y;
     switch (dude->direction) {
         case right:
             x += CORRIDOR_SIZE;
@@ -57,7 +57,7 @@ static bool gcc_pure can_proceed(const Dude* const dude, const Maze* const maze)
     return is_on_track(dude) && path_is_clear(dude, maze);
 }
 
-static Dude new_dude(Display* const dpy, const int screen, const uint32_t x, const uint32_t y, const Direction dir,
+static Dude new_dude(Display* const dpy, const int screen, const int x, const int y, const Direction dir,
                      Maze* const maze, const char* const colour) {
     /* gives the starting position */
     const Colormap colourmap = DefaultColormap(dpy, screen);
@@ -87,11 +87,11 @@ static Dude new_dude(Display* const dpy, const int screen, const uint32_t x, con
     return dude;
 }
 
-static gcc_pure uint32_t unsigned_diff(uint32_t x, uint32_t y) {
+static gcc_pure uint32_t unsigned_diff(int x, int y) {
     if (x > y) {
-        return x - y;
+        return (uint32_t) (x - y);
     } else {
-        return y - x;
+        return (uint32_t) (y - x);
     }
 }
 
