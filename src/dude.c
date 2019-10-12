@@ -11,7 +11,7 @@ gcc_pure bool in_centre_of_tile(const struct dude * const dude) {
     return (dude->x % CORRIDOR_SIZE == 0 && dude->y % CORRIDOR_SIZE == 0);
 }
 
-gcc_pure bool is_on_track(const struct dude * const dude) {
+static gcc_pure bool is_on_track(const struct dude * const dude) {
     // returns true if dude can proceed in this direction
     assert (dude->direction == right || dude->direction == up || dude->direction == left || dude->direction == down);
     switch (dude->direction) {
@@ -26,7 +26,7 @@ gcc_pure bool is_on_track(const struct dude * const dude) {
     return false; // should never happen
 }
 
-gcc_pure bool path_is_clear(const struct dude * const dude, const struct maze * const maze) {
+static gcc_pure bool path_is_clear(const struct dude * const dude, const struct maze * const maze) {
     // returns true if dude is not wak-blocked
     assert (dude->x > 0);
     assert (dude->y > 0);
@@ -94,7 +94,7 @@ struct dude new_dude(Display* const dpy, const int screen, const int x, const in
     return dude;
 }
 
-gcc_pure uint32_t unsigned_diff(int x, int y) {
+static gcc_pure uint32_t unsigned_diff(int x, int y) {
     if (x > y) {
         return (uint32_t) (x - y);
     } else {
@@ -102,7 +102,7 @@ gcc_pure uint32_t unsigned_diff(int x, int y) {
     }
 }
 
-gcc_pure bool dudes_are_touching(const struct dude * const dan, const struct dude * const ghostie) {
+static gcc_pure bool dudes_are_touching(const struct dude * const dan, const struct dude * const ghostie) {
     if (dan->x == ghostie->x) {
         return unsigned_diff(dan->y, ghostie->y) < (CORRIDOR_SIZE-3)*2;
     } else if (dan->y == ghostie->y) {

@@ -2,7 +2,7 @@
 
 #include <assert.h>
 
-void build_wall(int x, int y, int length, const enum direction dir, struct maze * const maze) {
+static void build_wall(int x, int y, int length, const enum direction dir, struct maze * const maze) {
     assert (maze->wall_count < WALL_LIMIT);
     assert (dir == right || dir == up || dir == left || dir == down);
     assert (length > 0);
@@ -65,7 +65,7 @@ void build_wall(int x, int y, int length, const enum direction dir, struct maze 
     maze->wall_count++;
 }
 
-void distribute_food(struct maze * const maze) {
+static void distribute_food(struct maze * const maze) {
     maze->food_count = 0;
     for (uint16_t x = 1; x < TILES_HEIGHT-1; x++) {
         for (uint16_t y = 1; y < TILES_HEIGHT-1; y++) {
@@ -77,7 +77,6 @@ void distribute_food(struct maze * const maze) {
     }
 }
 
-/* call build_maze to make the maze */
 void initialize_maze(struct maze * const maze) {
     maze->wall_count = 0;
     memset(maze->tiles, 0, sizeof(maze->tiles)); // all tiles are vacant to begin

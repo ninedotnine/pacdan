@@ -12,7 +12,7 @@
 /* dan is the name of the protagonist.
  */
 
-void draw_or_erase_dan(Display* const dpy, const Window win, const struct dude * const dan, const bool erase) {
+static void draw_or_erase_dan(Display * const dpy, const Window win, const struct dude * const dan, const bool erase) {
     assert (dpy != NULL);
     assert (dan != NULL);
 

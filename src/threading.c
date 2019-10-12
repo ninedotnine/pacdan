@@ -6,8 +6,8 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
-pthread_cond_t thread_cond = PTHREAD_COND_INITIALIZER;
+static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+static pthread_cond_t thread_cond = PTHREAD_COND_INITIALIZER;
 
 void initialize_threading(void) {
     if (0 != pthread_mutex_init(&mutex, NULL)) {
