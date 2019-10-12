@@ -1,4 +1,4 @@
-static void handle_keypress(XEvent event, Controls_thread_data* const data) {
+static void handle_keypress(XEvent event, struct controls_thread_data * const data) {
     const KeySym keysym = XLookupKeysym(&event.xkey, 0);
     thread_lock();
     switch (keysym) {
@@ -54,7 +54,7 @@ static void handle_keypress(XEvent event, Controls_thread_data* const data) {
     }
 }
 
-static void handle_keyrelease(XEvent event, Directions* const dirs) {
+static void handle_keyrelease(XEvent event, struct directions * const dirs) {
     const KeySym keysym = XLookupKeysym(&event.xkey, 0);
     thread_lock();
     switch (keysym) {
@@ -85,7 +85,7 @@ static void handle_keyrelease(XEvent event, Directions* const dirs) {
 }
 
 static void * handle_xevents(void * arg) {
-    Controls_thread_data* data = (Controls_thread_data*) arg;
+    struct controls_thread_data * data = (struct controls_thread_data *) arg;
     assert (data != NULL);
     assert (data->dpy != NULL);
 
@@ -144,8 +144,10 @@ static void * handle_xevents(void * arg) {
 }
 
 
-static Controls_thread_data gcc_pure new_thread_data(Display* const dpy, const Window win, Directions* const dirs) {
-    const Controls_thread_data data = {
+static struct controls_thread_data gcc_pure new_thread_data(Display * const dpy,
+                                                            const Window win,
+                                                            struct directions * const dirs) {
+    const struct controls_thread_data data = {
         .dpy = dpy,
         .win = win,
         .dirs = dirs,

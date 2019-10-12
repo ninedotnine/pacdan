@@ -21,8 +21,12 @@
 #include "centre_box.c"
 
 
-static void draw_game(Display* const dpy, const Window win, const Maze* const maze, const Dude* const dan,
-                      const Dude ghosties[const], const uint8_t num_ghosties) {
+static void draw_game(Display * const dpy,
+                      const Window win,
+                      const struct maze * const maze,
+                      const struct dude * const dan,
+                      const struct dude ghosties[const],
+                      const uint8_t num_ghosties) {
     assert (dpy != NULL);
     assert (maze != NULL);
     assert (dan != NULL);
@@ -54,9 +58,9 @@ int main(void) {
         exit(EXIT_FAILURE);
     }
 
-    Directions dirs = { false, false, false, false };
+    struct directions dirs = { false, false, false, false };
 
-    Maze maze;
+    struct maze maze;
     initialize_maze(&maze);
 
     Display* const display = XOpenDisplay(NULL);
@@ -67,11 +71,11 @@ int main(void) {
 
     const int screen = DefaultScreen(display);
 
-    Dude dan = new_dude(display, screen, 1, 1, right, &maze, "rgb:cc/ee/11");
+    struct dude dan = new_dude(display, screen, 1, 1, right, &maze, "rgb:cc/ee/11");
 
     const uint32_t num_ghosties = 7;
 //     const uint32_t num_ghosties = 1;
-    Dude ghosties[num_ghosties];
+    struct dude ghosties[num_ghosties];
 //     ghosties[0] = new_dude(display, screen, 27, 27, right, &maze, "rgb:fa/aa/ab");
     ghosties[0] = new_dude(display, screen, 1, 27, right, &maze, "rgb:fa/aa/ab");
     ghosties[1] = new_dude(display, screen, 27, 27, up, &maze, "rgb:33/99/cc");
@@ -127,7 +131,7 @@ int main(void) {
     XFontStruct* font = NULL;
     initialize_font_and_colours(display, screen, &font, &gc_fab);
 
-    Controls_thread_data data = new_thread_data(display, window, &dirs);
+    struct controls_thread_data data = new_thread_data(display, window, &dirs);
 
     pthread_t controls;
     if (0 != pthread_create(&controls, NULL, handle_xevents, &data)) {

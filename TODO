@@ -8,6 +8,7 @@ add harder levels (more ghosties?)
 
 add command-line args to vary the speed, number of ghosties, number of lives, etc.
 
+include header files, not .c files
 
 internal:
 use points more? or use them less? be consistent at least

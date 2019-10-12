@@ -1,7 +1,7 @@
 /* dan is the name of the protagonist.
  */
 
-static void draw_or_erase_dan(Display* const dpy, const Window win, const Dude* const dan, const bool erase) {
+static void draw_or_erase_dan(Display* const dpy, const Window win, const struct dude * const dan, const bool erase) {
     assert (dpy != NULL);
     assert (dan != NULL);
 
@@ -49,16 +49,20 @@ static void draw_or_erase_dan(Display* const dpy, const Window win, const Dude* 
 }
 
 
-static void draw_dan(Display* const dpy, const Window win, const Dude* const dan) {
+static void draw_dan(Display* const dpy, const Window win, const struct dude * const dan) {
     draw_or_erase_dan(dpy, win, dan, false);
 }
 
-static void erase_dan(Display* const dpy, const Window win, const Dude* const dan) {
+static void erase_dan(Display* const dpy, const Window win, const struct dude * const dan) {
     draw_or_erase_dan(dpy, win, dan, true);
 }
 
-static void move_dan(Dude* dan, const Direction dir, Maze* const maze, Display* const dpy, const Window win,
-                     uint64_t* const foods_eaten) {
+static void move_dan(struct dude * dan,
+                     const enum direction dir,
+                     struct maze * const maze,
+                     Display * const dpy,
+                     const Window win,
+                     uint64_t * const foods_eaten) {
     erase_dan(dpy, win, dan);
 
     assert (dir == right || dir == up || dir == left || dir == down);

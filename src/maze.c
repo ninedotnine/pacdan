@@ -1,4 +1,4 @@
-static void build_wall(int x, int y, int length, const Direction dir, Maze* const maze) {
+static void build_wall(int x, int y, int length, const enum direction dir, struct maze * const maze) {
     assert (maze->wall_count < WALL_LIMIT);
     assert (dir == right || dir == up || dir == left || dir == down);
     assert (length > 0);
@@ -9,7 +9,7 @@ static void build_wall(int x, int y, int length, const Direction dir, Maze* cons
 
     assert (length + x < WINDOW_HEIGHT || length + y < WINDOW_HEIGHT);
 
-    Wall wall = {
+    struct wall wall = {
         // one of these will be changed
         .start.x = x,
         .start.y = y,
@@ -61,7 +61,7 @@ static void build_wall(int x, int y, int length, const Direction dir, Maze* cons
     maze->wall_count++;
 }
 
-static void distribute_food(Maze* const maze) {
+static void distribute_food(struct maze * const maze) {
     maze->food_count = 0;
     for (uint16_t x = 1; x < TILES_HEIGHT-1; x++) {
         for (uint16_t y = 1; y < TILES_HEIGHT-1; y++) {
@@ -74,7 +74,7 @@ static void distribute_food(Maze* const maze) {
 }
 
 /* call build_maze to make the maze */
-static void initialize_maze(Maze* const maze) {
+static void initialize_maze(struct maze * const maze) {
     maze->wall_count = 0;
     memset(maze->tiles, 0, sizeof(maze->tiles)); // all tiles are vacant to begin
 
@@ -171,7 +171,7 @@ static void initialize_maze(Maze* const maze) {
     distribute_food(maze);
 }
 
-static void draw_maze(Display* const dpy, const Window win, const Maze* const maze) {
+static void draw_maze(Display* const dpy, const Window win, const struct maze * const maze) {
     assert (WALL_LIMIT == maze->wall_count); // don't try to draw the maze until you've populated it
     assert(dpy);
     XGCValues gcv = {
@@ -179,7 +179,7 @@ static void draw_maze(Display* const dpy, const Window win, const Maze* const ma
        .background = BlackPixel(dpy, DefaultScreen(dpy))
     };
     const GC gc = XCreateGC(dpy, DefaultRootWindow(dpy), GCForeground | GCBackground, &gcv);
-    Wall wall;
+    struct wall wall;
     for (uint16_t i = 0; i < WALL_LIMIT; i++) {
         wall = maze->walls[i];
         XDrawLine(dpy, win, gc, wall.start.x, wall.start.y, wall.end.x, wall.end.y);

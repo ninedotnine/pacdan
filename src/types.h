@@ -5,47 +5,47 @@
 
 #define gcc_pure __attribute__((pure))
 
-typedef enum { right , up , left , down } Direction;
+enum direction { right , up , left , down };
 
-typedef struct {
+struct directions {
     bool right;
     bool up;
     bool left;
     bool down;
-} Directions;
+};
 
-typedef struct {
+struct point {
     int x;
     int y;
-} Point;
+};
 
-typedef struct {
+struct dude {
     int x; // these are the centre of pacman
     int y;
     unsigned size; // pacman is a square, this means width and height
-    Direction direction;
+    enum direction direction;
     GC gc;
-} Dude;
+};
 
 /* don't initialize a Wall except by calling build_wall */
-typedef struct {
-    Point start;
-    Point end;
-} Wall;
+struct wall {
+    struct point start;
+    struct point end;
+};
 
-typedef enum { vacant , food , blocked , special } Tile;
+enum tile { vacant , food , blocked , special };
 
-typedef struct {
-    Wall walls[WALL_LIMIT];
-    Tile tiles[TILES_HEIGHT][TILES_HEIGHT]; // FIXME use a bitfield instead.
+struct maze {
+    struct wall walls[WALL_LIMIT];
+    enum tile tiles[TILES_HEIGHT][TILES_HEIGHT]; // FIXME use a bitfield instead.
     uint16_t food_count;
     uint16_t wall_count;
-} Maze;
+};
 
-typedef struct {
+struct controls_thread_data {
     Display* const dpy;
     const Window win;
     bool game_over;
     bool paused;
-    Directions* dirs;
-} Controls_thread_data;
+    struct directions * dirs;
+};
