@@ -1,3 +1,13 @@
+#include "controls.h"
+
+#include "threading.h"
+
+#include <assert.h>
+#include <pthread.h>
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdio.h>
+
 static void handle_keypress(XEvent event, struct controls_thread_data * const data) {
     const KeySym keysym = XLookupKeysym(&event.xkey, 0);
     thread_lock();
@@ -84,7 +94,7 @@ static void handle_keyrelease(XEvent event, struct directions * const dirs) {
     thread_unlock();
 }
 
-static void * handle_xevents(void * arg) {
+void * handle_xevents(void * arg) {
     struct controls_thread_data * data = (struct controls_thread_data *) arg;
     assert (data != NULL);
     assert (data->dpy != NULL);
@@ -144,7 +154,7 @@ static void * handle_xevents(void * arg) {
 }
 
 
-static struct controls_thread_data gcc_pure new_thread_data(Display * const dpy,
+struct controls_thread_data gcc_pure new_thread_data(Display * const dpy,
                                                             const Window win,
                                                             struct directions * const dirs) {
     const struct controls_thread_data data = {

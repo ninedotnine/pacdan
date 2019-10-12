@@ -1,7 +1,18 @@
+#include "dan.h"
+
+#include "types.h"
+#include "dude.h"
+
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <X11/Xlibint.h>
+
+#include <assert.h>
+#include <stdbool.h>
 /* dan is the name of the protagonist.
  */
 
-static void draw_or_erase_dan(Display* const dpy, const Window win, const struct dude * const dan, const bool erase) {
+void draw_or_erase_dan(Display* const dpy, const Window win, const struct dude * const dan, const bool erase) {
     assert (dpy != NULL);
     assert (dan != NULL);
 
@@ -49,15 +60,15 @@ static void draw_or_erase_dan(Display* const dpy, const Window win, const struct
 }
 
 
-static void draw_dan(Display* const dpy, const Window win, const struct dude * const dan) {
+void draw_dan(Display* const dpy, const Window win, const struct dude * const dan) {
     draw_or_erase_dan(dpy, win, dan, false);
 }
 
-static void erase_dan(Display* const dpy, const Window win, const struct dude * const dan) {
+void erase_dan(Display* const dpy, const Window win, const struct dude * const dan) {
     draw_or_erase_dan(dpy, win, dan, true);
 }
 
-static void move_dan(struct dude * dan,
+void move_dan(struct dude * dan,
                      const enum direction dir,
                      struct maze * const maze,
                      Display * const dpy,

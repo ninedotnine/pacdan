@@ -1,3 +1,12 @@
+#pragma once
+
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <X11/Xlibint.h>
+
+#include <stdbool.h>
+#include <stdint.h>
+
 #define WALL_LIMIT 66
 #define WINDOW_HEIGHT 700 // also window width, because the game is a square
 #define CORRIDOR_SIZE 25

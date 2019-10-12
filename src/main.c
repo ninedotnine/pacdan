@@ -1,4 +1,13 @@
 /* pacman game with xlib */
+#include "centre_box.h"
+#include "controls.h"
+#include "dan.h"
+#include "dude.h"
+#include "ghosties.h"
+#include "maze.h"
+#include "threading.h"
+#include "types.h"
+
 #include <stdio.h>
 #include <stdint.h>
 #include <assert.h>
@@ -10,15 +19,6 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/Xlibint.h>
-
-#include "types.h"
-#include "maze.c"
-#include "dude.c"
-#include "dan.c"
-#include "ghosties.c"
-#include "threading.c"
-#include "controls.c"
-#include "centre_box.c"
 
 
 static void draw_game(Display * const dpy,
@@ -51,12 +51,7 @@ static void draw_game(Display * const dpy,
 }
 
 int main(void) {
-    pthread_mutex_init(&mutex, NULL);
-
-    if (0 == XInitThreads()) {
-        fputs("not able to initialize multithreading.", stderr);
-        exit(EXIT_FAILURE);
-    }
+    initialize_threading();
 
     struct directions dirs = { false, false, false, false };
 

@@ -1,8 +1,15 @@
+#include "ghosties.h"
+
+#include "types.h"
+#include "dude.h"
+
+#include <assert.h>
 #include <limits.h>
+#include <stdio.h>
 /*  this file contains routines relevant to the ghosties.
  */
 
-static void draw_or_erase_ghostie(Display* const dpy, const Window win, const struct dude * const ghostie, bool erase) {
+void draw_or_erase_ghostie(Display* const dpy, const Window win, const struct dude * const ghostie, bool erase) {
     assert (dpy != NULL);
     assert (ghostie != NULL);
 
@@ -140,17 +147,17 @@ static void draw_or_erase_ghostie(Display* const dpy, const Window win, const st
     puts("ghostie -- all lines drawn.");
 }
 
-static void draw_ghostie(Display* const dpy, const Window win, const struct dude * const ghostie) {
+void draw_ghostie(Display* const dpy, const Window win, const struct dude * const ghostie) {
     puts("called draw_ghostie");
     draw_or_erase_ghostie(dpy, win, ghostie, false);
 //     puts("finished draw_ghostie");
 }
 
-static void erase_ghostie(Display* const dpy, const Window win, const struct dude * const ghostie) {
+void erase_ghostie(Display* const dpy, const Window win, const struct dude * const ghostie) {
     draw_or_erase_ghostie(dpy, win, ghostie, true);
 }
 
-static void turn_around(struct dude * const ghostie, const enum tile neighbours[const static 4]) {
+void turn_around(struct dude * const ghostie, const enum tile neighbours[const static 4]) {
     for (uint8_t i = 0; i < 4; i++) {
         if (neighbours[i] != blocked) {
             ghostie->direction = i;
@@ -159,7 +166,7 @@ static void turn_around(struct dude * const ghostie, const enum tile neighbours[
     }
 }
 
-static void proceed_forward(struct dude * const ghostie, const enum tile neighbours[const static 4]) {
+void proceed_forward(struct dude * const ghostie, const enum tile neighbours[const static 4]) {
     const enum direction came_from = (ghostie->direction + 2) % 4;
     for (uint8_t i = 0; i < 4; i++) {
         if (neighbours[i] != blocked && i != came_from) {
@@ -169,7 +176,7 @@ static void proceed_forward(struct dude * const ghostie, const enum tile neighbo
     }
 }
 
-static void choose_fork(struct dude * const ghostie, const enum tile neighbours[const static 4], uint8_t options) {
+void choose_fork(struct dude * const ghostie, const enum tile neighbours[const static 4], uint8_t options) {
     const enum direction came_from = (ghostie->direction + 2) % 4;
     unsigned randy = rand(); // FIXME better random numbers?
     options--;
@@ -185,7 +192,7 @@ static void choose_fork(struct dude * const ghostie, const enum tile neighbours[
     }
 }
 
-static void ghostie_set_direction(struct dude * const ghostie, const struct maze * const maze) {
+void ghostie_set_direction(struct dude * const ghostie, const struct maze * const maze) {
     assert ((ghostie->x % CORRIDOR_SIZE == 0 && ghostie->y % CORRIDOR_SIZE == 0));
     const int x = ghostie->x / CORRIDOR_SIZE;
     const int y = ghostie->y / CORRIDOR_SIZE;
@@ -219,7 +226,7 @@ static void ghostie_set_direction(struct dude * const ghostie, const struct maze
     }
 }
 
-static void move_ghostie(struct dude * const ghostie,
+void move_ghostie(struct dude * const ghostie,
                          const struct maze * const maze,
                          Display* const dpy,
                          const Window win) {

@@ -1,6 +1,18 @@
+#include "centre_box.h"
+
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <X11/Xlibint.h>
+
+#include <assert.h>
+#include <limits.h>
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdio.h>
+#include <string.h>
 /*  this file contains routines relevant to the scoreboard.
  */
-static void initialize_font_and_colours(Display* const dpy, const int screen, XFontStruct** const font,
+void initialize_font_and_colours(Display* const dpy, const int screen, XFontStruct** const font,
                                         GC* const gc_fab) {
     assert (dpy != NULL);
     assert (font != NULL);
@@ -37,7 +49,7 @@ static int strlen_int(const char * const str) {
 }
 
 #define max_text_length 15
-static void update_score(Display* const dpy, const Window win, const GC gc, XFontStruct* const font,
+void update_score(Display* const dpy, const Window win, const GC gc, XFontStruct* const font,
                          const uint64_t foods_eaten) {
     assert (dpy != NULL);
     assert (gc != NULL);
@@ -63,7 +75,7 @@ static void update_score(Display* const dpy, const Window win, const GC gc, XFon
 }
 #undef max_text_length
 
-static void game_paused(Display* const dpy, const Window win, const GC gc, XFontStruct* const font, const bool begin) {
+void game_paused(Display* const dpy, const Window win, const GC gc, XFontStruct* const font, const bool begin) {
     assert (dpy != NULL);
     assert (gc != NULL);
     assert (font != NULL);
@@ -91,7 +103,7 @@ static void game_paused(Display* const dpy, const Window win, const GC gc, XFont
     XFlush(dpy);
 }
 
-static void insult_the_loser(Display* const dpy, const Window win, const GC gc, XFontStruct* const font) {
+void insult_the_loser(Display* const dpy, const Window win, const GC gc, XFontStruct* const font) {
     assert (dpy != NULL);
     assert (gc != NULL);
     assert (font != NULL);
@@ -119,7 +131,7 @@ static void insult_the_loser(Display* const dpy, const Window win, const GC gc, 
     XFlush(dpy);
 }
 
-static void congratulate(Display* const dpy, const Window win, const GC gc, XFontStruct* const font) {
+void congratulate(Display* const dpy, const Window win, const GC gc, XFontStruct* const font) {
     assert (dpy != NULL);
     assert (gc != NULL);
     assert (font != NULL);
